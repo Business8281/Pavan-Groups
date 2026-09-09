@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
-const isProd = process.env.NODE_ENV === 'production';
-const isGithubActions = process.env.GITHUB_ACTIONS || false;
-const repoName = '/Pavan_Groups';
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 const nextConfig = {
   output: 'export',
-  basePath: isProd || isGithubActions ? repoName : '',
-  assetPrefix: isProd || isGithubActions ? `${repoName}/` : undefined,
+  basePath: basePath,
+  assetPrefix: basePath ? `${basePath}/` : undefined,
   images: {
     unoptimized: true,
   },
