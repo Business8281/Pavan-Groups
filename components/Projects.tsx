@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ArrowRight, ArrowUpRight } from "@animateicons/react/lucide";
 
 const projects = [
   {
@@ -70,10 +71,8 @@ export default function Projects() {
           className="inline-flex items-center gap-2.5 text-[10px] tracking-[0.22em] uppercase text-[#c85a32] font-medium border-b pb-1 hover:gap-5 transition-all duration-300"
           style={{ borderColor: "rgba(255,68,58,0.3)" }}
         >
-          All Projects Archive
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <span>All Projects Archive</span>
+          <ArrowRight size={13} />
         </Link>
       </div>
 
@@ -116,9 +115,7 @@ export default function Projects() {
               className="w-8 h-8 flex-none flex items-center justify-center border rounded-full text-ink/20 group-hover:border-[#c85a32] group-hover:text-[#c85a32] transition-all duration-300"
               style={{ borderColor: "rgba(0,0,0,0.12)" }}
             >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <path d="M1 9L9 1M9 1H3M9 1v6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-              </svg>
+              <ArrowUpRight size={14} />
             </div>
           </Link>
         ))}

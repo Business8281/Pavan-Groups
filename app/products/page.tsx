@@ -1,570 +1,1309 @@
 "use client";
+
 import { useState, useMemo, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Grid3x3,
-  Grid2x2,
-  List,
-  Heart,
-  ChevronLeft,
-  ChevronRight,
-  X,
+  SlidersHorizontal,
   ChevronDown,
   ChevronUp,
+  X,
+  Heart,
+  Star,
+  Check,
+  RotateCcw,
+  Sparkles,
+  ArrowUpRight,
+  Eye,
+  Filter,
+  Search,
 } from "lucide-react";
 import { PRODUCTS_DATABASE, ProductStone } from "@/lib/productsData";
-
+import {
+  calculateFacetCounts,
+  ARCHITECTURAL_FINISHES,
+  ARCHITECTURAL_SIZES,
+  ARCHITECTURAL_COLORS,
+  APPLICATION_AREAS,
+  QUARRY_DIVISIONS,
+  SLATE_STONE_VARIETIES,
+  APPLICATION_SUBTYPES,
+  LIMESTONE_SUBTYPES,
+  SOUTH_INDIAN_GRANITE_SUBTYPES,
+  NORTH_INDIAN_GRANITE_SUBTYPES,
+  matchesSlateVariety,
+  matchesApplicationSubtype,
+  matchesLimestoneSubtype,
+  matchesSouthIndianGraniteSubtype,
+  matchesNorthIndianGraniteSubtype,
+  matchesCategory,
+  matchesCompany,
+  matchesFinish,
+  matchesSize,
+  matchesColor,
+  matchesArea,
+  matchesSearch,
+  normalizeFinishParam,
+  normalizeSizeParam,
+  normalizeColorParam,
+} from "@/lib/productFilterUtils";
+import ProductCardImage from "@/components/ProductCardImage";
 
 function ProductsContent() {
   const searchParams = useSearchParams();
 
+  // Compute live facets across the database
+  const catalogFacets = useMemo(() => calculateFacetCounts(PRODUCTS_DATABASE), []);
+
   // Filter States
-  const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedSlateVarieties, setSelectedSlateVarieties] = useState<string[]>([]);
+  const [selectedApplicationSubtypes, setSelectedApplicationSubtypes] = useState<string[]>([]);
+  const [selectedLimestoneSubtypes, setSelectedLimestoneSubtypes] = useState<string[]>([]);
+  const [selectedSouthGraniteSubtypes, setSelectedSouthGraniteSubtypes] = useState<string[]>([]);
+  const [selectedNorthGraniteSubtypes, setSelectedNorthGraniteSubtypes] = useState<string[]>([]);
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [selectedFinishes, setSelectedFinishes] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
+  const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  
-  // UI States
-  const [viewMode, setViewMode] = useState<"grid3" | "grid2" | "list">("grid3");
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const [wishlist, setWishlist] = useState<Record<string, boolean>>({});
-  const [imageIndex, setImageIndex] = useState<Record<string, number>>({});
+  const [sortBy, setSortBy] = useState<
+    "featured" | "price-asc" | "price-desc" | "rating" | "name-asc" | "name-desc"
+  >("featured");
 
-  // Initialize and Sync Filters from URL Query Params (Homepage Clicks)
+  // Dynamic live facets:
+  // When categories are selected, facet counts reflect products in those categories.
+  // When no category is selected, facet counts reflect all products.
+  const activePoolForFacets = useMemo(() => {
+    if (selectedCategories.length === 0) return PRODUCTS_DATABASE;
+    return PRODUCTS_DATABASE.filter((p) => matchesCategory(p, selectedCategories));
+  }, [selectedCategories]);
+
+  const liveFacets = useMemo(() => calculateFacetCounts(activePoolForFacets), [activePoolForFacets]);
+
+  // Top Category Banner Definitions with live dynamic counts
+  const TOP_CATEGORIES = useMemo(
+    () => [
+      {
+        id: "slate",
+        slug: "slate-stone",
+        title: "SLATE STONE",
+        subtitle: "Markapur Slates & CNC Carvings",
+        count: liveFacets.categories.slate || 88,
+        href: "/products/slate",
+        image: "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80",
+      },
+      {
+        id: "applications",
+        slug: "applications",
+        title: "APPLICATIONS",
+        subtitle: "Wall Cladding, Pavers & Cobbles",
+        count: liveFacets.categories.applications || 2,
+        href: "/products/applications",
+        image: "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=800&q=80",
+      },
+      {
+        id: "limestone",
+        slug: "limestone",
+        title: "LIMESTONE",
+        subtitle: "Cuddapah Black & Lime Yellow",
+        count: liveFacets.categories.limestone || 2,
+        href: "/products/limestone",
+        image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80",
+      },
+      {
+        id: "south-indian-granite",
+        slug: "south-indian-granite",
+        title: "SOUTH INDIAN GRANITE",
+        subtitle: "Black Galaxy & Steel Grey",
+        count: liveFacets.categories["south-indian-granite"] || 3,
+        href: "/products/south-indian-granite",
+        image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80",
+      },
+      {
+        id: "north-indian-granite",
+        slug: "north-indian-granite",
+        title: "NORTH INDIAN GRANITE",
+        subtitle: "Rajasthan Slabs & Crystals",
+        count: liveFacets.categories["north-indian-granite"] || 2,
+        href: "/products/north-indian-granite",
+        image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80",
+      },
+    ],
+    [liveFacets]
+  );
+
+  // UI States
+  const [isFilterOpen, setIsFilterOpen] = useState(true);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [wishlist, setWishlist] = useState<Record<string, boolean>>({});
+  const [quickViewProduct, setQuickViewProduct] = useState<ProductStone | null>(null);
+
+  // Sync Filters from URL Query Params
   useEffect(() => {
+    const categoryParam = searchParams.get("category");
     const companyParam = searchParams.get("company");
     const stoneParam = searchParams.get("stone");
     const colorParam = searchParams.get("color");
     const sizeParam = searchParams.get("size");
     const finishParam = searchParams.get("finish");
     const areaParam = searchParams.get("area");
+    const queryParam = searchParams.get("q") || searchParams.get("search");
+
+    if (queryParam) {
+      setSearchQuery(decodeURIComponent(queryParam));
+    }
+
+    if (categoryParam) {
+      const catLower = categoryParam.toLowerCase();
+      if (catLower.includes("slate") || catLower.includes("cnc")) setSelectedCategories(["slate"]);
+      else if (catLower.includes("application") || catLower.includes("paver") || catLower.includes("cladding")) setSelectedCategories(["applications"]);
+      else if (catLower.includes("limestone")) setSelectedCategories(["limestone"]);
+      else if (catLower.includes("south")) setSelectedCategories(["south-indian-granite"]);
+      else if (catLower.includes("north")) setSelectedCategories(["north-indian-granite"]);
+      else if (catLower.includes("granite")) setSelectedCategories(["south-indian-granite"]);
+      else setSelectedCategories([catLower]);
+    }
 
     if (companyParam) {
-      if (companyParam.toLowerCase().includes("pavan impex") || companyParam === "pavan-impex") {
+      const compLower = companyParam.toLowerCase();
+      if (compLower.includes("pavan impex") || compLower === "pavan-impex") {
         setSelectedCompanies(["Pavan Impex"]);
-      } else if (companyParam.toLowerCase().includes("sai balaji") || companyParam === "sai-balaji-impex") {
+      } else if (compLower.includes("sai balaji") || compLower === "sai-balaji-impex") {
         setSelectedCompanies(["Sai Balaji Impex"]);
-      } else if (companyParam.toLowerCase().includes("pavan granite") || companyParam === "pavan-granite") {
+      } else if (compLower.includes("pavan granite") || compLower === "pavan-granite") {
         setSelectedCompanies(["Pavan Granite"]);
-      } else {
-        setSelectedCompanies([companyParam]);
+      } else if (compLower.includes("stones world") || compLower === "pavan-stones-world") {
+        setSelectedCompanies(["Pavan Stones World"]);
       }
-    } else if (stoneParam) {
-      if (stoneParam === "slate") setSelectedCompanies(["Pavan Impex"]);
-      if (stoneParam === "limestone") setSelectedCompanies(["Sai Balaji Impex"]);
-      if (stoneParam === "granite") setSelectedCompanies(["Pavan Granite"]);
+    }
+
+    if (stoneParam) {
+      const sLower = stoneParam.toLowerCase();
+      if (sLower === "slate") setSelectedCategories(["slate"]);
+      if (sLower === "limestone") setSelectedCategories(["limestone"]);
+      if (sLower === "granite") setSelectedCategories(["granite"]);
+      if (sLower === "cnc") setSelectedCategories(["cnc"]);
+      if (sLower.includes("paver")) setSelectedCategories(["pavers"]);
     }
 
     if (colorParam) {
-      const decodedColor = decodeURIComponent(colorParam);
-      if (decodedColor.toLowerCase().includes("midnight") || decodedColor === "black-slate") {
-        setSelectedColors(["Midnight Black"]);
-      } else if (decodedColor.toLowerCase().includes("gold") || decodedColor === "black-galaxy" || decodedColor.toLowerCase().includes("bronzite")) {
-        setSelectedColors(["Gold Bronzite"]);
-      } else if (decodedColor.toLowerCase().includes("autumn") || decodedColor.toLowerCase().includes("copper")) {
-        setSelectedColors(["Autumn Copper"]);
-      } else if (decodedColor.toLowerCase().includes("california")) {
-        setSelectedColors(["California Gold"]);
-      } else if (decodedColor.toLowerCase().includes("lime yellow") || decodedColor === "lime-yellow") {
-        setSelectedColors(["Lime Yellow"]);
-      } else {
-        setSelectedColors([decodedColor]);
-      }
+      const decoded = decodeURIComponent(colorParam);
+      setSelectedColors([decoded]);
     }
 
     if (sizeParam) {
-      const decodedSize = decodeURIComponent(sizeParam);
-      setSelectedSizes([decodedSize]);
+      setSelectedSizes([decodeURIComponent(sizeParam)]);
     }
 
     if (finishParam) {
-      const decodedFinish = decodeURIComponent(finishParam);
-      setSelectedFinishes([decodedFinish]);
+      setSelectedFinishes([decodeURIComponent(finishParam)]);
     }
 
     if (areaParam) {
-      const decodedArea = decodeURIComponent(areaParam);
-      setSelectedAreas([decodedArea]);
+      setSelectedAreas([decodeURIComponent(areaParam)]);
     }
   }, [searchParams]);
 
-  // Accordion Expand States for Filter Sections
-  const [openSection, setOpenSection] = useState<{
-    area: boolean;
+  // Sidebar Accordion Expand States (Closed by default)
+  const [openSections, setOpenSections] = useState<{
+    category: boolean;
+    slateVariety: boolean;
+    applicationSubtype: boolean;
+    limestoneSubtype: boolean;
+    southGraniteSubtype: boolean;
+    northGraniteSubtype: boolean;
     company: boolean;
+    color: boolean;
     finish: boolean;
     size: boolean;
-    color: boolean;
+    area: boolean;
   }>({
-    area: true,
-    company: true,
-    finish: true,
-    size: true,
-    color: true,
+    category: false,
+    slateVariety: false,
+    applicationSubtype: false,
+    limestoneSubtype: false,
+    southGraniteSubtype: false,
+    northGraniteSubtype: false,
+    company: false,
+    color: false,
+    finish: false,
+    size: false,
+    area: false,
   });
+
+  const toggleSection = (section: keyof typeof openSections) => {
+    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
 
   const toggleFilter = (
     list: string[],
     setList: React.Dispatch<React.SetStateAction<string[]>>,
-    value: string
+    val: string
   ) => {
-    if (list.includes(value)) {
-      setList(list.filter((item) => item !== value));
+    if (list.includes(val)) {
+      setList(list.filter((item) => item !== val));
     } else {
-      setList([...list, value]);
+      setList([...list, val]);
+    }
+  };
+
+  const handleTopCategoryClick = (catId: string) => {
+    if (selectedCategories.includes(catId) && selectedCategories.length === 1) {
+      setSelectedCategories([]);
+    } else {
+      setSelectedCategories([catId]);
     }
   };
 
   const clearAllFilters = () => {
-    setSelectedAreas([]);
+    setSelectedCategories([]);
+    setSelectedSlateVarieties([]);
+    setSelectedApplicationSubtypes([]);
+    setSelectedLimestoneSubtypes([]);
+    setSelectedSouthGraniteSubtypes([]);
+    setSelectedNorthGraniteSubtypes([]);
     setSelectedCompanies([]);
     setSelectedFinishes([]);
     setSelectedSizes([]);
     setSelectedColors([]);
+    setSelectedAreas([]);
     setSearchQuery("");
   };
 
-  // Compute active filter count
-  const activeFilterChips = useMemo(() => {
+  // Compute Active Filter Chips
+  const activeChips = useMemo(() => {
     const chips: { label: string; remove: () => void }[] = [];
 
-    selectedAreas.forEach((area) =>
+    if (searchQuery) {
       chips.push({
-        label: area,
-        remove: () => setSelectedAreas((prev) => prev.filter((a) => a !== area)),
-      })
-    );
-    selectedCompanies.forEach((company) =>
+        label: `"${searchQuery}"`,
+        remove: () => setSearchQuery(""),
+      });
+    }
+
+    selectedCategories.forEach((cat) => {
+      const match = TOP_CATEGORIES.find((c) => c.id === cat);
       chips.push({
-        label: company,
-        remove: () => setSelectedCompanies((prev) => prev.filter((c) => c !== company)),
-      })
-    );
-    selectedFinishes.forEach((finish) =>
+        label: match ? match.title : cat.toUpperCase(),
+        remove: () => setSelectedCategories((prev) => prev.filter((c) => c !== cat)),
+      });
+    });
+
+    selectedSlateVarieties.forEach((vId) => {
+      const match = SLATE_STONE_VARIETIES.find((v) => v.id === vId || v.label.toLowerCase() === vId.toLowerCase());
       chips.push({
-        label: finish,
-        remove: () => setSelectedFinishes((prev) => prev.filter((f) => f !== finish)),
-      })
-    );
-    selectedSizes.forEach((size) =>
+        label: match ? match.label : vId,
+        remove: () => setSelectedSlateVarieties((prev) => prev.filter((v) => v !== vId)),
+      });
+    });
+
+    selectedApplicationSubtypes.forEach((sId) => {
+      const match = APPLICATION_SUBTYPES.find((s) => s.id === sId || s.label.toLowerCase() === sId.toLowerCase());
       chips.push({
-        label: size,
-        remove: () => setSelectedSizes((prev) => prev.filter((s) => s !== size)),
-      })
-    );
-    selectedColors.forEach((color) =>
+        label: match ? match.label : sId,
+        remove: () => setSelectedApplicationSubtypes((prev) => prev.filter((s) => s !== sId)),
+      });
+    });
+
+    selectedLimestoneSubtypes.forEach((lId) => {
+      const match = LIMESTONE_SUBTYPES.find((l) => l.id === lId || l.label.toLowerCase() === lId.toLowerCase());
       chips.push({
-        label: color,
-        remove: () => setSelectedColors((prev) => prev.filter((col) => col !== color)),
-      })
-    );
+        label: match ? match.label : lId,
+        remove: () => setSelectedLimestoneSubtypes((prev) => prev.filter((l) => l !== lId)),
+      });
+    });
+
+    selectedSouthGraniteSubtypes.forEach((sgId) => {
+      const match = SOUTH_INDIAN_GRANITE_SUBTYPES.find((sg) => sg.id === sgId || sg.label.toLowerCase() === sgId.toLowerCase());
+      chips.push({
+        label: match ? match.label : sgId,
+        remove: () => setSelectedSouthGraniteSubtypes((prev) => prev.filter((sg) => sg !== sgId)),
+      });
+    });
+
+    selectedNorthGraniteSubtypes.forEach((ngId) => {
+      const match = NORTH_INDIAN_GRANITE_SUBTYPES.find((ng) => ng.id === ngId || ng.label.toLowerCase() === ngId.toLowerCase());
+      chips.push({
+        label: match ? match.label : ngId,
+        remove: () => setSelectedNorthGraniteSubtypes((prev) => prev.filter((ng) => ng !== ngId)),
+      });
+    });
+
+    selectedCompanies.forEach((comp) => {
+      chips.push({
+        label: comp,
+        remove: () => setSelectedCompanies((prev) => prev.filter((c) => c !== comp)),
+      });
+    });
+
+    selectedFinishes.forEach((fin) => {
+      const match = ARCHITECTURAL_FINISHES.find((f) => f.id === fin || f.label === fin);
+      chips.push({
+        label: match ? match.label : fin,
+        remove: () => setSelectedFinishes((prev) => prev.filter((f) => f !== fin)),
+      });
+    });
+
+    selectedSizes.forEach((sz) => {
+      const match = ARCHITECTURAL_SIZES.find((s) => s.id === sz || s.label === sz);
+      chips.push({
+        label: match ? match.label : sz,
+        remove: () => setSelectedSizes((prev) => prev.filter((s) => s !== sz)),
+      });
+    });
+
+    selectedColors.forEach((col) => {
+      const match = ARCHITECTURAL_COLORS.find((c) => c.id === col || c.label === col);
+      chips.push({
+        label: match ? match.label : col,
+        remove: () => setSelectedColors((prev) => prev.filter((c) => c !== col)),
+      });
+    });
+
+    selectedAreas.forEach((ar) => {
+      const match = APPLICATION_AREAS.find((a) => a.id === ar || a.label === ar);
+      chips.push({
+        label: match ? match.label : ar,
+        remove: () => setSelectedAreas((prev) => prev.filter((a) => a !== ar)),
+      });
+    });
 
     return chips;
-  }, [selectedAreas, selectedCompanies, selectedFinishes, selectedSizes, selectedColors]);
-
-  // Filtered Products
-  const filteredProducts = useMemo(() => {
-    return PRODUCTS_DATABASE.filter((product) => {
-      // Search
-      if (
-        searchQuery &&
-        !product.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !product.description.toLowerCase().includes(searchQuery.toLowerCase())
-      ) {
-        return false;
-      }
-      // Area
-      if (
-        selectedAreas.length > 0 &&
-        !product.area.some((a) => selectedAreas.includes(a))
-      ) {
-        return false;
-      }
-      // Company
-      if (
-        selectedCompanies.length > 0 &&
-        !selectedCompanies.includes(product.company)
-      ) {
-        return false;
-      }
-      // Finish
-      if (
-        selectedFinishes.length > 0 &&
-        !product.availableFinishes.some((f) => selectedFinishes.includes(f))
-      ) {
-        return false;
-      }
-      // Sizes
-      if (
-        selectedSizes.length > 0 &&
-        !product.availableSizes.some((s) => selectedSizes.includes(s))
-      ) {
-        return false;
-      }
-      // Colors
-      if (
-        selectedColors.length > 0 &&
-        !selectedColors.includes(product.color)
-      ) {
-        return false;
-      }
-      return true;
-    });
   }, [
     searchQuery,
-    selectedAreas,
+    selectedCategories,
+    selectedSlateVarieties,
+    selectedApplicationSubtypes,
+    selectedLimestoneSubtypes,
+    selectedSouthGraniteSubtypes,
+    selectedNorthGraniteSubtypes,
     selectedCompanies,
     selectedFinishes,
     selectedSizes,
     selectedColors,
+    selectedAreas,
+    TOP_CATEGORIES,
   ]);
 
-  const toggleWishlist = (id: string) => {
+  // Filtered & Sorted Products
+  const filteredProducts = useMemo(() => {
+    const result = PRODUCTS_DATABASE.filter((product) => {
+      if (!matchesSearch(product, searchQuery)) return false;
+      if (!matchesCategory(product, selectedCategories)) return false;
+      if (!matchesSlateVariety(product, selectedSlateVarieties)) return false;
+      if (!matchesApplicationSubtype(product, selectedApplicationSubtypes)) return false;
+      if (!matchesLimestoneSubtype(product, selectedLimestoneSubtypes)) return false;
+      if (!matchesSouthIndianGraniteSubtype(product, selectedSouthGraniteSubtypes)) return false;
+      if (!matchesNorthIndianGraniteSubtype(product, selectedNorthGraniteSubtypes)) return false;
+      if (!matchesCompany(product, selectedCompanies)) return false;
+      if (!matchesFinish(product, selectedFinishes)) return false;
+      if (!matchesSize(product, selectedSizes)) return false;
+      if (!matchesColor(product, selectedColors)) return false;
+      if (!matchesArea(product, selectedAreas)) return false;
+      return true;
+    });
+
+    // Sorting
+    return result.sort((a, b) => {
+      if (sortBy === "name-asc") return a.name.localeCompare(b.name);
+      if (sortBy === "name-desc") return b.name.localeCompare(a.name);
+      if (sortBy === "rating") return (b.rating || 4.5) - (a.rating || 4.5);
+      if (sortBy === "price-asc") {
+        const priceA = parseFloat(a.price?.replace(/[^0-9.]/g, "") || "0");
+        const priceB = parseFloat(b.price?.replace(/[^0-9.]/g, "") || "0");
+        return priceA - priceB;
+      }
+      if (sortBy === "price-desc") {
+        const priceA = parseFloat(a.price?.replace(/[^0-9.]/g, "") || "0");
+        const priceB = parseFloat(b.price?.replace(/[^0-9.]/g, "") || "0");
+        return priceB - priceA;
+      }
+      return 0; // featured natural order
+    });
+  }, [
+    searchQuery,
+    selectedCategories,
+    selectedSlateVarieties,
+    selectedApplicationSubtypes,
+    selectedLimestoneSubtypes,
+    selectedSouthGraniteSubtypes,
+    selectedNorthGraniteSubtypes,
+    selectedCompanies,
+    selectedFinishes,
+    selectedSizes,
+    selectedColors,
+    selectedAreas,
+    sortBy,
+  ]);
+
+  const toggleWishlist = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setWishlist((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleNextImage = (id: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setImageIndex((prev) => ({ ...prev, [id]: ((prev[id] || 0) + 1) % 3 }));
-  };
-
-  const handlePrevImage = (id: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setImageIndex((prev) => ({ ...prev, [id]: ((prev[id] || 0) - 1 + 3) % 3 }));
-  };
-
   return (
-    <div className="bg-[#ffffff] text-[#241919] min-h-screen pt-24 pb-20">
+    <div className="bg-[#ffffff] text-[#111111] min-h-screen pt-20 sm:pt-24 pb-24 font-sans selection:bg-[#241919] selection:text-white">
       
-      {/* ── BREADCRUMB & HEADER SECTION ── */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 mb-8">
-        
-        {/* Title */}
-        <h1
-          className="font-display font-light text-[#241919] leading-[1.04] tracking-[-0.015em] mb-4"
-          style={{ fontSize: "clamp(34px, 4.4vw, 56px)" }}
-        >
-          Tiles & Natural Stones
+      {/* ── 1. HEADER SECTION (MATCHING REFERENCE IMAGE) ── */}
+      <section className="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 pt-4 pb-6 text-center">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[44px] font-extrabold tracking-tight uppercase text-[#111111] font-sans">
+          ARCHITECTURAL STONE COLLECTION
         </h1>
+        <p className="mt-3 max-w-3xl mx-auto text-xs sm:text-sm md:text-[13.5px] leading-relaxed text-[#555555] font-normal tracking-wide">
+          Our Architectural Stone Collection delivers the best quarry-direct natural stones for luxury indoor floors, monumental elevations, and heavy-duty outdoor hardscapes. The collection features Slate Stone (including CNC 3D carvings), Applications, Limestones, South Indian Granites, and North Indian Granites engineered for timeless durability.
+        </p>
+      </section>
 
-        {/* Collapsible Editorial Description */}
-        <div className="max-w-4xl text-[14px] leading-relaxed text-[#454545] font-light">
-          <p>
-            Natural stone tiles and calibrated slabs are the premier choice for luxury indoor floors, architectural rainscreen elevations, and heavy-duty outdoor terraces thanks to their high compressive strength, thermal mass, and ease of lifetime maintenance. Pavan Groups extracts and custom-fabricates genuine Markapur Slate, Cuddapah Limestone, and world-renowned Chimakurthy Black Galaxy Granite direct from quarry faces.
-          </p>
+      {/* ── 2. TOP CATEGORY BANNERS ROW (DEDICATED CATEGORY PAGE ROUTING) ── */}
+      <section className="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4">
+          {TOP_CATEGORIES.map((cat) => {
+            const isActive = selectedCategories.includes(cat.id);
 
-          {isDescriptionExpanded && (
-            <motion.p
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              className="mt-3 text-[#454545]"
-            >
-              All stone blocks are calibrated to international ASTM C615 and EN 1341 standards, available in monolithic gangsaw slabs, 600x300mm cladding formats, 200x100mm tumbled pavers, and bespoke CNC architectural detailing with worldwide DHL express sample dispatch.
-            </motion.p>
-          )}
-
-          <button
-            type="button"
-            onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-            className="text-[#0f172a] font-medium text-xs hover:underline mt-2 inline-block cursor-pointer"
-          >
-            {isDescriptionExpanded ? "Read Less" : "Read More"}
-          </button>
-        </div>
-
-        {/* ── FILTER CHIPS BAR & CONTROLS ── */}
-        <div className="mt-6 pt-6 border-t border-[#747474]/15 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          
-          {/* Active Filter Chips */}
-          <div className="flex items-center gap-2 flex-wrap flex-1">
-            {activeFilterChips.map((chip) => (
-              <span
-                key={chip.label}
-                className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f5efe6] border border-[#747474]/20 rounded-full text-xs font-sans text-[#241919]"
+            return (
+              <Link
+                key={cat.id}
+                href={cat.href}
+                className={`group relative aspect-[16/9] sm:aspect-[16/10] rounded-none overflow-hidden block select-none transition-all duration-300 cursor-pointer ${
+                  isActive
+                    ? "ring-2 ring-[#111111] ring-offset-2 shadow-md"
+                    : "hover:opacity-95"
+                }`}
               >
-                <span>{chip.label}</span>
+                {/* Photographic Background */}
+                <img
+                  src={cat.image}
+                  alt={cat.title}
+                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+
+                {/* Dark Vignette Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/10 transition-opacity group-hover:opacity-90" />
+
+                {/* Active Indicator Top Bar */}
+                {isActive && (
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-[#111111] z-10" />
+                )}
+
+                {/* Category Title Label (Bottom Left, Uppercase, Bold) */}
+                <div className="absolute bottom-3 left-3 sm:bottom-3.5 sm:left-4 z-10 text-left pr-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="block text-[13px] sm:text-[14px] md:text-[15px] font-extrabold uppercase tracking-wider text-white drop-shadow-sm font-sans">
+                      {cat.title}
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-white/90 bg-black/40 border border-white/20 px-1.5 py-0.5 rounded-xs">
+                      {cat.count}
+                    </span>
+                  </div>
+                  <span className="block text-[9.5px] sm:text-[10.5px] text-white/80 font-medium tracking-wide mt-0.5">
+                    {cat.subtitle}
+                  </span>
+                  <span className="text-[9px] font-mono uppercase tracking-wider text-white/80 group-hover:text-white underline mt-1 inline-block opacity-0 group-hover:opacity-100 transition-opacity">
+                    View Collection →
+                  </span>
+                </div>
+
+                {/* Active Badge Checkmark */}
+                {isActive && (
+                  <div className="absolute top-2.5 right-2.5 w-5 h-5 bg-white text-[#111111] rounded-full flex items-center justify-center shadow-sm z-10">
+                    <Check className="w-3 h-3 stroke-[3]" />
+                  </div>
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ── 3. TOOLBAR / ACTION BAR (MATCHING REFERENCE IMAGE) ── */}
+      <section className="border-t border-b border-[#e5e5e5] bg-white">
+        <div className="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between gap-3 sm:gap-4 flex-wrap">
+          
+          {/* Left: Hide/Show Filters Toggle + Search Input + Active Chips */}
+          <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap flex-1 min-w-0">
+            {/* Filter Toggle Button */}
+            <button
+              type="button"
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="hidden lg:inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-[#111111] hover:text-black py-1.5 px-2.5 border border-[#e5e5e5] rounded-none hover:bg-[#f9f9f9] transition-colors cursor-pointer"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>
+                {isFilterOpen ? "HIDE FILTERS" : "SHOW FILTERS"}
+                {activeChips.length > 0 ? ` (${activeChips.length})` : ""}
+              </span>
+              {isFilterOpen ? (
+                <ChevronUp className="w-3.5 h-3.5" />
+              ) : (
+                <ChevronDown className="w-3.5 h-3.5" />
+              )}
+            </button>
+
+            {/* Mobile Filter Trigger Button */}
+            <button
+              type="button"
+              onClick={() => setMobileFilterOpen(true)}
+              className="lg:hidden inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-[#111111] py-1.5 px-3 border border-[#e5e5e5] rounded-none hover:bg-[#f9f9f9] cursor-pointer"
+            >
+              <Filter className="w-3.5 h-3.5" />
+              <span>
+                FILTERS {activeChips.length > 0 ? `(${activeChips.length})` : ""}
+              </span>
+            </button>
+
+            {/* Live Search Input Bar */}
+            <div className="relative flex items-center w-full sm:w-64 md:w-72">
+              <Search className="w-3.5 h-3.5 text-[#71717a] absolute left-2.5 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search 96 stone specimens..."
+                className="w-full bg-[#f4f4f5] hover:bg-[#ededf0] focus:bg-white text-[11.5px] text-[#111111] placeholder:text-[#888888] pl-8 pr-7 py-1.5 border border-[#e4e4e7] focus:border-[#111111] focus:outline-none transition-colors rounded-none"
+              />
+              {searchQuery && (
                 <button
                   type="button"
-                  onClick={chip.remove}
-                  className="w-3.5 h-3.5 flex items-center justify-center text-[#747474] hover:text-[#241919] cursor-pointer"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2 p-0.5 text-[#71717a] hover:text-[#111111] cursor-pointer"
                 >
                   <X className="w-3 h-3" />
                 </button>
-              </span>
-            ))}
+              )}
+            </div>
 
-            {activeFilterChips.length > 0 && (
-              <button
-                type="button"
-                onClick={clearAllFilters}
-                className="text-xs font-sans font-semibold text-[#0f172a] hover:underline ml-2 cursor-pointer"
-              >
-                Clear All Filters X
-              </button>
-            )}
+            {/* Active Filter Chips */}
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap min-w-0">
+              {activeChips.map((chip, idx) => (
+                <span
+                  key={idx}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#f4f4f5] border border-[#e4e4e7] text-[11px] font-medium text-[#18181b] rounded-none"
+                >
+                  <span className="truncate max-w-[140px] sm:max-w-none">{chip.label}</span>
+                  <button
+                    type="button"
+                    onClick={chip.remove}
+                    className="w-3.5 h-3.5 flex items-center justify-center text-[#71717a] hover:text-[#09090b] cursor-pointer"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+
+              {activeChips.length > 0 && (
+                <button
+                  type="button"
+                  onClick={clearAllFilters}
+                  className="text-[11px] font-semibold text-[#18181b] hover:underline cursor-pointer ml-1 py-1"
+                >
+                  Clear All
+                </button>
+              )}
+            </div>
           </div>
 
-          {/* View Switcher Icons */}
-          <div className="flex items-center gap-1 bg-[#f5efe6] p-1 rounded-md border border-[#747474]/15 flex-none">
-            <button
-              type="button"
-              onClick={() => setViewMode("grid3")}
-              className={`p-1.5 rounded transition-colors cursor-pointer ${
-                viewMode === "grid3" ? "bg-white shadow-xs text-[#241919]" : "text-[#747474] hover:text-[#241919]"
-              }`}
-              title="3 Column Grid"
-            >
-              <Grid3x3 className="w-4 h-4" />
-            </button>
+          {/* Right: Product Count & Sort Dropdown */}
+          <div className="flex items-center gap-4 flex-none ml-auto">
+            <span className="hidden sm:inline-block text-[11px] font-mono uppercase tracking-wider text-[#71717a]">
+              {filteredProducts.length} {filteredProducts.length === 1 ? "Product" : "Products"}
+            </span>
 
-            <button
-              type="button"
-              onClick={() => setViewMode("grid2")}
-              className={`p-1.5 rounded transition-colors cursor-pointer ${
-                viewMode === "grid2" ? "bg-white shadow-xs text-[#241919]" : "text-[#747474] hover:text-[#241919]"
-              }`}
-              title="2 Column Grid"
-            >
-              <Grid2x2 className="w-4 h-4" />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setViewMode("list")}
-              className={`p-1.5 rounded transition-colors cursor-pointer ${
-                viewMode === "list" ? "bg-white shadow-xs text-[#241919]" : "text-[#747474] hover:text-[#241919]"
-              }`}
-              title="List View"
-            >
-              <List className="w-4 h-4" />
-            </button>
+            {/* Sort Dropdown */}
+            <div className="relative flex items-center">
+              <label htmlFor="sort-select" className="sr-only">Sort By</label>
+              <div className="relative flex items-center">
+                <select
+                  id="sort-select"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="appearance-none bg-transparent pl-2 pr-7 py-1 text-[11px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer border-none focus:outline-hidden"
+                >
+                  <option value="featured">SORT BY: FEATURED</option>
+                  <option value="rating">SORT BY: TOP RATED</option>
+                  <option value="price-asc">SORT BY: PRICE (LOW TO HIGH)</option>
+                  <option value="price-desc">SORT BY: PRICE (HIGH TO LOW)</option>
+                  <option value="name-asc">SORT BY: NAME (A - Z)</option>
+                  <option value="name-desc">SORT BY: NAME (Z - A)</option>
+                </select>
+                <ChevronDown className="w-3.5 h-3.5 text-[#111111] pointer-events-none absolute right-1" />
+              </div>
+            </div>
           </div>
 
         </div>
+      </section>
 
-      </div>
-
-      {/* ── MAIN CONTENT: SIDEBAR + PRODUCT GRID ── */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* ── 4. MAIN CONTENT (COLLAPSIBLE SIDEBAR + CLEAN BORDER GRID) ── */}
+      <section className="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 pt-6">
+        <div className="flex items-start">
           
-          {/* ── LEFT SIDEBAR FILTERS (3 Cols) ── */}
-          <aside className="lg:col-span-3 space-y-4">
-            
-            {/* Top Primary Clear Button */}
-            <button
-              type="button"
-              onClick={clearAllFilters}
-              className="w-full py-3 bg-[#241919] hover:bg-[#3e352a] text-[#f1f5f9] text-xs font-sans font-semibold uppercase tracking-wider rounded-md shadow-xs transition-all cursor-pointer"
-            >
-              Clear All Filters
-            </button>
+          {/* ── LEFT DESKTOP SIDEBAR ACCORDION FILTERS ── */}
+          {isFilterOpen && (
+            <aside className="hidden lg:block w-64 xl:w-72 flex-none pr-8 pb-12 select-none border-r border-[#e5e5e5] mr-6">
+              
+              <div className="divide-y divide-[#e5e5e5]">
+                
+                {/* Filter 1: Category */}
+                <div className="py-4">
+                  <button
+                    type="button"
+                    onClick={() => toggleSection("category")}
+                    className="w-full flex items-center justify-between text-left text-[11.5px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer"
+                  >
+                    <span>Category</span>
+                    {openSections.category ? (
+                      <ChevronUp className="w-3.5 h-3.5" />
+                    ) : (
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    )}
+                  </button>
 
-            {/* Filter Section 1: Tile Area */}
-            <div className="border border-[#747474]/20 rounded-md overflow-hidden bg-white shadow-xs">
-              <button
-                type="button"
-                onClick={() => setOpenSection((prev) => ({ ...prev, area: !prev.area }))}
-                className="w-full flex items-center justify-between p-3.5 bg-[#e8e4de] text-left text-xs font-sans font-bold uppercase tracking-wider text-[#241919] cursor-pointer"
-              >
-                <span>Tile Area</span>
-                {openSection.area ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </button>
-
-              {openSection.area && (
-                <div className="p-4 space-y-2.5">
-                  {[
-                    { key: "elevation", label: "Elevation & Facades" },
-                    { key: "flooring", label: "Living Room & Flooring" },
-                    { key: "pool", label: "Pool Decks & Wet Areas" },
-                    { key: "countertop", label: "Kitchen Countertops" },
-                    { key: "driveway", label: "Driveways & Pavers" },
-                  ].map((item) => (
-                    <label key={item.key} className="flex items-center gap-2.5 text-xs text-[#454545] hover:text-[#241919] cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedAreas.includes(item.key)}
-                        onChange={() => toggleFilter(selectedAreas, setSelectedAreas, item.key)}
-                        className="w-4 h-4 rounded border-[#747474]/30 text-[#241919] focus:ring-0 cursor-pointer"
-                      />
-                      <span>{item.label}</span>
-                    </label>
-                  ))}
+                  {openSections.category && (
+                    <div className="mt-3.5 space-y-2.5">
+                      {[
+                        { key: "slate", label: "Slate Stone (incl. CNC)", count: liveFacets.categories.slate || 90 },
+                        { key: "applications", label: "Applications (Pavers & Cladding)", count: liveFacets.categories.applications || 2 },
+                        { key: "limestone", label: "Limestone", count: liveFacets.categories.limestone || 2 },
+                        { key: "south-indian-granite", label: "South Indian Granite", count: liveFacets.categories["south-indian-granite"] || 3 },
+                        { key: "north-indian-granite", label: "North Indian Granite", count: liveFacets.categories["north-indian-granite"] || 2 },
+                      ].map((item) => (
+                        <label
+                          key={item.key}
+                          className="flex items-center justify-between text-[12px] text-[#444444] hover:text-[#111111] cursor-pointer group"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <input
+                              type="checkbox"
+                              checked={selectedCategories.includes(item.key)}
+                              onChange={() =>
+                                toggleFilter(selectedCategories, setSelectedCategories, item.key)
+                              }
+                              className="w-3.5 h-3.5 rounded-none border-[#cccccc] text-[#111111] focus:ring-0 cursor-pointer"
+                            />
+                            <span className="group-hover:translate-x-0.5 transition-transform">
+                              {item.label}
+                            </span>
+                          </div>
+                          <span className="text-[10.5px] text-[#888888] font-mono">
+                            ({item.count})
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Filter Section 2: Operating Division / Stone Type */}
-            <div className="border border-[#747474]/20 rounded-md overflow-hidden bg-white shadow-xs">
-              <button
-                type="button"
-                onClick={() => setOpenSection((prev) => ({ ...prev, company: !prev.company }))}
-                className="w-full flex items-center justify-between p-3.5 bg-[#e8e4de] text-left text-xs font-sans font-bold uppercase tracking-wider text-[#241919] cursor-pointer"
-              >
-                <span>Stone Type</span>
-                {openSection.company ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </button>
+                {/* Filter 1.1: Slate Stone Variety (Official 6 Types) */}
+                {(selectedCategories.length === 0 || selectedCategories.includes("slate")) && (
+                  <div className="py-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleSection("slateVariety")}
+                      className="w-full flex items-center justify-between text-left text-[11.5px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer"
+                    >
+                      <span>Slate Stone Variety</span>
+                      {openSections.slateVariety ? (
+                        <ChevronUp className="w-3.5 h-3.5" />
+                      ) : (
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      )}
+                    </button>
 
-              {openSection.company && (
-                <div className="p-4 space-y-2.5">
-                  {[
-                    { key: "Pavan Impex", label: "Natural Slate (Pavan Impex)" },
-                    { key: "Sai Balaji Impex", label: "Limestone (Sai Balaji)" },
-                    { key: "Pavan Granite", label: "Black Galaxy (Pavan Granite)" },
-                  ].map((item) => (
-                    <label key={item.key} className="flex items-center gap-2.5 text-xs text-[#454545] hover:text-[#241919] cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedCompanies.includes(item.key)}
-                        onChange={() => toggleFilter(selectedCompanies, setSelectedCompanies, item.key)}
-                        className="w-4 h-4 rounded border-[#747474]/30 text-[#241919] focus:ring-0 cursor-pointer"
-                      />
-                      <span>{item.label}</span>
-                    </label>
-                  ))}
+                    {openSections.slateVariety && (
+                      <div className="mt-3.5 space-y-2.5">
+                        {SLATE_STONE_VARIETIES.map((v) => {
+                          const count = liveFacets.slateVarieties?.[v.id] || 0;
+                          return (
+                            <label
+                              key={v.id}
+                              className="flex items-center justify-between text-[12px] text-[#444444] hover:text-[#111111] cursor-pointer group"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedSlateVarieties.includes(v.id)}
+                                  onChange={() =>
+                                    toggleFilter(selectedSlateVarieties, setSelectedSlateVarieties, v.id)
+                                  }
+                                  className="w-3.5 h-3.5 rounded-none border-[#cccccc] text-[#111111] focus:ring-0 cursor-pointer"
+                                />
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0"
+                                    style={{
+                                      background: v.hex.startsWith("linear") ? v.hex : undefined,
+                                      backgroundColor: !v.hex.startsWith("linear") ? v.hex : undefined,
+                                    }}
+                                  />
+                                  <span className="group-hover:translate-x-0.5 transition-transform font-medium">
+                                    {v.label}
+                                  </span>
+                                </div>
+                              </div>
+                              <span className="text-[10.5px] text-[#888888] font-mono">
+                                ({count})
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Filter 1.2: Application Subtypes (Official 5 Types) */}
+                {(selectedCategories.length === 0 || selectedCategories.includes("applications")) && (
+                  <div className="py-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleSection("applicationSubtype")}
+                      className="w-full flex items-center justify-between text-left text-[11.5px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer"
+                    >
+                      <span>Application Type</span>
+                      {openSections.applicationSubtype ? (
+                        <ChevronUp className="w-3.5 h-3.5" />
+                      ) : (
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+
+                    {openSections.applicationSubtype && (
+                      <div className="mt-3.5 space-y-2.5">
+                        {APPLICATION_SUBTYPES.map((s) => {
+                          const count = liveFacets.applicationSubtypes?.[s.id] || 0;
+                          return (
+                            <label
+                              key={s.id}
+                              className="flex items-center justify-between text-[12px] text-[#444444] hover:text-[#111111] cursor-pointer group"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedApplicationSubtypes.includes(s.id)}
+                                  onChange={() =>
+                                    toggleFilter(selectedApplicationSubtypes, setSelectedApplicationSubtypes, s.id)
+                                  }
+                                  className="w-3.5 h-3.5 rounded-none border-[#cccccc] text-[#111111] focus:ring-0 cursor-pointer"
+                                />
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0"
+                                    style={{
+                                      background: s.hex,
+                                    }}
+                                  />
+                                  <span className="group-hover:translate-x-0.5 transition-transform font-medium">
+                                    {s.label}
+                                  </span>
+                                </div>
+                              </div>
+                              <span className="text-[10.5px] text-[#888888] font-mono">
+                                ({count})
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Filter 1.3: Limestone Subtypes (Official 6 Types) */}
+                {(selectedCategories.length === 0 || selectedCategories.includes("limestone")) && (
+                  <div className="py-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleSection("limestoneSubtype")}
+                      className="w-full flex items-center justify-between text-left text-[11.5px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer"
+                    >
+                      <span>Limestone Variety</span>
+                      {openSections.limestoneSubtype ? (
+                        <ChevronUp className="w-3.5 h-3.5" />
+                      ) : (
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+
+                    {openSections.limestoneSubtype && (
+                      <div className="mt-3.5 space-y-2.5">
+                        {LIMESTONE_SUBTYPES.map((l) => {
+                          const count = liveFacets.limestoneSubtypes?.[l.id] || 0;
+                          return (
+                            <label
+                              key={l.id}
+                              className="flex items-center justify-between text-[12px] text-[#444444] hover:text-[#111111] cursor-pointer group"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedLimestoneSubtypes.includes(l.id)}
+                                  onChange={() =>
+                                    toggleFilter(selectedLimestoneSubtypes, setSelectedLimestoneSubtypes, l.id)
+                                  }
+                                  className="w-3.5 h-3.5 rounded-none border-[#cccccc] text-[#111111] focus:ring-0 cursor-pointer"
+                                />
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0"
+                                    style={{
+                                      background: l.hex,
+                                    }}
+                                  />
+                                  <span className="group-hover:translate-x-0.5 transition-transform font-medium">
+                                    {l.label}
+                                  </span>
+                                </div>
+                              </div>
+                              <span className="text-[10.5px] text-[#888888] font-mono">
+                                ({count})
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Filter 1.4: South Indian Granite (Official 13 Types) */}
+                {(selectedCategories.length === 0 || selectedCategories.includes("south-indian-granite")) && (
+                  <div className="py-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleSection("southGraniteSubtype")}
+                      className="w-full flex items-center justify-between text-left text-[11.5px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer"
+                    >
+                      <span>South Indian Granite</span>
+                      {openSections.southGraniteSubtype ? (
+                        <ChevronUp className="w-3.5 h-3.5" />
+                      ) : (
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+
+                    {openSections.southGraniteSubtype && (
+                      <div className="mt-3.5 space-y-2.5">
+                        {SOUTH_INDIAN_GRANITE_SUBTYPES.map((sg) => {
+                          const count = liveFacets.southGraniteSubtypes?.[sg.id] || 0;
+                          return (
+                            <label
+                              key={sg.id}
+                              className="flex items-center justify-between text-[12px] text-[#444444] hover:text-[#111111] cursor-pointer group"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedSouthGraniteSubtypes.includes(sg.id)}
+                                  onChange={() =>
+                                    toggleFilter(selectedSouthGraniteSubtypes, setSelectedSouthGraniteSubtypes, sg.id)
+                                  }
+                                  className="w-3.5 h-3.5 rounded-none border-[#cccccc] text-[#111111] focus:ring-0 cursor-pointer"
+                                />
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0"
+                                    style={{
+                                      background: sg.hex,
+                                    }}
+                                  />
+                                  <span className="group-hover:translate-x-0.5 transition-transform font-medium">
+                                    {sg.label}
+                                  </span>
+                                </div>
+                              </div>
+                              <span className="text-[10.5px] text-[#888888] font-mono">
+                                ({count})
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Filter 1.5: North Indian Granite (Official 2 Types) */}
+                {(selectedCategories.length === 0 || selectedCategories.includes("north-indian-granite")) && (
+                  <div className="py-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleSection("northGraniteSubtype")}
+                      className="w-full flex items-center justify-between text-left text-[11.5px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer"
+                    >
+                      <span>North Indian Granite</span>
+                      {openSections.northGraniteSubtype ? (
+                        <ChevronUp className="w-3.5 h-3.5" />
+                      ) : (
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+
+                    {openSections.northGraniteSubtype && (
+                      <div className="mt-3.5 space-y-2.5">
+                        {NORTH_INDIAN_GRANITE_SUBTYPES.map((ng) => {
+                          const count = liveFacets.northGraniteSubtypes?.[ng.id] || 0;
+                          return (
+                            <label
+                              key={ng.id}
+                              className="flex items-center justify-between text-[12px] text-[#444444] hover:text-[#111111] cursor-pointer group"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedNorthGraniteSubtypes.includes(ng.id)}
+                                  onChange={() =>
+                                    toggleFilter(selectedNorthGraniteSubtypes, setSelectedNorthGraniteSubtypes, ng.id)
+                                  }
+                                  className="w-3.5 h-3.5 rounded-none border-[#cccccc] text-[#111111] focus:ring-0 cursor-pointer"
+                                />
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0"
+                                    style={{
+                                      background: ng.hex,
+                                    }}
+                                  />
+                                  <span className="group-hover:translate-x-0.5 transition-transform font-medium">
+                                    {ng.label}
+                                  </span>
+                                </div>
+                              </div>
+                              <span className="text-[10.5px] text-[#888888] font-mono">
+                                ({count})
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Filter 2: Stone Division / Operating Quarry */}
+                <div className="py-4">
+                  <button
+                    type="button"
+                    onClick={() => toggleSection("company")}
+                    className="w-full flex items-center justify-between text-left text-[11.5px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer"
+                  >
+                    <span>Quarry Division</span>
+                    {openSections.company ? (
+                      <ChevronUp className="w-3.5 h-3.5" />
+                    ) : (
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+
+                  {openSections.company && (
+                    <div className="mt-3.5 space-y-2.5">
+                      {[
+                        { key: "Pavan Impex", label: "Pavan Impex (Slates & CNC)", count: liveFacets.companies["Pavan Impex"] || 0 },
+                        { key: "Sai Balaji Impex", label: "Sai Balaji (Limestones)", count: liveFacets.companies["Sai Balaji Impex"] || 0 },
+                        { key: "Pavan Granite", label: "Pavan Granite (Black Galaxy)", count: liveFacets.companies["Pavan Granite"] || 0 },
+                        { key: "Pavan Stones World", label: "Pavan Stones World (Exotics)", count: liveFacets.companies["Pavan Stones World"] || 0 },
+                      ].map((item) => {
+                        const isSelected = selectedCompanies.includes(item.key);
+                        const isDisabled = item.count === 0 && !isSelected;
+
+                        return (
+                          <label
+                            key={item.key}
+                            className={`flex items-center justify-between text-[12px] group ${
+                              isDisabled
+                                ? "opacity-35 cursor-not-allowed text-[#999999]"
+                                : "text-[#444444] hover:text-[#111111] cursor-pointer"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                disabled={isDisabled}
+                                onChange={() =>
+                                  toggleFilter(selectedCompanies, setSelectedCompanies, item.key)
+                                }
+                                className="w-3.5 h-3.5 rounded-none border-[#cccccc] text-[#111111] focus:ring-0 cursor-pointer disabled:cursor-not-allowed"
+                              />
+                              <span className="group-hover:translate-x-0.5 transition-transform truncate max-w-[170px]">
+                                {item.label}
+                              </span>
+                            </div>
+                            <span className="text-[10.5px] text-[#888888] font-mono">
+                              ({item.count})
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Filter Section 3: Surface Finishes */}
-            <div className="border border-[#747474]/20 rounded-md overflow-hidden bg-white shadow-xs">
-              <button
-                type="button"
-                onClick={() => setOpenSection((prev) => ({ ...prev, finish: !prev.finish }))}
-                className="w-full flex items-center justify-between p-3.5 bg-[#e8e4de] text-left text-xs font-sans font-bold uppercase tracking-wider text-[#241919] cursor-pointer"
-              >
-                <span>Surface Finish</span>
-                {openSection.finish ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </button>
+                {/* Filter 3: Color Tone */}
+                <div className="py-4">
+                  <button
+                    type="button"
+                    onClick={() => toggleSection("color")}
+                    className="w-full flex items-center justify-between text-left text-[11.5px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer"
+                  >
+                    <span>Color Tone</span>
+                    {openSections.color ? (
+                      <ChevronUp className="w-3.5 h-3.5" />
+                    ) : (
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    )}
+                  </button>
 
-              {openSection.finish && (
-                <div className="p-4 space-y-2.5">
-                  {[
-                    "Natural Cleft",
-                    "95+ Mirror Polish",
-                    "Honed Matte",
-                    "Tumbled Antique",
-                    "3D Ledger Relief",
-                    "Anti-Skid R11",
-                    "Leathered Velvet",
-                  ].map((finish) => (
-                    <label key={finish} className="flex items-center gap-2.5 text-xs text-[#454545] hover:text-[#241919] cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedFinishes.includes(finish)}
-                        onChange={() => toggleFilter(selectedFinishes, setSelectedFinishes, finish)}
-                        className="w-4 h-4 rounded border-[#747474]/30 text-[#241919] focus:ring-0 cursor-pointer"
-                      />
-                      <span>{finish}</span>
-                    </label>
-                  ))}
+                  {openSections.color && (
+                    <div className="mt-3.5 space-y-2.5">
+                      {ARCHITECTURAL_COLORS.map((col) => {
+                        const count = liveFacets.colors[col.id] || 0;
+                        const isSelected = selectedColors.includes(col.id);
+                        const isDisabled = count === 0 && !isSelected;
+
+                        return (
+                          <label
+                            key={col.id}
+                            className={`flex items-center justify-between text-[12px] group ${
+                              isDisabled
+                                ? "opacity-35 cursor-not-allowed text-[#999999]"
+                                : "text-[#444444] hover:text-[#111111] cursor-pointer"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                disabled={isDisabled}
+                                onChange={() =>
+                                  toggleFilter(selectedColors, setSelectedColors, col.id)
+                                }
+                                className="w-3.5 h-3.5 rounded-none border-[#cccccc] text-[#111111] focus:ring-0 cursor-pointer disabled:cursor-not-allowed"
+                              />
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full border border-black/20 shrink-0"
+                                  style={{
+                                    background: col.hex.startsWith("linear") ? col.hex : undefined,
+                                    backgroundColor: !col.hex.startsWith("linear") ? col.hex : undefined,
+                                  }}
+                                />
+                                <span className="group-hover:translate-x-0.5 transition-transform">{col.label}</span>
+                              </div>
+                            </div>
+                            <span className="text-[10.5px] text-[#888888] font-mono">
+                              ({count})
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Filter Section 4: Tile Size */}
-            <div className="border border-[#747474]/20 rounded-md overflow-hidden bg-white shadow-xs">
-              <button
-                type="button"
-                onClick={() => setOpenSection((prev) => ({ ...prev, size: !prev.size }))}
-                className="w-full flex items-center justify-between p-3.5 bg-[#e8e4de] text-left text-xs font-sans font-bold uppercase tracking-wider text-[#241919] cursor-pointer"
-              >
-                <span>Tile Size</span>
-                {openSection.size ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </button>
+                {/* Filter 4: Surface Finishes */}
+                <div className="py-4">
+                  <button
+                    type="button"
+                    onClick={() => toggleSection("finish")}
+                    className="w-full flex items-center justify-between text-left text-[11.5px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer"
+                  >
+                    <span>Surface Finish</span>
+                    {openSections.finish ? (
+                      <ChevronUp className="w-3.5 h-3.5" />
+                    ) : (
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    )}
+                  </button>
 
-              {openSection.size && (
-                <div className="p-4 space-y-2.5">
-                  {[
-                    "600x300 mm",
-                    "600x600 mm",
-                    "1200x600 mm",
-                    "300x300 mm",
-                    "Jumbo Gangsaw Slabs",
-                    "200x100 mm Pavers",
-                    "600x150 mm",
-                  ].map((size) => (
-                    <label key={size} className="flex items-center gap-2.5 text-xs text-[#454545] hover:text-[#241919] cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedSizes.includes(size)}
-                        onChange={() => toggleFilter(selectedSizes, setSelectedSizes, size)}
-                        className="w-4 h-4 rounded border-[#747474]/30 text-[#241919] focus:ring-0 cursor-pointer"
-                      />
-                      <span>{size}</span>
-                    </label>
-                  ))}
+                  {openSections.finish && (
+                    <div className="mt-3.5 space-y-2.5">
+                      {ARCHITECTURAL_FINISHES.map((finish) => {
+                        const count = liveFacets.finishes[finish.id] || 0;
+                        const isSelected = selectedFinishes.includes(finish.id);
+                        const isDisabled = count === 0 && !isSelected;
+
+                        return (
+                          <label
+                            key={finish.id}
+                            className={`flex items-center justify-between text-[12px] group ${
+                              isDisabled
+                                ? "opacity-35 cursor-not-allowed text-[#999999]"
+                                : "text-[#444444] hover:text-[#111111] cursor-pointer"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                disabled={isDisabled}
+                                onChange={() =>
+                                  toggleFilter(selectedFinishes, setSelectedFinishes, finish.id)
+                                }
+                                className="w-3.5 h-3.5 rounded-none border-[#cccccc] text-[#111111] focus:ring-0 cursor-pointer disabled:cursor-not-allowed"
+                              />
+                              <span className="group-hover:translate-x-0.5 transition-transform">{finish.label}</span>
+                            </div>
+                            <span className="text-[10.5px] text-[#888888] font-mono">
+                              ({count})
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Filter Section 5: Color Tone */}
-            <div className="border border-[#747474]/20 rounded-md overflow-hidden bg-white shadow-xs">
-              <button
-                type="button"
-                onClick={() => setOpenSection((prev) => ({ ...prev, color: !prev.color }))}
-                className="w-full flex items-center justify-between p-3.5 bg-[#e8e4de] text-left text-xs font-sans font-bold uppercase tracking-wider text-[#241919] cursor-pointer"
-              >
-                <span>Color Tone</span>
-                {openSection.color ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </button>
+                {/* Filter 5: Tile / Slab Size */}
+                <div className="py-4">
+                  <button
+                    type="button"
+                    onClick={() => toggleSection("size")}
+                    className="w-full flex items-center justify-between text-left text-[11.5px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer"
+                  >
+                    <span>Tile & Slab Size</span>
+                    {openSections.size ? (
+                      <ChevronUp className="w-3.5 h-3.5" />
+                    ) : (
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    )}
+                  </button>
 
-              {openSection.color && (
-                <div className="p-4 space-y-2.5">
-                  {[
-                    "Midnight Black",
-                    "Gold Bronzite",
-                    "Autumn Copper",
-                    "California Gold",
-                    "Lime Yellow",
-                    "Lime Blue",
-                  ].map((col) => (
-                    <label key={col} className="flex items-center gap-2.5 text-xs text-[#454545] hover:text-[#241919] cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedColors.includes(col)}
-                        onChange={() => toggleFilter(selectedColors, setSelectedColors, col)}
-                        className="w-4 h-4 rounded border-[#747474]/30 text-[#241919] focus:ring-0 cursor-pointer"
-                      />
-                      <span>{col}</span>
-                    </label>
-                  ))}
+                  {openSections.size && (
+                    <div className="mt-3.5 space-y-2.5">
+                      {ARCHITECTURAL_SIZES.map((sz) => {
+                        const count = liveFacets.sizes[sz.id] || 0;
+                        const isSelected = selectedSizes.includes(sz.id);
+                        const isDisabled = count === 0 && !isSelected;
+
+                        return (
+                          <label
+                            key={sz.id}
+                            className={`flex items-center justify-between text-[12px] group ${
+                              isDisabled
+                                ? "opacity-35 cursor-not-allowed text-[#999999]"
+                                : "text-[#444444] hover:text-[#111111] cursor-pointer"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                disabled={isDisabled}
+                                onChange={() =>
+                                  toggleFilter(selectedSizes, setSelectedSizes, sz.id)
+                                }
+                                className="w-3.5 h-3.5 rounded-none border-[#cccccc] text-[#111111] focus:ring-0 cursor-pointer disabled:cursor-not-allowed"
+                              />
+                              <span className="group-hover:translate-x-0.5 transition-transform">{sz.label}</span>
+                            </div>
+                            <span className="text-[10.5px] text-[#888888] font-mono">
+                              ({count})
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-          </aside>
+                {/* Filter 6: Application Area */}
+                <div className="py-4">
+                  <button
+                    type="button"
+                    onClick={() => toggleSection("area")}
+                    className="w-full flex items-center justify-between text-left text-[11.5px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer"
+                  >
+                    <span>Application Area</span>
+                    {openSections.area ? (
+                      <ChevronUp className="w-3.5 h-3.5" />
+                    ) : (
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    )}
+                  </button>
 
-          {/* ── RIGHT PRODUCT GRID (9 Cols) ── */}
-          <main className="lg:col-span-9">
-            
+                  {openSections.area && (
+                    <div className="mt-3.5 space-y-2.5">
+                      {APPLICATION_AREAS.map((item) => {
+                        const count = liveFacets.areas[item.id] || 0;
+                        const isSelected = selectedAreas.includes(item.id);
+                        const isDisabled = count === 0 && !isSelected;
+
+                        return (
+                          <label
+                            key={item.id}
+                            className={`flex items-center justify-between text-[12px] group ${
+                              isDisabled
+                                ? "opacity-35 cursor-not-allowed text-[#999999]"
+                                : "text-[#444444] hover:text-[#111111] cursor-pointer"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                disabled={isDisabled}
+                                onChange={() =>
+                                  toggleFilter(selectedAreas, setSelectedAreas, item.id)
+                                }
+                                className="w-3.5 h-3.5 rounded-none border-[#cccccc] text-[#111111] focus:ring-0 cursor-pointer disabled:cursor-not-allowed"
+                              />
+                              <span className="group-hover:translate-x-0.5 transition-transform">{item.label}</span>
+                            </div>
+                            <span className="text-[10.5px] text-[#888888] font-mono">
+                              ({count})
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+              </div>
+
+              {/* ── BOTTOM RESET BUTTON (EXACT MATCH TO SCREENSHOT) ── */}
+              <div className="pt-6">
+                <button
+                  type="button"
+                  onClick={clearAllFilters}
+                  className="w-full py-2.5 px-4 bg-transparent hover:bg-[#111111] text-[#111111] hover:text-white border border-[#111111] rounded-none text-[11px] font-bold uppercase tracking-widest transition-colors cursor-pointer text-center"
+                >
+                  RESET
+                </button>
+              </div>
+
+            </aside>
+          )}
+
+          {/* ── RIGHT PRODUCT GRID (BORDER-GRID AESTHETIC LIKE SCREENSHOT) ── */}
+          <main className="flex-1 min-w-0">
             {filteredProducts.length === 0 ? (
-              <div className="text-center py-20 bg-[#f1f5f9] border border-[#747474]/15 rounded-lg p-8">
-                <p className="text-base font-sans text-[#241919] mb-3">
-                  No matching natural stone tiles found for your selected filters.
+              <div className="text-center py-24 px-6 border border-[#e5e5e5] bg-[#fafafa]">
+                <Sparkles className="w-8 h-8 mx-auto text-[#71717a] mb-3 stroke-[1.5]" />
+                <h3 className="text-base font-bold uppercase tracking-wider text-[#111111] mb-2">
+                  No Matching Stones Found
+                </h3>
+                <p className="text-xs text-[#71717a] max-w-md mx-auto mb-6">
+                  Try unchecking some of your active filters or clear all filters to browse our complete architectural stone collection.
                 </p>
                 <button
                   type="button"
                   onClick={clearAllFilters}
-                  className="px-6 py-2.5 bg-[#241919] hover:bg-[#3e352a] text-white rounded-md text-xs font-sans font-medium cursor-pointer"
+                  className="px-6 py-2.5 bg-[#111111] hover:bg-black text-white text-[11px] font-bold uppercase tracking-wider rounded-none cursor-pointer"
                 >
                   Reset All Filters
                 </button>
               </div>
             ) : (
               <div
-                className={`grid gap-6 ${
-                  viewMode === "grid3"
-                    ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"
-                    : viewMode === "grid2"
-                    ? "grid-cols-1 sm:grid-cols-2"
-                    : "grid-cols-1"
+                className={`grid border-t border-l border-[#e5e5e5] ${
+                  isFilterOpen
+                    ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+                    : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
                 }`}
               >
                 {filteredProducts.map((product) => {
@@ -573,87 +1312,106 @@ function ProductsContent() {
                   return (
                     <div
                       key={product.id}
-                      className="border border-[#747474]/20 rounded-2xl overflow-hidden bg-white shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
+                      className="border-r border-b border-[#e5e5e5] bg-white group flex flex-col justify-between transition-colors hover:border-[#111111]/40 relative"
                     >
-                      {/* Image Frame with Link to Product Detail Page */}
-                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#141619]">
-                        <Link href={`/products/${product.id}`} className="block w-full h-full">
-                          {product.image ? (
-                            <img
-                              src={product.image}
-                              alt={product.name}
-                              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                            />
-                          ) : (
-                            <div
-                              className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-105"
-                              style={{ background: product.gradient }}
-                            />
-                          )}
-                        </Link>
+                      {/* Top Action Tags & Badge Bar */}
+                      <div className="relative aspect-[4/3] sm:aspect-square w-full overflow-hidden bg-[#f9f9f9]">
 
-                        {/* Top-Left Wishlist Heart Icon */}
+                        {/* Top-Left Wishlist Heart Toggle */}
                         <button
                           type="button"
-                          onClick={() => toggleWishlist(product.id)}
-                          className="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/85 hover:bg-white flex items-center justify-center text-[#241919] shadow-sm transition-all cursor-pointer z-10"
+                          onClick={(e) => toggleWishlist(product.id, e)}
+                          className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10 w-7 h-7 rounded-full bg-white/80 hover:bg-white flex items-center justify-center text-[#111111] shadow-2xs transition-all cursor-pointer"
                           title="Save to shortlist"
                         >
                           <Heart
-                            className={`w-4 h-4 transition-colors ${
-                              isWishlisted ? "fill-[#d94e34] text-[#d94e34]" : "text-[#747474]"
+                            className={`w-3.5 h-3.5 transition-colors ${
+                              isWishlisted
+                                ? "fill-[#d94e34] text-[#d94e34]"
+                                : "text-[#71717a] hover:text-[#111111]"
                             }`}
                           />
                         </button>
 
-                        {/* Category Badge */}
-                        <div className="absolute top-3 right-3 px-2.5 py-1 bg-black/60 backdrop-blur-xs rounded-lg text-[9.5px] font-mono uppercase tracking-wider text-white">
-                          {product.category}
+                        {/* Product Image Link with 2-second hover rotation for multi-image products */}
+                        <Link
+                          href={`/products/${product.id}`}
+                          className="block w-full h-full p-4 sm:p-5"
+                        >
+                          <ProductCardImage
+                            images={product.gallery && product.gallery.length > 0 ? product.gallery : [product.image]}
+                            alt={product.name}
+                            intervalMs={2000}
+                          />
+                        </Link>
+
+                        {/* Quick View Button Hover Overlay */}
+                        <div className="absolute inset-x-2 bottom-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setQuickViewProduct(product)}
+                            className="flex-1 py-1.5 bg-white/95 hover:bg-white text-[#111111] text-[10px] font-bold uppercase tracking-wider border border-[#e5e5e5] shadow-xs flex items-center justify-center gap-1 cursor-pointer transition-colors"
+                          >
+                            <Eye className="w-3 h-3" />
+                            <span>Quick View</span>
+                          </button>
+                          <Link
+                            href={`/request-sample?stone=${product.id}`}
+                            className="flex-1 py-1.5 bg-[#111111] hover:bg-black text-white text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center justify-center gap-1 cursor-pointer transition-colors text-center"
+                          >
+                            <span>Sample</span>
+                          </Link>
                         </div>
+
                       </div>
 
-                      {/* Product Content Details */}
-                      <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                      {/* Product Metadata & Information */}
+                      <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between bg-white border-t border-[#f0f0f0]">
                         <div>
-                          {/* Company / Origin Tag */}
-                          <div className="flex items-center justify-between text-[10.5px] font-mono uppercase tracking-wider mb-1.5">
-                            <span className="text-[#c85a32] font-semibold">{product.company}</span>
-                            <span className="text-[#747474] text-[10px]">{product.origin.split(",")[0]}</span>
+                          {/* Product Title */}
+                          <Link href={`/products/${product.id}`}>
+                            <h2 className="text-[13px] sm:text-[14px] font-semibold text-[#111111] leading-snug hover:underline line-clamp-1">
+                              {product.name}
+                            </h2>
+                          </Link>
+
+                          {/* 5-Star Rating Row (Exact match to reference stars) */}
+                          <div className="flex items-center gap-1 mt-1 mb-1.5">
+                            <div className="flex text-[#111111]">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className="w-3 h-3 fill-current text-[#111111]"
+                                />
+                              ))}
+                            </div>
+                            <span className="text-[10px] font-mono text-[#71717a] ml-1">
+                              ({product.reviewCount || 24})
+                            </span>
                           </div>
 
-                          {/* Stone Name (Clickable link) */}
-                          <Link href={`/products/${product.id}`}>
-                            <h3 className="font-sans font-bold text-[16px] sm:text-[17px] text-[#241919] leading-snug group-hover:text-[#c85a32] transition-colors">
-                              {product.name}
-                            </h3>
-                          </Link>
+                          {/* Badge tag under rating */}
+                          {product.badge && (
+                            <div className="mt-1 mb-0.5">
+                              <span className="inline-block px-1.5 py-0.5 bg-black text-white text-[9px] font-mono uppercase tracking-wider font-semibold rounded-none">
+                                {product.badge}
+                              </span>
+                            </div>
+                          )}
                         </div>
 
-                        {/* Action Buttons: View Details + Sample + Enquire */}
-                        <div className="space-y-2 pt-1">
+                        {/* Bottom Direct Links */}
+                        <div className="mt-3 pt-2.5 border-t border-[#f4f4f5] flex items-center justify-between text-[10.5px] font-mono uppercase tracking-wider text-[#555555]">
+                          <span className="truncate max-w-[130px]">{product.company}</span>
                           <Link
                             href={`/products/${product.id}`}
-                            className="w-full text-center py-2.5 px-3 bg-[#241919] hover:bg-[#c85a32] text-white rounded-xl text-xs font-sans font-semibold uppercase tracking-wider transition-colors block shadow-2xs hover:shadow-xs"
+                            className="inline-flex items-center gap-0.5 text-[#111111] font-semibold hover:underline"
                           >
-                            View Stone Details →
+                            <span>Specs</span>
+                            <ArrowUpRight className="w-3 h-3" />
                           </Link>
-
-                          <div className="flex items-center gap-2">
-                            <Link
-                              href={`/request-sample?stone=${product.id}`}
-                              className="flex-1 text-center py-2 px-2.5 bg-[#faf8f5] hover:bg-[#f0ebe1] border border-[#747474]/20 text-[#241919] rounded-lg text-[10px] font-mono uppercase tracking-wider transition-colors"
-                            >
-                              Sample
-                            </Link>
-
-                            <Link
-                              href="/#contact"
-                              className="flex-1 text-center py-2 px-2.5 bg-[#faf8f5] hover:bg-[#f0ebe1] border border-[#747474]/20 text-[#241919] rounded-lg text-[10px] font-mono uppercase tracking-wider transition-colors"
-                            >
-                              Enquire
-                            </Link>
-                          </div>
                         </div>
+
                       </div>
 
                     </div>
@@ -661,11 +1419,615 @@ function ProductsContent() {
                 })}
               </div>
             )}
-
           </main>
 
         </div>
-      </div>
+      </section>
+
+      {/* ── 5. MOBILE FILTER DRAWER (FOR PHONES & SMALL TABLETS) ── */}
+      <AnimatePresence>
+        {mobileFilterOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden flex">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileFilterOpen(false)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-2xs"
+            />
+
+            {/* Drawer */}
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "tween", duration: 0.25 }}
+              className="relative w-full max-w-xs sm:max-w-sm bg-white h-full overflow-y-auto z-10 flex flex-col justify-between p-6 shadow-xl"
+            >
+              <div>
+                <div className="flex items-center justify-between pb-4 border-b border-[#e5e5e5]">
+                  <h2 className="text-sm font-bold uppercase tracking-wider text-[#111111]">
+                    Filters ({activeChips.length})
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => setMobileFilterOpen(false)}
+                    className="p-1 text-[#71717a] hover:text-[#111111] cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Mobile Filter Sections */}
+                <div className="divide-y divide-[#e5e5e5] py-2">
+                  
+                  {/* Category */}
+                  <div className="py-3">
+                    <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
+                      Category
+                    </span>
+                    <div className="space-y-2">
+                      {[
+                        { key: "slate", label: "Slate Stone (incl. CNC)", count: liveFacets.categories.slate || 88 },
+                        { key: "applications", label: "Applications (Pavers & Cladding)", count: liveFacets.categories.applications || 2 },
+                        { key: "limestone", label: "Limestone", count: liveFacets.categories.limestone || 2 },
+                        { key: "south-indian-granite", label: "South Indian Granite", count: liveFacets.categories["south-indian-granite"] || 3 },
+                        { key: "north-indian-granite", label: "North Indian Granite", count: liveFacets.categories["north-indian-granite"] || 2 },
+                      ].map((item) => (
+                        <label key={item.key} className="flex items-center justify-between text-xs text-[#444444]">
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={selectedCategories.includes(item.key)}
+                              onChange={() =>
+                                toggleFilter(selectedCategories, setSelectedCategories, item.key)
+                              }
+                              className="w-4 h-4 rounded-none border-[#cccccc] text-[#111111]"
+                            />
+                            <span>{item.label}</span>
+                          </div>
+                          <span className="text-[10px] text-[#888888] font-mono">
+                            ({item.count})
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Slate Stone Variety (Official 6 Types) */}
+                  {(selectedCategories.length === 0 || selectedCategories.includes("slate")) && (
+                    <div className="py-3">
+                      <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
+                        Slate Stone Variety
+                      </span>
+                      <div className="space-y-2">
+                        {SLATE_STONE_VARIETIES.map((v) => (
+                          <label key={v.id} className="flex items-center justify-between text-xs text-[#444444]">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={selectedSlateVarieties.includes(v.id)}
+                                onChange={() =>
+                                  toggleFilter(selectedSlateVarieties, setSelectedSlateVarieties, v.id)
+                                }
+                                className="w-4 h-4 rounded-none border-[#cccccc] text-[#111111]"
+                              />
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full border border-black/20 shrink-0"
+                                  style={{
+                                    background: v.hex.startsWith("linear") ? v.hex : undefined,
+                                    backgroundColor: !v.hex.startsWith("linear") ? v.hex : undefined,
+                                  }}
+                                />
+                                <span className="font-medium">{v.label}</span>
+                              </div>
+                            </div>
+                            <span className="text-[10px] text-[#888888] font-mono">
+                              ({liveFacets.slateVarieties?.[v.id] || 0})
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Application Subtypes (Official 5 Types) */}
+                  {(selectedCategories.length === 0 || selectedCategories.includes("applications")) && (
+                    <div className="py-3">
+                      <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
+                        Application Type
+                      </span>
+                      <div className="space-y-2">
+                        {APPLICATION_SUBTYPES.map((s) => (
+                          <label key={s.id} className="flex items-center justify-between text-xs text-[#444444]">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={selectedApplicationSubtypes.includes(s.id)}
+                                onChange={() =>
+                                  toggleFilter(selectedApplicationSubtypes, setSelectedApplicationSubtypes, s.id)
+                                }
+                                className="w-4 h-4 rounded-none border-[#cccccc] text-[#111111]"
+                              />
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full border border-black/20 shrink-0"
+                                  style={{
+                                    background: s.hex,
+                                  }}
+                                />
+                                <span className="font-medium">{s.label}</span>
+                              </div>
+                            </div>
+                            <span className="text-[10px] text-[#888888] font-mono">
+                              ({liveFacets.applicationSubtypes?.[s.id] || 0})
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Limestone Subtypes (Official 6 Types) */}
+                  {(selectedCategories.length === 0 || selectedCategories.includes("limestone")) && (
+                    <div className="py-3">
+                      <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
+                        Limestone Variety
+                      </span>
+                      <div className="space-y-2">
+                        {LIMESTONE_SUBTYPES.map((l) => (
+                          <label key={l.id} className="flex items-center justify-between text-xs text-[#444444]">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={selectedLimestoneSubtypes.includes(l.id)}
+                                onChange={() =>
+                                  toggleFilter(selectedLimestoneSubtypes, setSelectedLimestoneSubtypes, l.id)
+                                }
+                                className="w-4 h-4 rounded-none border-[#cccccc] text-[#111111]"
+                              />
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full border border-black/20 shrink-0"
+                                  style={{
+                                    background: l.hex,
+                                  }}
+                                />
+                                <span className="font-medium">{l.label}</span>
+                              </div>
+                            </div>
+                            <span className="text-[10px] text-[#888888] font-mono">
+                              ({liveFacets.limestoneSubtypes?.[l.id] || 0})
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* South Indian Granite (Official 13 Types) */}
+                  {(selectedCategories.length === 0 || selectedCategories.includes("south-indian-granite")) && (
+                    <div className="py-3">
+                      <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
+                        South Indian Granite
+                      </span>
+                      <div className="space-y-2">
+                        {SOUTH_INDIAN_GRANITE_SUBTYPES.map((sg) => (
+                          <label key={sg.id} className="flex items-center justify-between text-xs text-[#444444]">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={selectedSouthGraniteSubtypes.includes(sg.id)}
+                                onChange={() =>
+                                  toggleFilter(selectedSouthGraniteSubtypes, setSelectedSouthGraniteSubtypes, sg.id)
+                                }
+                                className="w-4 h-4 rounded-none border-[#cccccc] text-[#111111]"
+                              />
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full border border-black/20 shrink-0"
+                                  style={{
+                                    background: sg.hex,
+                                  }}
+                                />
+                                <span className="font-medium">{sg.label}</span>
+                              </div>
+                            </div>
+                            <span className="text-[10px] text-[#888888] font-mono">
+                              ({liveFacets.southGraniteSubtypes?.[sg.id] || 0})
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* North Indian Granite (Official 2 Types) */}
+                  {(selectedCategories.length === 0 || selectedCategories.includes("north-indian-granite")) && (
+                    <div className="py-3">
+                      <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
+                        North Indian Granite
+                      </span>
+                      <div className="space-y-2">
+                        {NORTH_INDIAN_GRANITE_SUBTYPES.map((ng) => (
+                          <label key={ng.id} className="flex items-center justify-between text-xs text-[#444444]">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={selectedNorthGraniteSubtypes.includes(ng.id)}
+                                onChange={() =>
+                                  toggleFilter(selectedNorthGraniteSubtypes, setSelectedNorthGraniteSubtypes, ng.id)
+                                }
+                                className="w-4 h-4 rounded-none border-[#cccccc] text-[#111111]"
+                              />
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full border border-black/20 shrink-0"
+                                  style={{
+                                    background: ng.hex,
+                                  }}
+                                />
+                                <span className="font-medium">{ng.label}</span>
+                              </div>
+                            </div>
+                            <span className="text-[10px] text-[#888888] font-mono">
+                              ({liveFacets.northGraniteSubtypes?.[ng.id] || 0})
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Quarry Division */}
+                  <div className="py-3">
+                    <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
+                      Quarry Division
+                    </span>
+                    <div className="space-y-2">
+                      {[
+                        { key: "Pavan Impex", label: "Pavan Impex (Slates & CNC)", count: liveFacets.companies["Pavan Impex"] || 0 },
+                        { key: "Sai Balaji Impex", label: "Sai Balaji (Limestones)", count: liveFacets.companies["Sai Balaji Impex"] || 0 },
+                        { key: "Pavan Granite", label: "Pavan Granite (Black Galaxy)", count: liveFacets.companies["Pavan Granite"] || 0 },
+                        { key: "Pavan Stones World", label: "Pavan Stones World (Exotics)", count: liveFacets.companies["Pavan Stones World"] || 0 },
+                      ].map((item) => {
+                        const isSelected = selectedCompanies.includes(item.key);
+                        const isDisabled = item.count === 0 && !isSelected;
+
+                        return (
+                          <label
+                            key={item.key}
+                            className={`flex items-center justify-between text-xs ${
+                              isDisabled ? "opacity-35 text-[#999999]" : "text-[#444444]"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                disabled={isDisabled}
+                                onChange={() =>
+                                  toggleFilter(selectedCompanies, setSelectedCompanies, item.key)
+                                }
+                                className="w-4 h-4 rounded-none border-[#cccccc] text-[#111111]"
+                              />
+                              <span className="truncate max-w-[180px]">{item.label}</span>
+                            </div>
+                            <span className="text-[10px] text-[#888888] font-mono">
+                              ({item.count})
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Color Tone */}
+                  <div className="py-3">
+                    <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
+                      Color Tone
+                    </span>
+                    <div className="space-y-2">
+                      {ARCHITECTURAL_COLORS.map((col) => {
+                        const count = liveFacets.colors[col.id] || 0;
+                        const isSelected = selectedColors.includes(col.id);
+                        const isDisabled = count === 0 && !isSelected;
+
+                        return (
+                          <label
+                            key={col.id}
+                            className={`flex items-center justify-between text-xs ${
+                              isDisabled ? "opacity-35 text-[#999999]" : "text-[#444444]"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                disabled={isDisabled}
+                                onChange={() =>
+                                  toggleFilter(selectedColors, setSelectedColors, col.id)
+                                }
+                                className="w-4 h-4 rounded-none border-[#cccccc] text-[#111111]"
+                              />
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full border border-black/20 shrink-0"
+                                  style={{
+                                    background: col.hex.startsWith("linear") ? col.hex : undefined,
+                                    backgroundColor: !col.hex.startsWith("linear") ? col.hex : undefined,
+                                  }}
+                                />
+                                <span>{col.label}</span>
+                              </div>
+                            </div>
+                            <span className="text-[10px] text-[#888888] font-mono">
+                              ({count})
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Surface Finish */}
+                  <div className="py-3">
+                    <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
+                      Surface Finish
+                    </span>
+                    <div className="space-y-2">
+                      {ARCHITECTURAL_FINISHES.map((fin) => {
+                        const count = liveFacets.finishes[fin.id] || 0;
+                        const isSelected = selectedFinishes.includes(fin.id);
+                        const isDisabled = count === 0 && !isSelected;
+
+                        return (
+                          <label
+                            key={fin.id}
+                            className={`flex items-center justify-between text-xs ${
+                              isDisabled ? "opacity-35 text-[#999999]" : "text-[#444444]"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                disabled={isDisabled}
+                                onChange={() =>
+                                  toggleFilter(selectedFinishes, setSelectedFinishes, fin.id)
+                                }
+                                className="w-4 h-4 rounded-none border-[#cccccc] text-[#111111]"
+                              />
+                              <span>{fin.label}</span>
+                            </div>
+                            <span className="text-[10px] text-[#888888] font-mono">
+                              ({count})
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Tile & Slab Size */}
+                  <div className="py-3">
+                    <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
+                      Tile & Slab Size
+                    </span>
+                    <div className="space-y-2">
+                      {ARCHITECTURAL_SIZES.map((sz) => {
+                        const count = liveFacets.sizes[sz.id] || 0;
+                        const isSelected = selectedSizes.includes(sz.id);
+                        const isDisabled = count === 0 && !isSelected;
+
+                        return (
+                          <label
+                            key={sz.id}
+                            className={`flex items-center justify-between text-xs ${
+                              isDisabled ? "opacity-35 text-[#999999]" : "text-[#444444]"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                disabled={isDisabled}
+                                onChange={() =>
+                                  toggleFilter(selectedSizes, setSelectedSizes, sz.id)
+                                }
+                                className="w-4 h-4 rounded-none border-[#cccccc] text-[#111111]"
+                              />
+                              <span>{sz.label}</span>
+                            </div>
+                            <span className="text-[10px] text-[#888888] font-mono">
+                              ({count})
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Application Area */}
+                  <div className="py-3">
+                    <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
+                      Application Area
+                    </span>
+                    <div className="space-y-2">
+                      {APPLICATION_AREAS.map((item) => {
+                        const count = liveFacets.areas[item.id] || 0;
+                        const isSelected = selectedAreas.includes(item.id);
+                        const isDisabled = count === 0 && !isSelected;
+
+                        return (
+                          <label
+                            key={item.id}
+                            className={`flex items-center justify-between text-xs ${
+                              isDisabled ? "opacity-35 text-[#999999]" : "text-[#444444]"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                disabled={isDisabled}
+                                onChange={() =>
+                                  toggleFilter(selectedAreas, setSelectedAreas, item.id)
+                                }
+                                className="w-4 h-4 rounded-none border-[#cccccc] text-[#111111]"
+                              />
+                              <span>{item.label}</span>
+                            </div>
+                            <span className="text-[10px] text-[#888888] font-mono">
+                              ({count})
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* Mobile Drawer Bottom Actions */}
+              <div className="pt-4 border-t border-[#e5e5e5] space-y-2">
+                <button
+                  type="button"
+                  onClick={() => setMobileFilterOpen(false)}
+                  className="w-full py-3 bg-[#111111] text-white text-xs font-bold uppercase tracking-wider"
+                >
+                  Show {filteredProducts.length} Results
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    clearAllFilters();
+                    setMobileFilterOpen(false);
+                  }}
+                  className="w-full py-2.5 bg-transparent border border-[#111111] text-[#111111] text-xs font-bold uppercase tracking-wider"
+                >
+                  Reset Filters
+                </button>
+              </div>
+
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── 6. QUICK VIEW MODAL (INSPECT SPECIMEN) ── */}
+      <AnimatePresence>
+        {quickViewProduct && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setQuickViewProduct(null)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-xs"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative w-full max-w-3xl bg-white border border-[#e5e5e5] shadow-2xl z-10 overflow-hidden"
+            >
+              <button
+                type="button"
+                onClick={() => setQuickViewProduct(null)}
+                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-[#111111] border border-[#e5e5e5] cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <div className="grid grid-cols-1 md:grid-cols-2">
+                {/* Image */}
+                <div className="relative aspect-square bg-[#f5f5f5]">
+                  <img
+                    src={quickViewProduct.image}
+                    alt={quickViewProduct.name}
+                    className="w-full h-full object-cover"
+                  />
+                  {quickViewProduct.badge && (
+                    <div className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[9px] font-mono uppercase tracking-wider font-semibold">
+                      {quickViewProduct.badge}
+                    </div>
+                  )}
+                </div>
+
+                {/* Details */}
+                <div className="p-6 sm:p-8 flex flex-col justify-between">
+                  <div>
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-[#71717a] mb-1">
+                      {quickViewProduct.company} • {quickViewProduct.origin.split(",")[0]}
+                    </div>
+                    <h3 className="text-xl font-bold text-[#111111] leading-tight mb-2">
+                      {quickViewProduct.name}
+                    </h3>
+                    
+                    {/* Star Rating */}
+                    <div className="flex items-center gap-1 mb-3">
+                      <div className="flex text-[#111111]">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                        ))}
+                      </div>
+                      <span className="text-xs font-mono text-[#71717a] ml-1">
+                        {quickViewProduct.rating || 4.9} ({quickViewProduct.reviewCount || 24} reviews)
+                      </span>
+                    </div>
+
+                    <div className="text-lg font-bold text-[#111111] mb-4">
+                      {quickViewProduct.price || "Direct Quarry Pricing"}
+                    </div>
+
+                    <p className="text-xs text-[#555555] leading-relaxed line-clamp-4 mb-4">
+                      {quickViewProduct.description}
+                    </p>
+
+                    {/* Spec Highlights */}
+                    <div className="border-t border-b border-[#e5e5e5] py-3 my-3 space-y-1.5 text-[11px]">
+                      <div className="flex justify-between">
+                        <span className="text-[#71717a]">Primary Finish:</span>
+                        <span className="font-semibold text-[#111111]">{quickViewProduct.finish}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#71717a]">Calibrated Thickness:</span>
+                        <span className="font-semibold text-[#111111]">{quickViewProduct.thickness}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#71717a]">Quarry Type:</span>
+                        <span className="font-semibold text-[#111111]">{quickViewProduct.quarryType.split("(")[0]}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="space-y-2 pt-2">
+                    <Link
+                      href={`/products/${quickViewProduct.id}`}
+                      className="w-full text-center py-2.5 bg-[#111111] hover:bg-black text-white text-xs font-bold uppercase tracking-wider block transition-colors"
+                    >
+                      View Complete Technical Dossier
+                    </Link>
+                    <Link
+                      href={`/request-sample?stone=${quickViewProduct.id}`}
+                      className="w-full text-center py-2 bg-transparent hover:bg-[#f5f5f5] text-[#111111] border border-[#111111] text-xs font-bold uppercase tracking-wider block transition-colors"
+                    >
+                      Order Physical Quarry Sample Box
+                    </Link>
+                  </div>
+
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
@@ -673,7 +2035,13 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-white pt-32 text-center text-sm font-mono text-[#747474]">Loading Stone Catalog...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-white pt-32 text-center text-xs font-mono uppercase tracking-widest text-[#71717a]">
+          Loading Stone Collection...
+        </div>
+      }
+    >
       <ProductsContent />
     </Suspense>
   );

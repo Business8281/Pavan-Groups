@@ -3,13 +3,13 @@ import { motion } from "framer-motion";
 
 const testimonials = [
   {
-    quote: "Pavan Groups delivered 340 tonnes of Absolute Black Granite to our Singapore site. Every slab matched the approved sample exactly — exceptional consistency.",
+    quote: "Pavan Stones Group delivered 340 tonnes of Absolute Black Granite to our Singapore site. Every slab matched the approved sample exactly — exceptional consistency.",
     name: "Rajiv Menon",
     role: "Principal, Menon Associates Architects",
     country: "Singapore",
   },
   {
-    quote: "We have worked with stone suppliers on four continents. Pavan Groups stands alone in their combination of quality and logistics capability. They handle it all.",
+    quote: "We have worked with stone suppliers on four continents. Pavan Stones Group stands alone in their combination of quality and logistics capability. They handle it all.",
     name: "Elena Vasquez",
     role: "Procurement Director, Meridian Construction",
     country: "Spain",

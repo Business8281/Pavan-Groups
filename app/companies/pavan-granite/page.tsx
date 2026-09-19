@@ -3,6 +3,7 @@ import { use, useState, useRef } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { ArrowRight } from "@animateicons/react/lucide";
 import RangeCarousel from "@/components/RangeCarousel";
 import DimensionalMatrix from "@/components/DimensionalMatrix";
 import CompanyEditorialShowcase from "@/components/CompanyEditorialShowcase";
@@ -519,6 +520,95 @@ const COMPANIES_DATABASE: Record<string, CompanyData> = {
       avgWeightPerSqm20mm: 60, // 60 kg per sqm for 20mm
     },
   },
+
+  "pavan-stones-world": {
+    slug: "pavan-stones-world",
+    num: "04",
+    code: "PSW-WORLD",
+    name: "Pavan Stones World",
+    tagline: "Architectural Exotic Stones — Rare Quartzites, Marbles & Artifacts",
+    divisionName: "Global Architectural Stone & Curation Division",
+    speciality: "Exotic Quartzite, Calcitic Marble & Bespoke Murals",
+    established: "2008",
+    location: "Global Architectural Hub, Andhra Pradesh, India",
+    coordinates: "15.6521° N · 79.4312° E · GLOBAL HUB",
+    accentColor: "#722424",
+    overview: [
+      "Pavan Stones World curates the world's most breathtaking exotic stones, crystalline quartzites, legendary calcitic marbles, and bespoke stone murals for visionary architects and landmark projects worldwide."
+    ],
+    geologyStory: {
+      title: "Crystalline Metamorphism & Global Mineral Reserves",
+      description:
+        "Specializing in high-pressure metamorphic quartzites and pristine calcitic marbles, Pavan Stones World bridges sovereign quarry belts with visionary architecture.",
+      points: [
+        "Metamorphic quartz formations boasting 7.0+ Mohs hardness.",
+        "Natural crystalline light-translucency engineered for backlit installations.",
+        "100% natural mineral provenance — zero artificial dye infill.",
+        "Precision robotic 5-axis waterjet cutting and laser-guided digital bookmatching.",
+      ],
+    },
+    finishesGuide: [
+      {
+        name: "Diamond Mirror Polish",
+        texture: "High-gloss crystalline reflective surface enhancing rich mineral veins",
+        reflectivity: "95+ Diamond Gloss",
+        slipRating: "Interior Architectural",
+        bestFor: "Backlit Reception Walls, Kitchen Islands & Master Bath Suites",
+        icon: "✦",
+      },
+      {
+        name: "Leathered Satin",
+        texture: "Organic tactile relief following the natural mineral contours of the stone",
+        reflectivity: "Silky Velvet Low-Sheen",
+        slipRating: "R10 (Comfort Non-Slip)",
+        bestFor: "Contemporary Living Spaces, Vanity Tops & Bar Counters",
+        icon: "◈",
+      },
+    ],
+    products: [
+      {
+        id: "emerald-green-quartzite",
+        name: "Exotic Emerald Green Quartzite Slabs",
+        colors: ["Vibrant Emerald", "Viridian Green", "Golden Veins"],
+        description: "Precious architectural exotic quartzite with crystalline luminescence and undulating viridian veins.",
+        finishes: ["Diamond Mirror Polish", "Leathered Satin", "Honed Matte"],
+        gradient: "linear-gradient(135deg, #062c24 0%, #0d5c4a 50%, #031c17 100%)",
+        recommendedUse: "Backlit reception walls, waterfall kitchen islands, and monumental bathroom suites.",
+        slipRating: "R10",
+        heatResistance: "Heat & Acid Proof",
+      },
+    ],
+    specifications: {
+      thicknessesMetric: ["18mm", "20mm", "25mm", "30mm"],
+      thicknessesImperial: ["3/4 in", "13/16 in", "1 in", "1 3/16 in"],
+      standardSizesMetric: ["Jumbo Gangsaw Slabs (3200x1900 mm)", "Bookmatched Pairs", "1200 x 600 mm"],
+      standardSizesImperial: ["10x6 ft Jumbo Slabs", "Bookmatched Pairs", "4x2 ft Slabs"],
+      densityMetric: "2,710 kg/m³",
+      densityImperial: "169.2 lbs/ft³",
+      waterAbsorption: "< 0.06% (Impervious Standard)",
+      compressiveStrengthMetric: "230 MPa",
+      compressiveStrengthImperial: "33,360 psi",
+      exportStandards: "ISO 9001:2015 · Spectroscopic Verification & Laser Vein Alignment",
+    },
+    applications: [
+      {
+        title: "Backlit Translucent Quartzite Portals",
+        category: "Architectural Radiance",
+        desc: "Glowing feature walls and reception desks with custom dimmable LED matrices.",
+      },
+      {
+        title: "Waterfall Culinary Islands & Bar Tops",
+        category: "Culinary Luxury",
+        desc: "Scratch-proof, acid-proof, and heat-resistant monolithic surfaces.",
+      },
+    ],
+    packaging: {
+      crateType: "Armored Heavy-Duty A-Frames and Custom Fumigated Timber Crates",
+      safetyFeatures: ["High-density EPE foam encasement", "Plastic interleafing between slabs", "Steel band tensioning"],
+      capacity: "20-Foot FCL Container (Approx. 420 to 460 sqm of 20mm slabs)",
+      avgWeightPerSqm20mm: 56,
+    },
+  },
 };
 
 export default function CompanyDedicatedPage() {
@@ -591,6 +681,81 @@ export default function CompanyDedicatedPage() {
       {/* ── CONTENT BELOW: ROLLS OVER & COVERS HERO ON SCROLL ── */}
       <div className="relative z-10 bg-white shadow-[0_-30px_70px_-15px_rgba(0,0,0,0.35)]">
         
+        {/* ── ABOUT SECTION (LEFT IMAGE, RIGHT TEXT & HEADING) ── */}
+        <section id="about" className="py-16 md:py-24 px-6 md:px-14 lg:px-20 bg-white border-b border-[#747474]/15">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            
+            {/* Left: Image */}
+            <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#181615] rounded-none shadow-lg border border-[#747474]/20">
+              <img
+                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85"
+                alt="Pavan Granite Monumental Architecture"
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Right: Heading & Content */}
+            <div className="space-y-6">
+              <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-[#241919] tracking-tight">
+                What is this about?
+              </h2>
+
+              <div className="space-y-4 text-[15px] sm:text-[16px] leading-[1.8] text-[#3a3a3a] font-light">
+                <p>
+                  Specializing in monumental architectural stone,<br className="hidden sm:inline" />
+                  the dedicated team at{" "}
+                  <span className="relative inline-block whitespace-nowrap mx-1.5">
+                    <span className="relative z-10 font-semibold text-[#140d0a]">Pavan Granite</span>
+                    <svg
+                      viewBox="0 0 405 195"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      preserveAspectRatio="none"
+                      className="absolute -inset-x-2.5 -top-2 -bottom-1 w-[calc(100%+20px)] h-[calc(100%+12px)] pointer-events-none overflow-visible"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M 168.0,31.0 C 156.8,31.0 145.5,30.2 123.0,31.0 C 100.5,31.8 98.0,30.5 78.0,34.0 C 58.0,37.5 56.2,37.2 43.0,45.0 C 29.8,52.8 31.0,53.2 25.0,65.0 C 19.0,76.8 19.0,77.0 19.0,92.0 C 19.0,107.0 19.5,110.8 25.0,125.0 C 30.5,139.2 29.0,139.0 41.0,149.0 C 53.0,159.0 52.5,158.5 73.0,165.0 C 93.5,171.5 91.0,170.8 123.0,175.0 C 155.0,179.2 163.5,181.0 201.0,182.0 C 238.5,183.0 240.0,182.8 273.0,179.0 C 306.0,175.2 308.0,175.5 333.0,167.0 C 358.0,158.5 358.5,162.5 373.0,145.0 C 387.5,127.5 390.5,119.0 391.0,97.0 C 391.5,75.0 388.2,73.2 375.0,57.0 C 361.8,40.8 362.2,42.5 338.0,32.0 C 313.8,21.5 311.8,20.5 278.0,15.0 C 244.2,9.5 241.8,10.2 203.0,10.0 C 164.2,9.8 158.0,10.2 123.0,14.0 C 88.0,17.8 85.5,18.2 63.0,25.0 C 40.5,31.8 44.2,31.8 33.0,41.0 C 21.8,50.2 23.5,53.0 18.0,62.0 C 12.5,71.0 13.0,71.2 11.0,77.0 C 9.0,82.8 10.2,83.0 10.0,85.0"
+                        stroke="#ff5500"
+                        strokeWidth="2.2"
+                        vectorEffect="non-scaling-stroke"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>{" "}
+                  delivers quarry-direct<br className="hidden sm:inline" />
+                  premium gangsaw granite slabs, calibrated tiles, and precision countertops to commercial developments and luxury residences across 40+ countries.
+                </p>
+
+                <p>
+                  Operating primary processing plants near India&apos;s most celebrated quarry reserves, including Chimakurthy Black Galaxy and Steel Grey belts, we utilize 24-blade multi-wire saws and computerized Italian polishing lines to achieve flawless mirror surfaces with 95+ gloss depth.
+                </p>
+
+                <p>
+                  With complete export infrastructure — including custom edge profiling, slab-by-slab photologging, heavy-duty A-frame timber crating, and direct ocean container logistics — we supply global specifiers with consistent thickness and structural density.
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-[#747474]/15 grid grid-cols-3 gap-4">
+                <div>
+                  <span className="block text-[11px] font-mono uppercase tracking-wider text-[#747474]">Core Products</span>
+                  <span className="text-xs sm:text-sm font-medium text-[#241919]">Granite Slabs & Countertops</span>
+                </div>
+                <div>
+                  <span className="block text-[11px] font-mono uppercase tracking-wider text-[#747474]">Global Footprint</span>
+                  <span className="text-xs sm:text-sm font-medium text-[#241919]">40+ Sovereign Nations</span>
+                </div>
+                <div>
+                  <span className="block text-[11px] font-mono uppercase tracking-wider text-[#747474]">Quality Standard</span>
+                  <span className="text-xs sm:text-sm font-medium text-[#241919]">Mirror Polish (95+ Gloss)</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+        
         {/* ── OUR HERITAGE & CRAFTSMANSHIP MONOGRAPH (PURE WHITE BACKGROUND) ── */}
         <CompanyEditorialShowcase data={PAVAN_GRANITE_EDITORIAL_DATA} />
 
@@ -609,10 +774,10 @@ export default function CompanyDedicatedPage() {
       <section className="py-16 px-4 sm:px-6 md:px-12 lg:px-16 bg-[#f8fafc] border-t border-[#747474]/15">
         <div className="max-w-7xl mx-auto">
           <span className="text-[10px] font-mono uppercase tracking-[0.24em] font-bold text-[#514a38] block mb-6">
-            EXPLORE OTHER PAVAN GROUPS DIVISIONS
+            EXPLORE OTHER PAVAN STONES GROUP DIVISIONS
           </span>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Object.values(COMPANIES_DATABASE)
               .filter((c) => c.slug !== company.slug)
               .map((other) => (
@@ -635,7 +800,7 @@ export default function CompanyDedicatedPage() {
 
                   <span className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.16em] font-semibold text-[#241919] group-hover:text-[#514a38] transition-colors mt-6 pt-4 border-t border-[#747474]/15">
                     <span>View Dedicated {other.name} Profile</span>
-                    <span className="transition-transform group-hover:translate-x-1">→</span>
+                    <ArrowRight size={12} className="transition-transform group-hover:translate-x-1" />
                   </span>
                 </Link>
               ))}

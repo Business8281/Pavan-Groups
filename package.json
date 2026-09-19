@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@animateicons/react": "^0.5.0",
     "@types/d3": "^7.4.3",
     "@types/leaflet": "^1.9.22",
     "clsx": "^2.1.1",

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
-import { Globe, Plus, Minus, RotateCcw } from "lucide-react";
+import { Globe, Plus, Minus, RefreshCw } from "@animateicons/react/lucide";
 import {
   GLOBAL_PORTS_DATA,
   CHENNAI_ORIGIN,
@@ -816,7 +816,7 @@ export default function RealInteractiveMap({
           aria-label="Reset to Full World Map"
           className="px-2.5 py-1.5 bg-white/95 hover:bg-white text-[#0f172a] hover:text-[#0f172a] text-[11px] font-mono font-semibold rounded-lg shadow-sm border border-[#0f172a]/15 flex items-center gap-1.5 cursor-pointer backdrop-blur-md transition-all active:scale-95"
         >
-          <RotateCcw className="w-3.5 h-3.5 text-[#0f172a]" />
+          <RefreshCw size={14} className="text-[#0f172a]" />
           <span>Global View</span>
         </button>
       </div>

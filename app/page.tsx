@@ -2,7 +2,6 @@ import Hero from "@/components/Hero";
 import Products from "@/components/Products";
 import BrowseTilesBy from "@/components/BrowseTilesBy";
 import WhyChooseUs from "@/components/WhyChooseUs";
-import ShippingAustralia from "@/components/ShippingAustralia";
 import ElegantDiscovery from "@/components/ElegantDiscovery";
 
 export default function Home() {
@@ -14,9 +13,11 @@ export default function Home() {
         <Products />
       </div>
       <BrowseTilesBy />
-      <ShippingAustralia />
       <ElegantDiscovery />
       <WhyChooseUs />
     </>
   );
 }
+
+
+

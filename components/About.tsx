@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ArrowRight } from "@animateicons/react/lucide";
 
 const pillars = [
   { icon: "⬡", title: "Origin Traceability", desc: "Every block traced to its quarry face. GPS-tagged, ethically sourced." },
@@ -24,7 +25,7 @@ export default function About() {
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
       >
         <span className="text-[9px] tracking-[0.32em] uppercase text-[#c85a32] font-medium mb-5 block">
-          About Pavan Groups
+          About Pavan Stones Group
         </span>
         <h2
           className="font-display font-light leading-[1.1] tracking-[-0.01em] mb-7 text-ink"
@@ -40,17 +41,15 @@ export default function About() {
           spaces into timeless architectural legacies.
         </p>
         <p className="text-ink/60 leading-[1.8] mb-10 text-[15px]">
-          Operating through Pavan Impex, Sai Balaji Impex, and Pavan Granite, we manage quarrying, custom processing, export, and installation across Slate, Limestone, and Premium Granite for architects across 40+ countries.
+          Operating through Pavan Impex, Sai Balaji Impex, Pavan Granite, and Pavan Stones World, we manage quarrying, custom processing, export, and installation across Slate, Limestone, Premium Granite, and Architectural Stone Masterpieces for architects across 40+ countries.
         </p>
         <Link
           href="/about"
           className="inline-flex items-center gap-3 text-[10px] tracking-[0.22em] uppercase text-[#c85a32] font-medium border-b pb-1 hover:gap-5 transition-all duration-300"
           style={{ borderColor: "rgba(255,68,58,0.3)" }}
         >
-          Our Story & Quarries
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <span>Our Story & Quarries</span>
+          <ArrowRight size={13} />
         </Link>
 
         <div className="mt-12 inline-flex items-center gap-4 border-l-2 pl-5" style={{ borderColor: "#c85a32" }}>

@@ -422,3 +422,145 @@ export const PAVAN_GRANITE_EDITORIAL_DATA: CompanyEditorialData = {
     },
   ],
 };
+
+export const PAVAN_STONES_WORLD_EDITORIAL_DATA: CompanyEditorialData = {
+  companySlug: "pavan-stones-world",
+  divisionNum: "04",
+  divisionCode: "DIVISION PSW-WORLD",
+  companyName: "Pavan Stones World",
+  stoneFamily: "Exotic Quartzite, Luxury Marble & Bespoke Artifacts",
+  establishedYear: "2008",
+  locationName: "Global Architectural Hub, Andhra Pradesh, India",
+  coordinates: "15.6521° N · 79.4312° E",
+  accentColor: "#722424",
+  heroStatement: {
+    lead: "The Symphony of Earth's Most Rare Minerals.",
+    italicAccent: "Curating majestic crystalline quartzites, legendary calcitic marbles, and bespoke architectural artifacts for premier global landmarks.",
+  },
+  narrative: {
+    foundingStory:
+      "Established in 2008 as the elite architectural curation wing of Pavan Stones Group, Pavan Stones World bridges sovereign quarry sources with international high-concept architecture. Specializing in rare metamorphic quartzites, pure calcitic marbles, and exotic stone sculptures, we deliver rare block continuity, laser-guided bookmatched slab sequencing, and artisan-crafted architectural masterpieces.",
+    craftsmanshipStory:
+      "Equipped with state-of-the-art 5-axis robotic bridge saws, high-precision computerized waterjet contour systems, and master hand-sculptors, Pavan Stones World transforms raw monolithic boulders into crystalline works of art. Every slab undergoes strict spectroscopic mineral density verification and micron-level flatness calibration.",
+  },
+  metrics: [
+    {
+      value: "18+",
+      label: "Years Architectural Curation",
+      detail: "Global architectural stone sourcing and bespoke custom fabrication since 2008.",
+    },
+    {
+      value: "900 MT",
+      label: "Monthly Exotic Yield",
+      detail: "Gangsaw slabs and custom carved panels crafted across specialized atelier lines.",
+    },
+    {
+      value: "50+",
+      label: "International Design Ports",
+      detail: "High-protection containerized export to North America, Europe, Australia, and the Middle East.",
+    },
+    {
+      value: "100%",
+      label: "Spectroscopic Provenance",
+      detail: "Zero artificial dye infill — 100% natural crystalline mineral integrity.",
+    },
+  ],
+  pillars: [
+    {
+      id: "world-metamorphic-quartzite",
+      num: "01",
+      title: "Direct Metamorphic Quartzite Extraction",
+      subtitle: "High-pressure recrystallized quartz veins yielding diamond-grade surface durability.",
+      description:
+        "Extracted from selective crystalline quartz formations, our exotic quartzites deliver exceptional Mohs 7+ hardness, outperforming granite in scratch resistance while offering natural mineral translucency under illumination.",
+      specs: [
+        { label: "Geology", value: "Metamorphic Granulite Quartzite" },
+        { label: "Mohs Hardness", value: "7.0+" },
+        { label: "Water Abs.", value: "< 0.06% (Impervious)" },
+        { label: "Compressive", value: "230 MPa" },
+      ],
+      image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
+      imageAlt: "Exotic Quartzite Crystalline Formation",
+      tagline: "Ultra-Dense Metamorphic Geology",
+      coordinate: "QUARTZ BELT · 230 MPa TOUGHNESS",
+    },
+    {
+      id: "world-digital-dry-lays",
+      num: "02",
+      title: "Laser-Guided Bookmatching & Digital Dry-Lays",
+      subtitle: "High-resolution optical mapping for mirror-image vein continuity across multi-slab layouts.",
+      description:
+        "Every block is sawn into consecutive sequence and scanned in our digital showroom. Architects receive computerized 3D layouts confirming seamless vein alignment before crates are sealed for export.",
+      specs: [
+        { label: "Alignment", value: "Digital Vein-Flow Match" },
+        { label: "Tolerance", value: "±0.5 mm Diamond Calibration" },
+        { label: "Continuity", value: "Consecutive Block Sequencing" },
+        { label: "Inspection", value: "Ultrasonic Flaw Scanning" },
+      ],
+      image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80",
+      imageAlt: "Bookmatched Marble and Quartzite Sequencing",
+      tagline: "Computerized Optical Sequencing",
+      coordinate: "DIGITAL ATELIER · SUB-MM CALIBRATION",
+    },
+    {
+      id: "world-5-axis-sculpting",
+      num: "03",
+      title: "Artisanal Sculpting & 5-Axis CNC Waterjet Engineering",
+      subtitle: "Bridging centuries of Indian stone sculpture heritage with robotic fabrication.",
+      description:
+        "From intricate bas-relief stone murals and devotional icons to multi-stone marble medallions, our atelier unites generational sthapatis (master sculptors) with 5-axis CNC waterjets.",
+      specs: [
+        { label: "Engineering", value: "5-Axis Robotic Contouring" },
+        { label: "Inlays", value: "Multi-Stone Onyx & Marble" },
+        { label: "Relief Depth", value: "Up to 150mm Bas-Relief" },
+        { label: "Finish", value: "Hand-Burnished & Honed" },
+      ],
+      image: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80",
+      imageAlt: "Precision CNC Waterjet Stone Inlay",
+      tagline: "Robotic Precision & Heritage Craft",
+      coordinate: "SCULPTURE STUDIO · 5-AXIS ROBOTICS",
+    },
+    {
+      id: "world-armored-logistics",
+      num: "04",
+      title: "Heavy-Duty A-Frames & Armored Export Packaging",
+      subtitle: "Engineered timber encasements designed for zero transit flexure across ocean voyages.",
+      description:
+        "Exotic slabs and custom relief sculptures are protected by closed-cell EPE foam, shock-resistant steel-tied hardwood frames, and fumigated international timber bracing for long oceanic voyages.",
+      specs: [
+        { label: "Packaging", value: "Armored Steel-Braced A-Frames" },
+        { label: "Protection", value: "High-Density EPE Foam Liners" },
+        { label: "FCL Capacity", value: "420-460 m² (20mm)" },
+        { label: "Dispatch", value: "Chennai, Mundra & Nhava Sheva" },
+      ],
+      image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80",
+      imageAlt: "Armored Export Crating and Logistics",
+      tagline: "Worldwide Turnkey Sea Freight",
+      coordinate: "EXPORT TERMINAL · 50+ GLOBAL DESTINATIONS",
+    },
+  ],
+  applications: [
+    {
+      title: "Backlit Translucent Quartzite Portals",
+      category: "Architectural Radiance",
+      description:
+        "Glowing crystalline feature walls and reception desks illuminated with custom dimmable LED matrices.",
+      image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1000&q=80",
+    },
+    {
+      title: "Palatial Living Pavilions & Calcitic Marble Floors",
+      category: "Residential Magnificence",
+      description:
+        "Ultra-dense pure white Makrana marble and exotic bookmatched slabs reflecting natural light across grand interior spaces.",
+      image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1000&q=80",
+    },
+    {
+      title: "Monumental Architectural Murals & Custom Artifacts",
+      category: "Bespoke Artistry",
+      description:
+        "Hand-sculpted devotional bas-relief murals and geometric stone art calibrated for prestigious private estates and civic atriums.",
+      image: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1000&q=80",
+    },
+  ],
+};
+

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { scrollToHash } from "@/components/SmoothScroll";
+import { Layers, Clock, ShieldCheck, TrendingUp, Droplet, Thermometer, Globe, ArrowRight } from "@animateicons/react/lucide";
 
 // ── STONE DATA WITH IMAGE CONTAINERS & EXTENDED DOSSIERS ──
 interface DetailedDossier {
@@ -321,62 +322,24 @@ const STONE_VS_CERAMIC = [
 function AdvantageIcon({ id }: { id: string }) {
   switch (id) {
     case "unique":
-      return (
-        <svg className="w-5 h-5 text-[#c85a32]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <polygon points="12 2 2 8.5 12 15 22 8.5 12 2" />
-          <polyline points="2 15.5 12 22 22 15.5" />
-          <polyline points="2 8.5 12 15 22 8.5" />
-        </svg>
-      );
+      return <Layers size={20} className="text-[#c85a32]" />;
     case "ancient":
-      return (
-        <svg className="w-5 h-5 text-[#c85a32]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
-          <path d="M12 2v2M12 20v2M20 12h2M2 12h2" />
-        </svg>
-      );
+      return <Clock size={20} className="text-[#c85a32]" />;
     case "weather":
-      return (
-        <svg className="w-5 h-5 text-[#c85a32]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          <circle cx="12" cy="10" r="3" />
-        </svg>
-      );
+      return <ShieldCheck size={20} className="text-[#c85a32]" />;
     case "value":
-      return (
-        <svg className="w-5 h-5 text-[#c85a32]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-          <polyline points="16 7 22 7 22 13" />
-        </svg>
-      );
+      return <TrendingUp size={20} className="text-[#c85a32]" />;
     case "maintenance":
-      return (
-        <svg className="w-5 h-5 text-[#c85a32]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
-        </svg>
-      );
+      return <Droplet size={20} className="text-[#c85a32]" />;
     case "eco":
-      return (
-        <svg className="w-5 h-5 text-[#c85a32]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-        </svg>
-      );
+      return <Globe size={20} className="text-[#c85a32]" />;
     case "thermal":
-      return (
-        <svg className="w-5 h-5 text-[#c85a32]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
-        </svg>
-      );
+      return <Thermometer size={20} className="text-[#c85a32]" />;
     default:
-      return (
-        <svg className="w-5 h-5 text-[#c85a32]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-          <circle cx="12" cy="12" r="10" />
-        </svg>
-      );
+      return <ShieldCheck size={20} className="text-[#c85a32]" />;
   }
 }
+
 
 export default function BeginnersGuide() {
   const [activeTab, setActiveTab] = useState<"compare" | "standards" | "why-stone">("compare");
@@ -585,7 +548,10 @@ export default function BeginnersGuide() {
 
                         <div className="flex items-center justify-between text-[9.5px] font-mono text-[#140d0a]/50">
                           <span>Lifespan: 50+ Yrs</span>
-                          <span className="text-[#c85a32] font-semibold">Tap to view specs →</span>
+                          <span className="text-[#c85a32] font-semibold inline-flex items-center gap-1">
+                            <span>Tap to view specs</span>
+                            <ArrowRight size={11} />
+                          </span>
                         </div>
                       </div>
                     </button>

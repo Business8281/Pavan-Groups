@@ -5,16 +5,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { scrollToHash } from "@/components/SmoothScroll";
 import {
-  Globe2,
-  Clock,
   Phone,
   Mail,
   MapPin,
   ArrowUp,
   ArrowRight,
-  ShieldCheck,
-  CheckCircle2,
-} from "lucide-react";
+  Clock,
+  CircleCheck as CheckCircle2,
+} from "@animateicons/react/lucide";
 
 const DIVISIONS = [
   {
@@ -34,6 +32,12 @@ const DIVISIONS = [
     focus: "Monolithic Granite",
     products: ["Black Galaxy Granite", "Mirror Slabs (8x3 ft / 9x4 ft)", "Custom Architectural Tiles"],
     origin: "Chimakurthy Magma Field",
+  },
+  {
+    name: "Pavan Stones World",
+    focus: "Exotic Quartzite & Marble",
+    products: ["Emerald Green Quartzite", "Makrana White Marble", "Teakwood Sandstone", "Custom Stone Murals"],
+    origin: "Global Architectural Hub",
   },
 ];
 
@@ -56,7 +60,8 @@ const NAVIGATION_COLUMNS = [
       { label: "Premium Granite", href: "/companies/pavan-granite" },
       { label: "Natural Slate", href: "/companies/pavan-impex" },
       { label: "Limestone & Pavers", href: "/companies/sai-balaji-impex" },
-      { label: "Quartzite", href: "/companies/pavan-impex" },
+      { label: "Pavan Stones World", href: "/companies/pavan-stones-world" },
+      { label: "Quartzite & Marble", href: "/companies/pavan-stones-world" },
       { label: "Architectural Stones", href: "#products" },
     ],
   },
@@ -168,7 +173,7 @@ export default function Footer() {
           className="font-display uppercase tracking-widest text-[#241919] whitespace-nowrap leading-none"
           style={{ fontSize: "clamp(120px, 22vw, 320px)" }}
         >
-          PAVAN GROUPS
+          PAVAN STONES GROUP
         </span>
       </div>
 
@@ -206,7 +211,7 @@ export default function Footer() {
                   style={{ fontSize: "clamp(28px, 3.4vw, 44px)" }}
                 >
                   Get Your Stone Quote{" "}
-                  <span className="italic text-[#c85a32] font-normal">Within 24 Hours.</span>
+                  <span className="italic text-[#ff5500] font-normal">Within 24 Hours.</span>
                 </h3>
 
                 <p className="text-xs sm:text-[14.5px] text-[#241919]/80 font-normal leading-relaxed">
@@ -216,7 +221,7 @@ export default function Footer() {
 
               {/* Right Column: Instant Specsheet Form Card */}
               <div className="lg:max-w-md w-full p-6 sm:p-7 bg-[#faf8f5] border border-[#747474]/20 rounded-xl space-y-3">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-[#c85a32] font-bold block mb-1">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#ff5500] font-bold block mb-1">
                   PRIORITY RESPONSE
                 </span>
                 <p className="text-[12px] text-[#241919]/90 mb-3 font-medium leading-relaxed">
@@ -224,8 +229,8 @@ export default function Footer() {
                 </p>
 
                 {subscribed ? (
-                  <div className="p-3.5 bg-white border border-[#c85a32] text-xs font-mono text-[#c85a32] font-semibold flex items-center gap-2 rounded-lg">
-                    <CheckCircle2 className="w-4 h-4 text-[#c85a32]" />
+                  <div className="p-3.5 bg-white border border-[#ff5500] text-xs font-mono text-[#ff5500] font-semibold flex items-center gap-2 rounded-lg">
+                    <CheckCircle2 className="w-4 h-4 text-[#ff5500]" />
                     <span>Spec Catalog &amp; Export Index dispatched to your inbox!</span>
                   </div>
                 ) : (
@@ -236,11 +241,11 @@ export default function Footer() {
                       placeholder="architect@domain.com"
                       value={emailInput}
                       onChange={(e) => setEmailInput(e.target.value)}
-                      className="flex-1 px-3.5 py-3 bg-white border border-[#747474]/25 text-xs font-mono text-[#241919] placeholder:text-[#747474]/70 font-medium focus:outline-none focus:border-[#c85a32] rounded-lg shadow-2xs"
+                      className="flex-1 px-3.5 py-3 bg-white border border-[#747474]/25 text-xs font-mono text-[#241919] placeholder:text-[#747474]/70 font-medium focus:outline-none focus:border-[#ff5500] rounded-lg shadow-2xs"
                     />
                     <button
                       type="submit"
-                      className="px-5 py-3 text-[10.5px] font-mono uppercase tracking-wider font-bold bg-[#c85a32] hover:bg-[#a84a27] text-white transition-all cursor-pointer border border-[#c85a32] hover:border-[#a84a27] rounded-lg flex-none shadow-sm hover:shadow-md active:scale-95"
+                      className="px-5 py-3 text-[10.5px] font-mono uppercase tracking-wider font-bold bg-[#ff5500] hover:bg-[#e04b00] text-white transition-all cursor-pointer border border-[#ff5500] hover:border-[#e04b00] rounded-lg flex-none shadow-sm hover:shadow-md active:scale-95"
                     >
                       Send Specs →
                     </button>
@@ -265,7 +270,7 @@ export default function Footer() {
             <div>
               <Link href="/" className="inline-block mb-2 group">
                 <span className="font-display text-2xl tracking-[0.2em] uppercase text-[#241919] group-hover:text-[#0f172a] transition-colors font-medium">
-                  PAVAN GROUPS
+                  PAVAN STONES GROUP
                 </span>
                 <span className="text-[9.5px] font-mono uppercase tracking-[0.35em] text-[#747474] block mt-0.5">
                   Natural Stone Extraction &amp; Global Exports · Est. 2000
@@ -330,7 +335,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4 text-xs font-mono text-[#747474]">
           
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-center sm:text-left">
-            <span className="text-[#241919] font-medium">© {new Date().getFullYear()} Pavan Groups. All Rights Reserved.</span>
+            <span className="text-[#241919] font-medium">© {new Date().getFullYear()} Pavan Stones Group. All Rights Reserved.</span>
             <span className="hidden sm:inline-block text-[#747474]/40">•</span>
             <Link href="/privacy-policy" className="hover:text-[#c85a32] transition-colors">Privacy Policy</Link>
             <span className="hidden sm:inline-block text-[#747474]/40">•</span>

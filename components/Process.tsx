@@ -1,17 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Lightbulb, Code, Package, Zap } from "@animateicons/react/lucide";
 
 const processSteps = [
   {
     id: 1,
     title: "Research & Ideation",
     desc: "We start by understanding user needs, market trends, and business goals to generate innovative product ideas.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-      </svg>
-    ),
+    icon: <Lightbulb size={20} />,
     progress: 35,
     time: "~1 week",
     isActive: true,
@@ -20,11 +17,7 @@ const processSteps = [
     id: 2,
     title: "Design & Development",
     desc: "Concepts evolve into tangible experiences through structured UX design, polished interfaces, and agile engineering.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-      </svg>
-    ),
+    icon: <Code size={20} />,
     progress: 70,
     time: "~3 weeks",
     isActive: true,
@@ -33,11 +26,7 @@ const processSteps = [
     id: 3,
     title: "Production & Quality Testing",
     desc: "Each element of the product undergoes thorough validation. We test functionality, usability, accessibility, and performance.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-      </svg>
-    ),
+    icon: <Package size={20} />,
     progress: 0,
     time: "~1 month",
     isActive: false,
@@ -46,11 +35,7 @@ const processSteps = [
     id: 4,
     title: "Launch & Support",
     desc: "Once launched, we monitor performance, resolve issues quickly, and continuously refine the product.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    ),
+    icon: <Zap size={20} />,
     progress: 0,
     time: "Launch Completed",
     isActive: false,

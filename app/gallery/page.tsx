@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { ArrowRight } from "@animateicons/react/lucide";
 
 const categories = ["Granite", "Marble", "Quartz", "Sandstone", "Limestone", "Onyx", "Travertine", "Slate", "Quartzite"];
 
@@ -86,7 +87,7 @@ export default function GalleryPage() {
       {/* Header */}
       <div className="relative z-10 w-full p-6 flex justify-between items-center">
         <Link href="/" className="text-[#241919] font-display text-xl uppercase tracking-[0.2em] font-bold">
-          Pavan Groups
+          Pavan Stones Group
         </Link>
       </div>
       {/* Dynamic Gallery Section - Premium Stack */}
@@ -218,8 +219,8 @@ export default function GalleryPage() {
             <p className="text-[#454545] text-lg sm:text-xl font-light mt-2 mb-4 leading-relaxed max-w-md">
               Every image tells a story—explore our gallery to see our journey unfold
             </p>
-            <button className="bg-[#140d0a] text-white px-6 py-2.5 rounded-md flex items-center gap-2 hover:bg-black transition-colors text-sm font-medium tracking-wide mt-2 group">
-              See all <span className="text-lg leading-none transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+            <button className="bg-[#140d0a] text-white px-6 py-2.5 rounded-md flex items-center gap-2 hover:bg-black transition-colors text-sm font-medium tracking-wide mt-2 group cursor-pointer">
+              See all <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
             </button>
           </div>
 
@@ -273,7 +274,7 @@ export default function GalleryPage() {
                 DISCOVER PREMIUM <br/> STONE CRAFTSMANSHIP
               </h2>
               <p className="text-[#454545] text-sm leading-relaxed font-light">
-                Pavan Groups offers an exquisite collection of premium granite, marble, and natural stones, bringing timeless elegance and unmatched durability to your architectural and interior design projects.
+                Pavan Stones Group offers an exquisite collection of premium granite, marble, and natural stones, bringing timeless elegance and unmatched durability to your architectural and interior design projects.
               </p>
             </div>
 

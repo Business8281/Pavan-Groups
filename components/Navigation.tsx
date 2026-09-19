@@ -2,8 +2,11 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { motion, LayoutGroup } from "framer-motion";
 import { gsap } from "gsap";
 import { scrollToHash } from "@/components/SmoothScroll";
+
+import { ArrowRight } from "@animateicons/react/lucide";
 
 interface NavLink {
   label: string;
@@ -15,8 +18,8 @@ const links: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Products", href: "/products" },
-  { label: "Request Sample", href: "/request-sample" },
   { label: "Gallery", href: "/gallery" },
+  { label: "Export", href: "/export" },
   { label: "Contact", href: "/contact", isContact: false },
 ];
 
@@ -26,6 +29,7 @@ export default function Navigation() {
   const mobileLinksRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [stuck, setStuck] = useState(false);
+  const [hoveredPath, setHoveredPath] = useState<string | null>(null);
   const lastY = useRef(0);
   const pathname = usePathname();
   const router = useRouter();
@@ -144,64 +148,97 @@ export default function Navigation() {
 
         {/* Brand */}
         <Link href="/" className="flex flex-col gap-[2px] flex-none relative z-10 group">
-          <span className="font-display font-medium text-[15px] tracking-[0.28em] uppercase text-[#140d0a] transition-colors duration-300 group-hover:text-[#c85a32]">
-            Pavan Groups
+          <span className="font-display font-medium text-[15px] tracking-[0.28em] uppercase text-[#140d0a] transition-colors duration-300 group-hover:text-[#ff5500]">
+            Pavan Stones Group
           </span>
           <span className="text-[7.5px] tracking-[0.42em] uppercase text-[#140d0a]/60 transition-colors duration-300">
             Natural Stone Excellence
           </span>
         </Link>
 
-        {/* Links (Desktop) */}
-        <ul className="hidden lg:flex items-center gap-8 ml-auto list-none p-0 m-0 relative z-10">
-          {links.map((l) => {
-            const active = isActive(l.href);
-            const linkColor = active ? "#c85a32" : "rgba(20, 13, 10, 0.75)";
+        {/* Links (Desktop) with Smooth Liquid Flow Underline */}
+        <LayoutGroup id="navbar-links">
+          <ul
+            onMouseLeave={() => setHoveredPath(null)}
+            className="hidden lg:flex items-center gap-8 ml-auto list-none p-0 m-0 relative z-10"
+          >
+            {links.map((l) => {
+              const active = isActive(l.href);
+              const isHighlighted = hoveredPath !== null ? hoveredPath === l.href : active;
+              const linkColor = isHighlighted ? "#ff5500" : "rgba(20, 13, 10, 0.75)";
 
-            if (l.isContact) {
+              if (l.isContact) {
+                return (
+                  <li key={l.label} className="relative">
+                    <button
+                      onClick={handleContactClick}
+                      onMouseEnter={() => setHoveredPath(l.href)}
+                      onFocus={() => setHoveredPath(l.href)}
+                      className="relative text-[10px] font-bold tracking-[0.24em] uppercase transition-colors duration-300 py-2 cursor-pointer bg-transparent border-none p-0 focus:outline-none"
+                      style={{ color: linkColor }}
+                    >
+                      <span>{l.label}</span>
+                      {isHighlighted && (
+                        <motion.span
+                          layoutId="navbar-flow-underline"
+                          className="absolute -bottom-0.5 left-0 right-0 h-[2px] rounded-full pointer-events-none"
+                          style={{
+                            background: "linear-gradient(90deg, #ff5500 0%, #ff7733 50%, #ff5500 100%)",
+                            boxShadow: "0 2px 10px rgba(255, 85, 0, 0.45)",
+                          }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 350,
+                            damping: 28,
+                            mass: 0.75,
+                          }}
+                        />
+                      )}
+                    </button>
+                  </li>
+                );
+              }
+
               return (
-                <li key={l.label}>
-                  <button
-                    onClick={handleContactClick}
-                    className="relative text-[10px] font-bold tracking-[0.24em] uppercase transition-colors duration-300 py-2 cursor-pointer bg-transparent border-none p-0 text-[#140d0a]/75 hover:text-[#c85a32] focus:outline-none"
+                <li key={l.label} className="relative">
+                  <Link
+                    href={l.href}
+                    onMouseEnter={() => setHoveredPath(l.href)}
+                    onFocus={() => setHoveredPath(l.href)}
+                    className="relative text-[10px] font-bold tracking-[0.24em] uppercase transition-colors duration-300 py-2 inline-block focus:outline-none"
+                    style={{ color: linkColor }}
                   >
                     <span>{l.label}</span>
-                  </button>
+                    {isHighlighted && (
+                      <motion.span
+                        layoutId="navbar-flow-underline"
+                        className="absolute -bottom-0.5 left-0 right-0 h-[2px] rounded-full pointer-events-none"
+                        style={{
+                          background: "linear-gradient(90deg, #ff5500 0%, #ff7733 50%, #ff5500 100%)",
+                          boxShadow: "0 2px 10px rgba(255, 85, 0, 0.45)",
+                        }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 350,
+                          damping: 28,
+                          mass: 0.75,
+                        }}
+                      />
+                    )}
+                  </Link>
                 </li>
               );
-            }
-
-
-            return (
-              <li key={l.label}>
-                <Link
-                  href={l.href}
-                  className="relative text-[10px] font-bold tracking-[0.24em] uppercase transition-colors duration-300 py-2 inline-block hover:text-[#c85a32] focus:outline-none"
-                  style={{ color: linkColor }}
-                >
-                  {l.label}
-                  <span
-                    className="absolute -bottom-0.5 left-0 h-px transition-all duration-400"
-                    style={{
-                      width: active ? "100%" : "0%",
-                      background: "#c85a32",
-                    }}
-                  />
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+            })}
+          </ul>
+        </LayoutGroup>
 
         {/* CTA (Get Quote) */}
         <button
           onClick={handleContactClick}
-          className="hidden md:inline-flex items-center gap-2.5 relative z-10 px-5 py-2.5 text-[10px] font-medium tracking-[0.22em] uppercase transition-all duration-300 cursor-pointer bg-transparent border border-[#c85a32] text-[#c85a32] hover:bg-[#c85a32] hover:text-white shadow-sm focus:outline-none"
+          className="hidden md:inline-flex items-center gap-2.5 relative z-10 px-5 py-2.5 text-[10px] font-medium tracking-[0.22em] uppercase transition-all duration-300 cursor-pointer bg-transparent border border-[#ff5500] text-[#ff5500] hover:bg-[#ff5500] hover:text-white shadow-sm focus:outline-none"
         >
           <span>Get Quote</span>
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M1 5h8M6 2l3 3-3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <ArrowRight size={12} />
         </button>
 
         {/* Burger Button */}
@@ -252,7 +289,7 @@ export default function Navigation() {
               {l.isContact ? (
                 <button
                   onClick={handleContactClick}
-                  className="font-display text-3xl md:text-4xl font-light transition-colors duration-300 bg-transparent border-none cursor-pointer text-[#140d0a] hover:text-[#c85a32]"
+                  className="font-display text-3xl md:text-4xl font-light transition-colors duration-300 bg-transparent border-none cursor-pointer text-[#140d0a] hover:text-[#ff5500]"
                 >
                   {l.label}
                 </button>
@@ -262,7 +299,7 @@ export default function Navigation() {
                   onClick={() => setOpen(false)}
                   className="font-display text-3xl md:text-4xl font-light transition-colors duration-300 block"
                   style={{
-                    color: isActive(l.href) ? "#c85a32" : "#140d0a",
+                    color: isActive(l.href) ? "#ff5500" : "#140d0a",
                   }}
                 >
                   {l.label}
@@ -273,7 +310,7 @@ export default function Navigation() {
 
           <button
             onClick={handleContactClick}
-            className="mt-6 px-10 py-3.5 bg-[#c85a32] text-white text-[10px] tracking-[0.24em] uppercase font-medium border-none cursor-pointer hover:bg-[#a84a27] transition-colors"
+            className="mt-6 px-10 py-3.5 bg-[#ff5500] text-white text-[10px] tracking-[0.24em] uppercase font-medium border-none cursor-pointer hover:bg-[#e04b00] transition-colors shadow-sm"
           >
             Request Quotation
           </button>

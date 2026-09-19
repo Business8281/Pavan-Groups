@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProductById, getRelatedProducts, getAllProducts } from "@/lib/productsData";
 import ProductDetailView from "@/components/ProductDetailView";
+import CategoryProductsView, { CATEGORIES_CONFIG } from "@/components/CategoryProductsView";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
+
 
 export async function generateStaticParams() {
   const products = getAllProducts();
@@ -40,6 +42,5 @@ export default async function ProductDetailPage({ params }: PageProps) {
   }
 
   const related = getRelatedProducts(id, 3);
-
   return <ProductDetailView product={product} relatedProducts={related} />;
 }

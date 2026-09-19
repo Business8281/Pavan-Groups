@@ -5,9 +5,9 @@ import ClientLayout from "@/components/ClientLayout";
 export const metadata: Metadata = {
   title: "Pavan Stones Group — Manufacturer, Supplier, Exporter & Installer | Markapur, India",
   description:
-    "Pavan Stones Group is a manufacturer, supplier, exporter, and installer of premium natural stones based in Markapur, Andhra Pradesh, India. Operating through Pavan Impex, Sai Balaji Impex, and Pavan Granite.",
+    "Pavan Stones Group is a manufacturer, supplier, exporter, and installer of premium natural stones based in Markapur, Andhra Pradesh, India. Operating through Pavan Impex, Sai Balaji Impex, Pavan Granite, and Pavan Stones World.",
   keywords:
-    "Pavan Stones Group, Pavan Impex, Sai Balaji Impex, Pavan Granite, Markapur natural stone, slate stones, wall cladding, limestone products, Cuddapah black, Black Galaxy granite, natural stone exporter India",
+    "Pavan Stones Group, Pavan Impex, Sai Balaji Impex, Pavan Granite, Pavan Stones World, Markapur natural stone, slate stones, wall cladding, limestone products, Cuddapah black, Black Galaxy granite, exotic quartzite, marble, natural stone exporter India",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

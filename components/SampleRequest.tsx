@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Check, ArrowRight, ArrowUpRight, Lock, Package, Layers, FileText, TrendingUp } from "@animateicons/react/lucide";
 
 interface StoneSpecimen {
   id: string;
@@ -104,6 +105,26 @@ const SPECIMENS: StoneSpecimen[] = [
     defaultFinishes: ["Flawless Mirror Polish", "Flamed", "Water Jet"],
     recommendedThickness: "20mm (3/4 in)",
   },
+  {
+    id: "emerald-green-quartzite",
+    name: "Emerald Green Quartzite",
+    division: "Pavan Stones World",
+    category: "granite",
+    gradient: "linear-gradient(135deg, #062c24 0%, #0d5c4a 50%, #031c17 100%)",
+    origin: "South Granulite Belt, India",
+    defaultFinishes: ["Diamond Mirror Polish", "Leathered Satin", "Honed Matte"],
+    recommendedThickness: "20mm (3/4 in)",
+  },
+  {
+    id: "makrana-royal-white-marble",
+    name: "Makrana Pure White Marble",
+    division: "Pavan Stones World",
+    category: "limestone",
+    gradient: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%)",
+    origin: "Makrana, Rajasthan",
+    defaultFinishes: ["Silk Polish", "High Gloss Mirror", "Honed Velvet"],
+    recommendedThickness: "18mm (3/4 in)",
+  },
 ];
 
 const DESTINATION_PORTS = [
@@ -204,7 +225,7 @@ export default function SampleRequest() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
                   >
-                    ✔
+                    <Check size={36} className="text-[#514a38]" />
                   </motion.div>
                 </motion.div>
 
@@ -563,13 +584,13 @@ export default function SampleRequest() {
                     ) : (
                       <>
                         <span>Submit Sample Kit Dispatch Request</span>
-                        <span className="text-base font-normal">→</span>
+                        <ArrowRight size={14} />
                       </>
                     )}
                   </button>
-                  <p className="text-[10px] font-mono text-[#747474] text-center mt-4 flex items-center justify-center gap-1.5">
-                    <span>🔒</span> Compliant with ISO 9001:2015 standards. Dispatched directly from our factory within 48-72 hours.
-                  </p>
+                  <div className="text-[10px] font-mono text-[#747474] text-center mt-4 flex items-center justify-center gap-1.5">
+                    <Lock size={12} className="text-[#514a38]" /> Compliant with ISO 9001:2015 standards. Dispatched directly from our factory within 48-72 hours.
+                  </div>
                 </div>
 
               </form>
@@ -634,7 +655,7 @@ export default function SampleRequest() {
               </div>
             </div>
 
-            {/* What is Included Inside the Pavan Groups Sample Box */}
+            {/* What is Included Inside the Pavan Stones Group Sample Box */}
             <div className="bg-[#f8fafc] border border-[#747474]/20 rounded-sm p-8 shadow-sm">
               <div className="mb-6 border-b border-[#747474]/15 pb-6">
                 <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#747474] font-bold block mb-2">
@@ -647,7 +668,9 @@ export default function SampleRequest() {
 
               <div className="space-y-6">
                 <div className="flex gap-4 items-start">
-                  <span className="text-[#514a38]/60 font-mono text-sm leading-none pt-0.5">01</span>
+                  <div className="w-8 h-8 rounded bg-[#f5f2eb] flex items-center justify-center flex-none text-[#514a38]">
+                    <Package size={16} />
+                  </div>
                   <div>
                     <strong className="block text-[12px] text-[#241919] uppercase tracking-wider font-bold mb-1">3x Calibrated Specimens</strong>
                     <span className="text-[14px] text-[#747474] font-light leading-snug">150x150mm genuine quarry cut samples in your selected finish.</span>
@@ -655,7 +678,9 @@ export default function SampleRequest() {
                 </div>
                 
                 <div className="flex gap-4 items-start">
-                  <span className="text-[#514a38]/60 font-mono text-sm leading-none pt-0.5">02</span>
+                  <div className="w-8 h-8 rounded bg-[#f5f2eb] flex items-center justify-center flex-none text-[#514a38]">
+                    <Layers size={16} />
+                  </div>
                   <div>
                     <strong className="block text-[12px] text-[#241919] uppercase tracking-wider font-bold mb-1">Multi-Finish Swatch Deck</strong>
                     <span className="text-[14px] text-[#747474] font-light leading-snug">Physical reference cards for Cleft, Honed, Polished & Tumbled finishes.</span>
@@ -663,7 +688,9 @@ export default function SampleRequest() {
                 </div>
 
                 <div className="flex gap-4 items-start">
-                  <span className="text-[#514a38]/60 font-mono text-sm leading-none pt-0.5">03</span>
+                  <div className="w-8 h-8 rounded bg-[#f5f2eb] flex items-center justify-center flex-none text-[#514a38]">
+                    <FileText size={16} />
+                  </div>
                   <div>
                     <strong className="block text-[12px] text-[#241919] uppercase tracking-wider font-bold mb-1">ASTM Test Reports</strong>
                     <span className="text-[14px] text-[#747474] font-light leading-snug">Certified documentation for Density, Compressive Strength & Slip Ratings.</span>
@@ -671,7 +698,9 @@ export default function SampleRequest() {
                 </div>
 
                 <div className="flex gap-4 items-start">
-                  <span className="text-[#514a38]/60 font-mono text-sm leading-none pt-0.5">04</span>
+                  <div className="w-8 h-8 rounded bg-[#f5f2eb] flex items-center justify-center flex-none text-[#514a38]">
+                    <TrendingUp size={16} />
+                  </div>
                   <div>
                     <strong className="block text-[12px] text-[#241919] uppercase tracking-wider font-bold mb-1">FOB & CIF Pricing Schedule</strong>
                     <span className="text-[14px] text-[#747474] font-light leading-snug">Calculated logistics data tailored to your specific discharge sea port.</span>
@@ -700,13 +729,13 @@ export default function SampleRequest() {
               </div>
 
               <a
-                href="https://wa.me/919440271559?text=Hello%2C%20I%20would%20like%20to%20request%20natural%20stone%20samples%20from%20Pavan%20Groups."
+                href="https://wa.me/919440271559?text=Hello%2C%20I%20would%20like%20to%20request%20natural%20stone%20samples%20from%20Pavan%20Stones%20Group."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-4 py-2.5 rounded-sm bg-[#25D366] hover:bg-[#20ba59] text-white text-[10px] font-mono uppercase tracking-widest font-bold shadow-sm transition-all flex-none flex items-center gap-2"
               >
                 <span>WhatsApp</span>
-                <span>↗</span>
+                <ArrowUpRight size={13} />
               </a>
             </div>
 

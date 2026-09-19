@@ -10,13 +10,13 @@ import {
 } from "@/lib/shippingData";
 import {
   Map as MapIcon,
-  Ship,
-  Anchor,
   FileCheck,
   Calendar,
   ArrowRight,
   Box,
-} from "lucide-react";
+  Globe,
+  Compass,
+} from "@animateicons/react/lucide";
 import { scrollToHash } from "@/components/SmoothScroll";
 
 interface CalculatorPanelProps {
@@ -59,11 +59,11 @@ export default function CalculatorPanel({
   };
 
   return (
-    <div className="w-full h-full bg-white p-4 lg:p-5 shadow-xl flex flex-col justify-between overflow-y-auto">
+    <div className="w-full h-full bg-white p-4 lg:p-5 shadow-xl flex flex-col justify-between overflow-y-auto" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
       <div>
         <div className="mb-4">
           <h2 className="text-xl font-bold text-gray-800 flex items-center">
-            <Anchor className="text-indigo-600 mr-2 flex-none" size={20} />
+            <Globe className="text-indigo-600 mr-2 flex-none" size={20} />
             Sea Shipment Calculator
           </h2>
           <p className="text-xs text-gray-500 mt-1 leading-relaxed">
@@ -256,7 +256,7 @@ export default function CalculatorPanel({
               <span className="font-bold font-mono">{origin.code}</span>
               <div className="flex-1 flex items-center justify-center relative mx-3">
                 <div className="w-full border-t-2 border-dashed border-indigo-300" />
-                <Ship size={14} className="absolute text-indigo-600 bg-indigo-50 px-0.5" />
+                <Compass size={14} className="absolute text-indigo-600 bg-indigo-50 px-0.5" />
               </div>
               <span className="font-bold font-mono">{destination.code}</span>
             </div>
@@ -266,7 +266,7 @@ export default function CalculatorPanel({
           <div className="grid grid-cols-2 gap-2.5 pt-1">
             <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-100">
               <div className="flex items-center text-indigo-500 mb-1">
-                <Ship size={13} className="mr-1.5 flex-none" />
+                <Compass size={13} className="mr-1.5 flex-none" />
                 <span className="text-[10px] font-semibold text-gray-500 uppercase">
                   TRANSIT TIME
                 </span>

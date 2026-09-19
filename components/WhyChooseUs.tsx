@@ -5,18 +5,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown,
   ChevronUp,
-  Pickaxe,
-  Factory,
-  Globe2,
   Package,
   ShieldCheck,
   Camera,
-  Anchor,
-  FileCheck2,
-  CheckCircle2,
   ArrowRight,
-  HelpCircle,
-} from "lucide-react";
+  Mountain,
+  Settings,
+  Globe,
+  Truck,
+  FileCheck,
+  CircleCheck as CheckCircle2,
+} from "@animateicons/react/lucide";
 
 interface FAQItem {
   id: string;
@@ -32,7 +31,7 @@ const FAQS_DATA: FAQItem[] = [
   {
     id: "faq-direct-sourcing",
     num: "01",
-    icon: Pickaxe,
+    icon: Mountain,
     topic: "Direct Sourcing from India",
     question: "How do you ensure direct sourcing and competitive pricing from India?",
     answer:
@@ -46,7 +45,7 @@ const FAQS_DATA: FAQItem[] = [
   {
     id: "faq-processing-capability",
     num: "02",
-    icon: Factory,
+    icon: Settings,
     topic: "Supply and Processing Capability",
     question: "What are your supply, processing, and calibration capabilities?",
     answer:
@@ -60,11 +59,11 @@ const FAQS_DATA: FAQItem[] = [
   {
     id: "faq-worldwide-export",
     num: "03",
-    icon: Globe2,
+    icon: Globe,
     topic: "Worldwide Export Support",
     question: "Which international markets and sea ports do you export to?",
     answer:
-      "Over the past 26+ years, Pavan Groups has dispatched containerized shipments to 40+ major destination sea ports across the United States, United Kingdom, Europe, Australia, New Zealand, and the Middle East. Our dedicated logistics desk manages vessel bookings, bonded storage, and container stuffing.",
+      "Over the past 26+ years, Pavan Stones Group has dispatched containerized shipments to 40+ major destination sea ports across the United States, United Kingdom, Europe, Australia, New Zealand, and the Middle East. Our dedicated logistics desk manages vessel bookings, bonded storage, and container stuffing.",
     highlights: [
       "40+ Global Sea Ports",
       "26+ Years Export Experience",
@@ -116,7 +115,7 @@ const FAQS_DATA: FAQItem[] = [
   {
     id: "faq-shipment-options",
     num: "07",
-    icon: Anchor,
+    icon: Truck,
     topic: "FOB / CIF Shipment Options",
     question: "What commercial shipping terms do you support (FOB vs. CIF)?",
     answer:
@@ -130,7 +129,7 @@ const FAQS_DATA: FAQItem[] = [
   {
     id: "faq-export-docs",
     num: "08",
-    icon: FileCheck2,
+    icon: FileCheck,
     topic: "Export Documentation Support",
     question: "Do you handle complete customs and international trade documentation?",
     answer:
@@ -178,7 +177,7 @@ export default function WhyChooseUs() {
               style={{ fontSize: "clamp(34px, 4.2vw, 54px)" }}
             >
               <span className="text-[#241919]">Why Buy From</span>{" "}
-              <span className="text-[#0f172a] italic font-normal">Pavan Groups?</span>
+              <span className="text-[#0f172a] italic font-normal">Pavan Stones Group?</span>
             </h2>
 
             <p className="text-[14px] sm:text-[15px] text-[#454545] font-light leading-relaxed">

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Package, Ship, Scale, Ruler, CheckCircle2, ShieldCheck, Box } from "lucide-react";
+import { Package, ShieldCheck, Box } from "@animateicons/react/lucide";
 
 interface DimensionalMatrixProps {
   companyName: string;

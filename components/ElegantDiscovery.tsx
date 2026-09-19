@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { ArrowRight } from "@animateicons/react/lucide";
 
 const gridItems = [
   // 1. Tall left
@@ -56,7 +57,7 @@ const gridItems = [
 
 export default function ElegantDiscovery() {
   return (
-    <section className="relative w-full h-auto md:h-[90vh] min-h-[600px] max-h-[900px] bg-white overflow-hidden border-t border-gray-100 flex items-center justify-center py-12 md:py-0">
+    <section className="relative z-10 w-full h-auto md:h-[90vh] min-h-[600px] max-h-[900px] bg-white overflow-hidden border-t border-gray-100 flex items-center justify-center py-12 md:py-0 shadow-[0_-25px_50px_-12px_rgba(0,0,0,0.25)]">
       <div className="relative z-10 w-full max-w-[1400px] mx-auto px-4 md:px-8 h-full md:h-[80%] flex flex-col">
         
         {/* Responsive Grid */}
@@ -81,9 +82,10 @@ export default function ElegantDiscovery() {
                   </h2>
                   <Link 
                     href="/gallery"
-                    className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#140d0a] hover:text-[#c85a32] transition-colors duration-300 pb-1 border-b border-[#140d0a]/20 hover:border-[#c85a32]"
+                    className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#140d0a] hover:text-[#c85a32] transition-colors duration-300 pb-1 border-b border-[#140d0a]/20 hover:border-[#c85a32] group"
                   >
-                    View Collection <span className="text-lg leading-none">&rarr;</span>
+                    <span>View Collection</span>
+                    <ArrowRight size={13} className="transition-transform duration-300 group-hover:translate-x-1" />
                   </Link>
                 </motion.div>
               );
