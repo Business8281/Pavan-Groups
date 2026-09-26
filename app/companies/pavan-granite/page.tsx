@@ -3,7 +3,7 @@ import { use, useState, useRef } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { ArrowRight } from "@animateicons/react/lucide";
+import { ArrowRight } from "lucide-react";
 import RangeCarousel from "@/components/RangeCarousel";
 import DimensionalMatrix from "@/components/DimensionalMatrix";
 import CompanyEditorialShowcase from "@/components/CompanyEditorialShowcase";
@@ -567,15 +567,15 @@ const COMPANIES_DATABASE: Record<string, CompanyData> = {
     ],
     products: [
       {
-        id: "emerald-green-quartzite",
-        name: "Exotic Emerald Green Quartzite Slabs",
-        colors: ["Vibrant Emerald", "Viridian Green", "Golden Veins"],
-        description: "Precious architectural exotic quartzite with crystalline luminescence and undulating viridian veins.",
-        finishes: ["Diamond Mirror Polish", "Leathered Satin", "Honed Matte"],
-        gradient: "linear-gradient(135deg, #062c24 0%, #0d5c4a 50%, #031c17 100%)",
-        recommendedUse: "Backlit reception walls, waterfall kitchen islands, and monumental bathroom suites.",
-        slipRating: "R10",
-        heatResistance: "Heat & Acid Proof",
+        id: "black-galaxy-granite",
+        name: "Chimakurthy Black Galaxy Granite",
+        colors: ["Deep Pitch Black", "Golden Bronzite Flecks", "Copper Stars"],
+        description: "World-renowned plutonic granite studded with golden-bronze bronzite crystal stars from our exclusive Chimakurthy quarries.",
+        finishes: ["95+ Mirror Polish", "Honed Matte", "Leathered Velvet", "Flamed"],
+        gradient: "linear-gradient(135deg, #090a0c 0%, #221f17 50%, #040506 100%)",
+        recommendedUse: "Luxury kitchen islands, vanity tops, executive lobbies, and grand entrances.",
+        slipRating: "R9 (Polished) / R12 (Flamed)",
+        heatResistance: "Extreme Heat & Chemical Resistant",
       },
     ],
     specifications: {
@@ -625,7 +625,7 @@ export default function CompanyDedicatedPage() {
   };
 
   return (
-    <main className="relative bg-[#f2f2f2] min-h-screen text-[#140d0a] selection:bg-[#3e352a] selection:text-white">
+    <main className="relative bg-[#f2f2f2] min-h-screen text-[#140d0a] selection:bg-[#ff5500] selection:text-white">
       
       {/* ── ANIMATED HERO SECTION (STICKY COVER EFFECT) ── */}
       <section className="sticky top-0 z-0 w-full aspect-video md:aspect-auto md:h-screen min-h-[480px] md:min-h-[600px] flex items-center justify-center overflow-hidden bg-[#140d0a] pt-[72px]">

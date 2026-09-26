@@ -10,12 +10,12 @@ import {
   Sparkles,
   Check,
   Info,
-  House,
+  Home as House,
   Utensils,
   Droplet,
   Layers,
   Locate,
-} from "@animateicons/react/lucide";
+} from "lucide-react";
 import { ProductStone } from "@/lib/productsData";
 
 interface ProductSceneVisualizerProps {

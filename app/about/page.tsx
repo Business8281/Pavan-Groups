@@ -18,11 +18,12 @@ import {
   ChevronRight,
   ChevronLeft,
   ArrowRight,
+  ArrowUpRight,
   Play,
   Pause,
   ShieldCheck,
-  CircleCheck as CheckCircle2,
-} from "@animateicons/react/lucide";
+  CheckCircle2,
+} from "lucide-react";
 
 // Smooth Animated Number Counter Component
 function AnimatedCounter({
@@ -405,52 +406,48 @@ const QUALITY_STAGES = [
     id: "stage-1",
     step: "01",
     phase: "GEOLOGICAL AUDIT",
-    title: "Quarry Bench & Block Provenance",
-    tagline: "Selective extraction from virgin mineral reserves",
-    description:
-      "Virgin stone beds across our captive quarries are surveyed for crystalline density, natural bed stratification, and mineral uniformity before block extraction. Only structural-grade, micro-fissure-free monoliths enter our processing yards.",
+    title: "Quarry Bench Provenance",
+    tagline: "Selective block extraction from virgin mineral reserves",
+    standardCode: "ASTM C170",
     benchmark: "100% Crystalline Matrix Verified",
-    equipment: "Ultrasonic Resonance Diagnostics",
-    image: "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=80",
+    equipment: "Ultrasonic Diagnostics",
+    image: "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=400&q=80",
     color: "#ea580c",
   },
   {
     id: "stage-2",
     step: "02",
     phase: "CALIBRATION & SLICING",
-    title: "Multi-Blade Diamond Gangsaw Slicing",
-    tagline: "Sub-millimeter slab leveling and dimensional accuracy",
-    description:
-      "High-speed Italian gang saws equipped with 80+ diamond blades slice 30-ton boulders into calibrated jumbo slabs at ±0.5mm precision. Multi-beam laser tracking continuously verifies thickness uniformity across the entire run.",
+    title: "Multi-Blade Gangsaw Slicing",
+    tagline: "Sub-millimeter laser-calibrated slab leveling",
+    standardCode: "EN 12058",
     benchmark: "±0.5 mm Diamond Calibration",
-    equipment: "Italian Diamond Multi-Blade Frames",
-    image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80",
+    equipment: "Multi-Blade Frames",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=400&q=80",
     color: "#d97706",
   },
   {
     id: "stage-3",
     step: "03",
     phase: "SURFACE REFINEMENT",
-    title: "16-Head Mirror Polish & Texture Profiling",
-    tagline: "95° specular mirror luster and authentic rockface cleaves",
-    description:
-      "Vacuum-chamber epoxy resin infusion seals micro-pores before 16-head continuous line polishers bring out optical depth and 95° specular gloss. For non-slip exterior applications, continuous shot-blasting bays produce certified R11 finishes.",
-    benchmark: "95° Specular Reflection / R11 Rating",
-    equipment: "16-Head Line Polishers & Vacuum Beds",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80",
+    title: "16-Head Specular Polish",
+    tagline: "Deep-vacuum resin & mirror luster refinement",
+    standardCode: "ISO 2813",
+    benchmark: "95° Specular Reflection",
+    equipment: "16-Head Line Polishers",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80",
     color: "#c2410c",
   },
   {
     id: "stage-4",
     step: "04",
     phase: "DAYLIGHT DRY-LAY & EXPORT",
-    title: "Daylight Inspection & Seaworthy Crating",
-    tagline: "Vein-matched batch layout and ISPM-15 timber protection",
-    description:
-      "100% of finished tiles and slabs are dry-laid under 5000K daylight-balanced illumination to confirm vein continuity and tonal consistency. Slabs are interleaved with high-density foam, vapor-sealed, and packaged in ISPM-15 certified crates.",
+    title: "Daylight Dry-Lay & Crating",
+    tagline: "5000K vein-matching & seaworthy timber protection",
+    standardCode: "ISPM-15",
     benchmark: "ISPM-15 Seaworthy Containerized",
-    equipment: "Daylight Dry-Lay Floor & Hardwood Crating",
-    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80",
+    equipment: "Hardwood Crating",
+    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=400&q=80",
     color: "#16a34a",
   },
 ];
@@ -818,15 +815,14 @@ export default function AboutPage() {
   const router = useRouter();
   const [isHeroHovered, setIsHeroHovered] = useState(false);
   const [activeFacilityIdx, setActiveFacilityIdx] = useState(0);
-  const [activeQualityStageIdx, setActiveQualityStageIdx] = useState(0);
   const [activeProcessStepIdx, setActiveProcessStepIdx] = useState(0);
+  const [hoveredGateIdx, setHoveredGateIdx] = useState<number | null>(null);
 
   const handleContactClick = () => {
     router.push("/#contact");
   };
 
   const activeFacility = MANUFACTURING_FACILITIES[activeFacilityIdx];
-  const activeQualityStage = QUALITY_STAGES[activeQualityStageIdx];
   const activeProcessStep = PROCESS_STEPS[activeProcessStepIdx];
 
   return (
@@ -866,11 +862,11 @@ export default function AboutPage() {
           {/* Main Grand Title with Sketch Mark directly under PAVAN STONES GROUP */}
           <h1
             onMouseEnter={() => setIsHeroHovered(true)}
-            className="font-display font-light text-[#241919] leading-[1.1] tracking-[-0.015em] mb-4 cursor-pointer transition-colors duration-300 group-hover:text-[#181111]"
-            style={{ fontSize: "clamp(34px, 4.5vw, 64px)" }}
+            className="font-display font-light text-[#241919] leading-[1.1] tracking-[-0.015em] mb-4 cursor-pointer transition-colors duration-300 group-hover:text-[#181111] flex flex-wrap items-center justify-center gap-x-2.5 sm:gap-x-3"
+            style={{ fontSize: "clamp(20px, 4.2vw, 64px)" }}
           >
-            About{" "}
-            <span className="relative inline-block font-normal">
+            <span>About</span>{" "}
+            <span className="relative inline-block font-normal whitespace-nowrap">
               PAVAN STONES GROUP
               <svg
                 viewBox="0 0 280 12"
@@ -1196,174 +1192,165 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* ── 5-STAGE PRECISION MANUFACTURING WORKFLOW (EDITORIAL MASTERCRAFT SHOWCASE) ── */}
-          <div className="space-y-10 pt-8 border-t border-[#747474]/15">
+          {/* ── 5-STAGE PRECISION MANUFACTURING WORKFLOW (ARCHITECTURAL ALTERNATING TIMELINE) ── */}
+          <div className="space-y-12 pt-8 border-t border-[#6c757d]/20">
             {/* Section Header */}
             <div className="text-center max-w-3xl mx-auto space-y-3">
               <span className="text-[11px] font-mono uppercase tracking-[0.24em] text-[#ff5500] font-semibold block">
                 The Craft of Natural Stone
               </span>
-              <h3 className="font-display font-light text-2xl sm:text-3xl md:text-4xl text-[#241919]">
-                Precision Manufacturing Lifecycle
-              </h3>
+              <h2 className="font-display font-light text-3xl sm:text-4xl md:text-5xl text-[#241919] leading-[1.08] tracking-tight">
+                Precision Manufacturing <span className="font-normal text-[#ff5500] italic">Lifecycle</span>
+              </h2>
+              <div className="w-20 h-[3px] bg-gradient-to-r from-[#ff5500] to-[#ff5500]/20 rounded-full mx-auto my-3" />
               <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed max-w-2xl mx-auto">
-                From selective quarry bench extraction to multi-blade diamond slicing, mirror polishing, 5-axis CNC profiling, and international seaworthy export.
+                From selective captive quarry bench extraction to multi-blade Italian gangsaw slicing, 16-head specular polishing, 5-axis CNC profiling, and moisture-sealed international export crating.
               </p>
             </div>
 
-            {/* 5-Phase Horizontal Architectural Timeline Ribbon (Single Horizontal Line, Equal Spacing & Ends) */}
-            <div className="w-full max-w-5xl mx-auto border-b border-[#747474]/20 pb-4">
-              <div className="grid grid-cols-5 w-full items-center text-center">
+            {/* Quick-Jump Milestone Ribbon */}
+            <div className="max-w-5xl mx-auto flex items-center justify-between gap-2 overflow-x-auto pb-2 scrollbar-none px-2">
+              {PROCESS_STEPS.map((step, idx) => (
+                <a
+                  key={step.step}
+                  href={`#process-step-${step.step}`}
+                  className="group flex items-center gap-2.5 px-3.5 py-2 rounded-[4px] border border-[#6c757d]/30 bg-white hover:border-[#ff5500] transition-all flex-shrink-0 cursor-pointer shadow-xs"
+                >
+                  <span className="w-6 h-6 rounded-[3px] bg-[#6c757d]/10 text-[#6c757d] group-hover:bg-[#ff5500] group-hover:text-white font-mono text-[10.5px] font-bold flex items-center justify-center transition-colors">
+                    {step.step}
+                  </span>
+                  <div className="text-left">
+                    <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-[#6c757d] group-hover:text-[#ff5500] block transition-colors">
+                      {step.phase}
+                    </span>
+                    <span className="text-xs font-display font-medium text-[#241919] block truncate max-w-[130px]">
+                      {step.title}
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+
+            {/* Alternating Step Timeline Flow with Framer Motion Scroll Reveals */}
+            <div className="max-w-5xl mx-auto relative pt-4 pb-8 overflow-hidden">
+              {/* Central Spine Line (Desktop) */}
+              <div className="hidden lg:block absolute left-1/2 top-8 bottom-12 w-px -translate-x-1/2 bg-gradient-to-b from-[#ff5500] via-[#6c757d]/30 to-[#ff5500]" />
+
+              <div className="space-y-12 sm:space-y-16">
                 {PROCESS_STEPS.map((step, idx) => {
-                  const isActive = activeProcessStepIdx === idx;
+                  const isEven = idx % 2 === 0;
+
                   return (
-                    <button
+                    <motion.div
                       key={step.step}
-                      onClick={() => setActiveProcessStepIdx(idx)}
-                      className={`group relative pb-2 text-xs sm:text-sm font-sans transition-all duration-200 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 cursor-pointer select-none ${
-                        isActive
-                          ? "font-bold"
-                          : "text-[#555555] hover:text-[#ff5500] font-medium"
-                      }`}
-                      style={{
-                        color: isActive ? step.color : undefined,
-                      }}
+                      id={`process-step-${step.step}`}
+                      initial={{ opacity: 0, y: 35 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: false, amount: 0.25 }}
+                      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                      className="relative scroll-mt-28"
                     >
-                      <span
-                        className="font-mono text-[11px] sm:text-xs font-bold transition-colors duration-200 group-hover:text-[#ff5500]"
-                        style={{ color: isActive ? step.color : "#888888" }}
-                      >
-                        {step.step}
-                      </span>
-                      <span className="tracking-tight uppercase text-[10.5px] sm:text-xs transition-colors duration-200 group-hover:text-[#ff5500]">
-                        {step.phase}
-                      </span>
-                      {isActive && (
+                      {/* Timeline Node Icon (Center Desktop - Isolated Positioning Wrapper for Perfect Axis Centering) */}
+                      <div className="hidden lg:flex absolute left-1/2 top-10 -translate-x-1/2 z-10 pointer-events-none">
                         <motion.div
-                          layoutId="activeProcessUnderline"
-                          className="absolute bottom-0 left-2 right-2 sm:left-4 sm:right-4 h-[2px]"
-                          style={{ backgroundColor: step.color }}
-                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        />
-                      )}
-                    </button>
+                          initial={{ scale: 0.4, opacity: 0 }}
+                          whileInView={{ scale: 1, opacity: 1 }}
+                          viewport={{ once: false, amount: 0.25 }}
+                          transition={{ duration: 0.45, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                          className="w-10 h-10 rounded-full bg-white border-2 border-[#ff5500] flex items-center justify-center shadow-md font-mono text-xs font-bold text-[#ff5500]"
+                        >
+                          {step.step}
+                        </motion.div>
+                      </div>
+
+                      {/* Alternating 2-Column Grid */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">
+                        {/* Image Column */}
+                        <motion.div
+                          initial={{ opacity: 0, x: isEven ? -35 : 35, y: 15 }}
+                          whileInView={{ opacity: 1, x: 0, y: 0 }}
+                          viewport={{ once: false, amount: 0.25 }}
+                          transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                          className={`order-1 ${
+                            isEven ? "lg:order-1" : "lg:order-2"
+                          }`}
+                        >
+                          <div className="relative aspect-[16/10] sm:aspect-[16/10] w-full rounded-[4px] overflow-hidden border border-[#6c757d] bg-neutral-900 group shadow-xs">
+                            <img
+                              src={step.image}
+                              alt={step.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                            />
+                          </div>
+                        </motion.div>
+
+                        {/* Content Card Column */}
+                        <motion.div
+                          initial={{ opacity: 0, x: isEven ? 35 : -35, y: 15 }}
+                          whileInView={{ opacity: 1, x: 0, y: 0 }}
+                          viewport={{ once: false, amount: 0.25 }}
+                          transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                          className={`order-2 ${
+                            isEven ? "lg:order-2" : "lg:order-1"
+                          }`}
+                        >
+                          <div className="bg-white border border-[#6c757d] rounded-[4px] p-5 sm:p-7 space-y-4 shadow-xs hover:border-[#ff5500] transition-colors duration-300">
+                            {/* Eyebrow & Step Tag */}
+                            <div className="flex items-center justify-between gap-2 border-b border-[#6c757d]/15 pb-2.5">
+                              <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-[3px] bg-[#ff5500] text-white">
+                                STAGE {step.step}
+                              </span>
+                              <span className="text-[10.5px] font-mono text-[#6c757d] font-semibold tracking-wider uppercase">
+                                {step.phase}
+                              </span>
+                            </div>
+
+                            {/* Title & Tagline */}
+                            <div className="space-y-1">
+                              <h3 className="font-display font-medium text-xl sm:text-2xl text-[#241919] leading-tight">
+                                {step.title}
+                              </h3>
+                              <p className="text-xs sm:text-[13px] text-[#ff5500] font-mono font-medium">
+                                {step.tagline}
+                              </p>
+                            </div>
+
+                            {/* Narrative */}
+                            <p className="text-xs sm:text-[13.5px] text-[#555555] font-light leading-relaxed">
+                              {step.description}
+                            </p>
+
+                            {/* Specification Cards */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                              {/* Green Benchmark */}
+                              <div className="p-3 rounded-[3px] bg-[#16a34a]/8 border border-[#16a34a]/25 space-y-1">
+                                <span className="text-[9.5px] font-mono uppercase text-[#15803d] tracking-wider block font-semibold">
+                                  Precision Benchmark
+                                </span>
+                                <div className="flex items-center gap-2 text-xs font-bold font-mono text-[#15803d] leading-snug">
+                                  <CheckCircle2 className="w-4 h-4 text-[#16a34a] flex-none" />
+                                  <span>{step.highlight}</span>
+                                </div>
+                              </div>
+
+                              {/* Machinery Asset */}
+                              <div className="p-3 rounded-[3px] bg-[#6c757d]/8 border border-[#6c757d]/25 space-y-1">
+                                <span className="text-[9.5px] font-mono uppercase text-[#6c757d] tracking-wider block font-semibold">
+                                  Industrial Machinery
+                                </span>
+                                <span className="text-xs font-bold font-mono text-[#241919] leading-snug block">
+                                  {step.equipment}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      </div>
+                    </motion.div>
                   );
                 })}
               </div>
             </div>
-
-            {/* Editorial Showcase Viewport: Large Photography & Refined Story */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeProcessStep.step}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="bg-white border border-[#747474]/15 rounded-3xl p-6 sm:p-10 lg:p-12 shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
-              >
-                {/* Left: High-Resolution Visual with Live Spec Badges (7 cols) */}
-                <div className="lg:col-span-7 relative">
-                  <div className="relative aspect-[16/10] sm:aspect-[4/3] lg:aspect-[16/11] w-full rounded-2xl overflow-hidden border border-[#747474]/15 shadow-md group">
-                    <img
-                      src={activeProcessStep.image}
-                      alt={activeProcessStep.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
-
-                    {/* Top Corner Phase Badge */}
-                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/40 text-xs font-mono font-bold text-[#241919] shadow-sm">
-                      PHASE 0{activeProcessStep.step}
-                    </div>
-
-                    {/* Bottom Technical Spec Pill */}
-                    <div className="absolute bottom-4 left-4 right-4 z-10 flex flex-wrap items-center justify-between gap-2 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/40 text-[#241919] shadow-lg text-xs">
-                      <span className="font-semibold truncate max-w-[200px] sm:max-w-none">
-                        ⚙ {activeProcessStep.equipment}
-                      </span>
-                      <span className="font-mono font-bold" style={{ color: activeProcessStep.color }}>
-                        {activeProcessStep.highlight}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right: Editorial Narrative & Specifications (5 cols) */}
-                <div className="lg:col-span-5 space-y-6">
-                  <div className="space-y-2">
-                    <span
-                      className="text-xs font-mono uppercase tracking-[0.22em] font-bold block"
-                      style={{ color: activeProcessStep.color }}
-                    >
-                      STAGE 0{activeProcessStep.step} · {activeProcessStep.phase}
-                    </span>
-                    <h3 className="font-display font-medium text-2xl sm:text-3xl lg:text-4xl text-[#241919] leading-tight">
-                      {activeProcessStep.title}
-                    </h3>
-                    <p className="text-sm font-medium text-[#454545] pt-1">
-                      {activeProcessStep.tagline}
-                    </p>
-                  </div>
-
-                  <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed">
-                    {activeProcessStep.description}
-                  </p>
-
-                  {/* 2 Clean Benchmark Highlights */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    <div className="p-3.5 rounded-xl bg-[#747474]/5 border border-[#747474]/15 space-y-1">
-                      <span className="text-[10px] font-mono uppercase text-[#747474] tracking-wider block">
-                        Precision Standard
-                      </span>
-                      <span className="text-xs font-bold font-mono text-[#241919] block">
-                        {activeProcessStep.highlight}
-                      </span>
-                    </div>
-
-                    <div className="p-3.5 rounded-xl bg-[#747474]/5 border border-[#747474]/15 space-y-1">
-                      <span className="text-[10px] font-mono uppercase text-[#747474] tracking-wider block">
-                        Technology Asset
-                      </span>
-                      <span
-                        className="text-xs font-bold font-mono truncate block"
-                        style={{ color: activeProcessStep.color }}
-                      >
-                        {activeProcessStep.equipment.split(" & ")[0]}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Interactive Phase Step Buttons */}
-                  <div className="pt-2 flex items-center justify-between gap-4 border-t border-[#747474]/15 text-xs font-mono">
-                    <button
-                      onClick={() =>
-                        setActiveProcessStepIdx(
-                          (prev) => (prev - 1 + PROCESS_STEPS.length) % PROCESS_STEPS.length
-                        )
-                      }
-                      className="inline-flex items-center gap-2 text-[#555555] hover:text-[#241919] font-bold cursor-pointer transition-colors"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                      <span>Previous Phase</span>
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        setActiveProcessStepIdx(
-                          (prev) => (prev + 1) % PROCESS_STEPS.length
-                        )
-                      }
-                      className="inline-flex items-center gap-2 font-bold cursor-pointer transition-colors"
-                      style={{ color: activeProcessStep.color }}
-                    >
-                      <span>Next Phase</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
           </div>
 
         </div>
@@ -1395,9 +1382,9 @@ export default function AboutPage() {
 
           {/* ── FEATURED FOUNDER SECTION: 3 EQUAL COLUMNS (IMAGE, WHITE SPACE, TEXT) ── */}
           <div className="w-full">
-            <div className="group grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch sm:h-[320px]">
+            <div className="group grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch md:h-[320px]">
               {/* Card 1 (1/3 Width): Executive Monogram Placeholder on the left */}
-              <div className="h-[280px] sm:h-full w-full relative rounded-2xl overflow-hidden bg-white border border-[#747474]/15 shadow-xs flex flex-col items-center justify-center p-6 text-center group-hover:border-[#ff5500]/30 transition-all duration-300">
+              <div className="h-[280px] md:h-full w-full relative rounded-2xl overflow-hidden bg-white border border-[#747474]/15 shadow-xs flex flex-col items-center justify-center p-6 text-center group-hover:border-[#ff5500]/30 transition-all duration-300">
                 {FOUNDER_INFO.image ? (
                   <img
                     src={FOUNDER_INFO.image}
@@ -1580,81 +1567,298 @@ export default function AboutPage() {
 
           {/* Section Header */}
           <div className="max-w-3xl mx-auto text-center space-y-3">
-            <span className="text-[11px] font-mono uppercase tracking-[0.24em] text-[#ff5500] font-semibold block">
-              Uncompromised Architectural Standards
-            </span>
-            
-            <h2 className="font-display font-light text-3xl sm:text-4xl md:text-5xl lg:text-[54px] text-[#241919] leading-[1.08] tracking-tight">
-              Precision Quality &amp; <span className="font-normal text-[#ff5500]">Mastercraft</span>
+            <h2 className="font-display font-light text-3xl sm:text-4xl md:text-5xl lg:text-[52px] text-[#252422] leading-[1.08] tracking-tight">
+              Precision Quality &amp; <span className="font-normal text-[#ff5500] italic">Mastercraft</span>
             </h2>
-            
+            <div className="w-20 h-[3px] bg-gradient-to-r from-[#ff5500] to-[#ff5500]/20 rounded-full mx-auto my-3" />
             <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed max-w-2xl mx-auto">
               From captive quarry extraction and Italian gangsaw calibration to 16-head line polishing, 5000K daylight dry-laying, and seaworthy containerization, our multi-stage quality assurance protocol guarantees flawless natural stone engineered for prestigious international landmarks across 40+ countries.
             </p>
           </div>
 
-          {/* ── 4-STAGE PRECISION QUALITY PROTOCOL (SEAMLESS MASTER DOSSIER TABLE) ── */}
-          <div className="divide-y divide-[#747474]/15 border-t border-b border-[#747474]/15">
-            {QUALITY_STAGES.map((stage) => (
-              <div
-                key={stage.id}
-                className="py-10 sm:py-12 lg:py-14 grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center group hover:bg-[#747474]/[0.015] transition-colors px-2 sm:px-4"
-              >
-                {/* Col 1: Step Number & Phase Code (2 cols) */}
-                <div className="md:col-span-3 lg:col-span-2 space-y-1.5">
-                  <span className="font-display font-light text-5xl sm:text-6xl text-[#241919] group-hover:text-[#ff5500] transition-colors block leading-none">
-                    {stage.step}
-                  </span>
-                  <span className="text-[10.5px] font-mono font-bold uppercase tracking-wider text-[#ff5500] block pt-1">
-                    {stage.phase}
-                  </span>
-                  <span className="text-[10px] font-mono text-[#747474] block">
-                    Phase Protocol
-                  </span>
-                </div>
+          {/* ── 4-GATE ARCHITECTURAL QUALITY BLUEPRINT (STANDALONE 2x2 CENTER IMAGE SQUARE + 4 CORNER TEXT BOXES) ── */}
+          <div className="max-w-6xl mx-auto">
+            {/* Desktop & Tablet 3-Column Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+              {/* Left Column: Gate 01 (Top-Left Corner) & Gate 03 (Bottom-Left Corner) */}
+              <div className="lg:col-span-4 flex flex-col justify-between h-full gap-6 lg:gap-8">
+                {/* Gate 01 Text Card (Top-Left Corner) */}
+                <div
+                  onMouseEnter={() => setHoveredGateIdx(0)}
+                  onMouseLeave={() => setHoveredGateIdx(null)}
+                  className={`bg-white border rounded-[4px] p-5 sm:p-6 space-y-3.5 transition-all duration-300 shadow-xs cursor-pointer ${
+                    hoveredGateIdx === 0
+                      ? "border-[#ff5500] shadow-md"
+                      : "border-[#6c757d] hover:border-[#ff5500]"
+                  }`}
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-[4px] bg-[#ff5500] text-white">
+                        GATE 01
+                      </span>
+                      <span className="text-[10.5px] font-mono text-[#495057] font-semibold px-2 py-0.5 rounded-[4px] bg-[#6c757d]/10 border border-[#6c757d]/20">
+                        {QUALITY_STAGES[0].standardCode}
+                      </span>
+                    </div>
 
-                {/* Col 2: High-Resolution Photo (4 cols) */}
-                <div className="md:col-span-4 lg:col-span-4 relative">
-                  <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden border border-[#747474]/15 shadow-xs group-hover:border-[#ff5500]/50 transition-colors">
-                    <img
-                      src={stage.image}
-                      alt={stage.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                    <h3
+                      className={`font-display font-medium text-lg sm:text-xl transition-colors leading-snug ${
+                        hoveredGateIdx === 0 ? "text-[#ff5500]" : "text-[#241919]"
+                      }`}
+                    >
+                      {QUALITY_STAGES[0].title}
+                    </h3>
 
-                    <div className="absolute bottom-2.5 left-2.5 right-2.5">
-                      <span className="text-[10px] font-mono font-semibold text-white bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/20 block truncate">
-                        ⚙ {stage.equipment}
+                    <p className="text-xs sm:text-[13px] text-[#555555] font-light leading-relaxed">
+                      {QUALITY_STAGES[0].tagline}
+                    </p>
+                  </div>
+
+                  <div className="pt-2.5 border-t border-[#6c757d]/20 flex items-center justify-between text-xs font-mono">
+                    <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-[4px] bg-[#16a34a]/8 border border-[#16a34a]/20 w-full">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16a34a] flex-none" />
+                      <span className="text-xs font-mono font-bold text-[#15803d] truncate">
+                        {QUALITY_STAGES[0].benchmark}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Col 3: Narrative & Engineering Narrative (4 cols) */}
-                <div className="md:col-span-5 lg:col-span-4 space-y-2">
-                  <h3 className="font-display font-medium text-xl sm:text-2xl text-[#241919] group-hover:text-[#ff5500] transition-colors leading-tight">
-                    {stage.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm font-medium text-[#c2410c]">
-                    {stage.tagline}
-                  </p>
-                  <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed pt-1">
-                    {stage.description}
-                  </p>
-                </div>
+                {/* Gate 03 Text Card (Bottom-Left Corner) */}
+                <div
+                  onMouseEnter={() => setHoveredGateIdx(2)}
+                  onMouseLeave={() => setHoveredGateIdx(null)}
+                  className={`bg-white border rounded-[4px] p-5 sm:p-6 space-y-3.5 transition-all duration-300 shadow-xs cursor-pointer ${
+                    hoveredGateIdx === 2
+                      ? "border-[#ff5500] shadow-md"
+                      : "border-[#6c757d] hover:border-[#ff5500]"
+                  }`}
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-[4px] bg-[#ff5500] text-white">
+                        GATE 03
+                      </span>
+                      <span className="text-[10.5px] font-mono text-[#495057] font-semibold px-2 py-0.5 rounded-[4px] bg-[#6c757d]/10 border border-[#6c757d]/20">
+                        {QUALITY_STAGES[2].standardCode}
+                      </span>
+                    </div>
 
-                {/* Col 4: Verified Benchmark (2 cols) */}
-                <div className="md:col-span-12 lg:col-span-2 space-y-2 p-3.5 rounded-xl bg-[#747474]/[0.03] border border-[#747474]/10">
-                  <span className="text-[9.5px] font-mono uppercase tracking-wider text-[#747474] block">
-                    Verified Benchmark
-                  </span>
-                  <span className="text-xs font-mono font-bold text-[#241919] group-hover:text-[#ff5500] transition-colors block leading-snug">
-                    {stage.benchmark}
-                  </span>
+                    <h3
+                      className={`font-display font-medium text-lg sm:text-xl transition-colors leading-snug ${
+                        hoveredGateIdx === 2 ? "text-[#ff5500]" : "text-[#241919]"
+                      }`}
+                    >
+                      {QUALITY_STAGES[2].title}
+                    </h3>
+
+                    <p className="text-xs sm:text-[13px] text-[#555555] font-light leading-relaxed">
+                      {QUALITY_STAGES[2].tagline}
+                    </p>
+                  </div>
+
+                  <div className="pt-2.5 border-t border-[#6c757d]/20 flex items-center justify-between text-xs font-mono">
+                    <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-[4px] bg-[#16a34a]/8 border border-[#16a34a]/20 w-full">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16a34a] flex-none" />
+                      <span className="text-xs font-mono font-bold text-[#15803d] truncate">
+                        {QUALITY_STAGES[2].benchmark}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            ))}
+
+              {/* Center Column: Standalone 2x2 Square of 4 Images (Out of Box) */}
+              <div className="lg:col-span-4 flex items-center justify-center my-2 lg:my-0">
+                <div className="grid grid-cols-2 gap-2.5 w-full max-w-[340px] aspect-square">
+                  {/* Image 01 (Top-Left of 2x2 Square) */}
+                  <div
+                    onMouseEnter={() => setHoveredGateIdx(0)}
+                    onMouseLeave={() => setHoveredGateIdx(null)}
+                    className={`relative aspect-square rounded-[4px] overflow-hidden border transition-all duration-300 cursor-pointer bg-neutral-100 ${
+                      hoveredGateIdx === 0
+                        ? "border-[#ff5500] ring-3 ring-[#ff5500]/40 scale-[1.04] shadow-lg z-10"
+                        : "border-[#6c757d] hover:border-[#ff5500]"
+                    }`}
+                  >
+                    <img
+                      src={QUALITY_STAGES[0].image}
+                      alt={QUALITY_STAGES[0].title}
+                      className={`w-full h-full object-cover transition-transform duration-500 ease-out ${
+                        hoveredGateIdx === 0 ? "scale-110" : "scale-100"
+                      }`}
+                    />
+                  </div>
+
+                  {/* Image 02 (Top-Right of 2x2 Square) */}
+                  <div
+                    onMouseEnter={() => setHoveredGateIdx(1)}
+                    onMouseLeave={() => setHoveredGateIdx(null)}
+                    className={`relative aspect-square rounded-[4px] overflow-hidden border transition-all duration-300 cursor-pointer bg-neutral-100 ${
+                      hoveredGateIdx === 1
+                        ? "border-[#ff5500] ring-3 ring-[#ff5500]/40 scale-[1.04] shadow-lg z-10"
+                        : "border-[#6c757d] hover:border-[#ff5500]"
+                    }`}
+                  >
+                    <img
+                      src={QUALITY_STAGES[1].image}
+                      alt={QUALITY_STAGES[1].title}
+                      className={`w-full h-full object-cover transition-transform duration-500 ease-out ${
+                        hoveredGateIdx === 1 ? "scale-110" : "scale-100"
+                      }`}
+                    />
+                  </div>
+
+                  {/* Image 03 (Bottom-Left of 2x2 Square) */}
+                  <div
+                    onMouseEnter={() => setHoveredGateIdx(2)}
+                    onMouseLeave={() => setHoveredGateIdx(null)}
+                    className={`relative aspect-square rounded-[4px] overflow-hidden border transition-all duration-300 cursor-pointer bg-neutral-100 ${
+                      hoveredGateIdx === 2
+                        ? "border-[#ff5500] ring-3 ring-[#ff5500]/40 scale-[1.04] shadow-lg z-10"
+                        : "border-[#6c757d] hover:border-[#ff5500]"
+                    }`}
+                  >
+                    <img
+                      src={QUALITY_STAGES[2].image}
+                      alt={QUALITY_STAGES[2].title}
+                      className={`w-full h-full object-cover transition-transform duration-500 ease-out ${
+                        hoveredGateIdx === 2 ? "scale-110" : "scale-100"
+                      }`}
+                    />
+                  </div>
+
+                  {/* Image 04 (Bottom-Right of 2x2 Square) */}
+                  <div
+                    onMouseEnter={() => setHoveredGateIdx(3)}
+                    onMouseLeave={() => setHoveredGateIdx(null)}
+                    className={`relative aspect-square rounded-[4px] overflow-hidden border transition-all duration-300 cursor-pointer bg-neutral-100 ${
+                      hoveredGateIdx === 3
+                        ? "border-[#ff5500] ring-3 ring-[#ff5500]/40 scale-[1.04] shadow-lg z-10"
+                        : "border-[#6c757d] hover:border-[#ff5500]"
+                    }`}
+                  >
+                    <img
+                      src={QUALITY_STAGES[3].image}
+                      alt={QUALITY_STAGES[3].title}
+                      className={`w-full h-full object-cover transition-transform duration-500 ease-out ${
+                        hoveredGateIdx === 3 ? "scale-110" : "scale-100"
+                      }`}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Gate 02 (Top-Right Corner) & Gate 04 (Bottom-Right Corner) */}
+              <div className="lg:col-span-4 flex flex-col justify-between h-full gap-6 lg:gap-8">
+                {/* Gate 02 Text Card (Top-Right Corner) */}
+                <div
+                  onMouseEnter={() => setHoveredGateIdx(1)}
+                  onMouseLeave={() => setHoveredGateIdx(null)}
+                  className={`bg-white border rounded-[4px] p-5 sm:p-6 space-y-3.5 transition-all duration-300 shadow-xs cursor-pointer ${
+                    hoveredGateIdx === 1
+                      ? "border-[#ff5500] shadow-md"
+                      : "border-[#6c757d] hover:border-[#ff5500]"
+                  }`}
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-[4px] bg-[#ff5500] text-white">
+                        GATE 02
+                      </span>
+                      <span className="text-[10.5px] font-mono text-[#495057] font-semibold px-2 py-0.5 rounded-[4px] bg-[#6c757d]/10 border border-[#6c757d]/20">
+                        {QUALITY_STAGES[1].standardCode}
+                      </span>
+                    </div>
+
+                    <h3
+                      className={`font-display font-medium text-lg sm:text-xl transition-colors leading-snug ${
+                        hoveredGateIdx === 1 ? "text-[#ff5500]" : "text-[#241919]"
+                      }`}
+                    >
+                      {QUALITY_STAGES[1].title}
+                    </h3>
+
+                    <p className="text-xs sm:text-[13px] text-[#555555] font-light leading-relaxed">
+                      {QUALITY_STAGES[1].tagline}
+                    </p>
+                  </div>
+
+                  <div className="pt-2.5 border-t border-[#6c757d]/20 flex items-center justify-between text-xs font-mono">
+                    <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-[4px] bg-[#16a34a]/8 border border-[#16a34a]/20 w-full">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16a34a] flex-none" />
+                      <span className="text-xs font-mono font-bold text-[#15803d] truncate">
+                        {QUALITY_STAGES[1].benchmark}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Gate 04 Text Card (Bottom-Right Corner) */}
+                <div
+                  onMouseEnter={() => setHoveredGateIdx(3)}
+                  onMouseLeave={() => setHoveredGateIdx(null)}
+                  className={`bg-white border rounded-[4px] p-5 sm:p-6 space-y-3.5 transition-all duration-300 shadow-xs cursor-pointer ${
+                    hoveredGateIdx === 3
+                      ? "border-[#ff5500] shadow-md"
+                      : "border-[#6c757d] hover:border-[#ff5500]"
+                  }`}
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-[4px] bg-[#ff5500] text-white">
+                        GATE 04
+                      </span>
+                      <span className="text-[10.5px] font-mono text-[#495057] font-semibold px-2 py-0.5 rounded-[4px] bg-[#6c757d]/10 border border-[#6c757d]/20">
+                        {QUALITY_STAGES[3].standardCode}
+                      </span>
+                    </div>
+
+                    <h3
+                      className={`font-display font-medium text-lg sm:text-xl transition-colors leading-snug ${
+                        hoveredGateIdx === 3 ? "text-[#ff5500]" : "text-[#241919]"
+                      }`}
+                    >
+                      {QUALITY_STAGES[3].title}
+                    </h3>
+
+                    <p className="text-xs sm:text-[13px] text-[#555555] font-light leading-relaxed">
+                      {QUALITY_STAGES[3].tagline}
+                    </p>
+                  </div>
+
+                  <div className="pt-2.5 border-t border-[#6c757d]/20 flex items-center justify-between text-xs font-mono">
+                    <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-[4px] bg-[#16a34a]/8 border border-[#16a34a]/20 w-full">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16a34a] flex-none" />
+                      <span className="text-xs font-mono font-bold text-[#15803d] truncate">
+                        {QUALITY_STAGES[3].benchmark}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Compliance & Technical Dossier Action Bar */}
+          <div className="p-5 sm:p-6 bg-white border border-[#6c757d] rounded-[4px] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+            <div className="space-y-1 text-center sm:text-left">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#ff5500] block">
+                OFFICIAL ARCHITECTURAL CERTIFICATIONS
+              </span>
+              <p className="text-xs font-mono text-[#555555]">
+                Full ASTM C170, ASTM C97, ISPM-15, and ISO 9001:2015 laboratory reports available for all export consignments.
+              </p>
+            </div>
+
+            <Link
+              href="/export"
+              className="inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-[#252422] hover:bg-[#ff5500] text-white text-xs font-mono uppercase tracking-wider font-bold rounded-[4px] transition-all duration-300 shadow-sm hover:shadow-md flex-none cursor-pointer"
+            >
+              <span>Request ASTM Test Dossier</span>
+              <ArrowUpRight className="w-4 h-4" />
+            </Link>
           </div>
 
           {/* ── REAL-WORLD ARCHITECTURAL PERFORMANCE & CAPABILITY SHOWCASE ── */}
@@ -1811,18 +2015,18 @@ export default function AboutPage() {
                 </div>
               </div>
 
-              {/* Action Buttons with Cross / Staggered Offset Layout */}
-              <div className="flex flex-col sm:flex-row lg:flex-col gap-4 flex-none items-stretch sm:items-center lg:items-end">
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row lg:flex-col gap-3.5 flex-none items-stretch sm:items-center lg:items-end">
                 <Link
                   href="/request-sample"
-                  className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-[4px] bg-[#241919] hover:bg-[#ff5500] text-white text-xs font-mono uppercase tracking-wider font-bold transition-all duration-300 hover:scale-[1.02] shadow-sm cursor-pointer group text-center lg:-translate-x-8 sm:-translate-x-3"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-[4px] bg-[#241919] hover:bg-[#ff5500] text-white text-xs font-mono uppercase tracking-wider font-bold transition-all duration-300 hover:scale-[1.02] shadow-sm cursor-pointer group text-center"
                 >
                   <span>Request Certified Test Reports</span>
                   <ArrowRight className="w-4 h-4 text-[#ff5500] group-hover:text-white transition-colors" />
                 </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[4px] bg-white hover:bg-[#747474]/8 text-[#241919] hover:text-[#ff5500] text-xs font-mono uppercase tracking-wider font-bold border border-[#747474]/20 hover:border-[#ff5500]/40 transition-all duration-300 text-center lg:translate-x-0"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[4px] bg-white hover:bg-[#747474]/8 text-[#241919] hover:text-[#ff5500] text-xs font-mono uppercase tracking-wider font-bold border border-[#747474]/20 hover:border-[#ff5500]/40 transition-all duration-300 text-center"
                 >
                   <span>Schedule Factory Inspection</span>
                 </Link>

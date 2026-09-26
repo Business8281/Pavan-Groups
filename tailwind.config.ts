@@ -46,6 +46,9 @@ const config: Config = {
         display: ["'Cormorant Garamond'", "Georgia", "serif"],
         sans:    ["'DM Sans'", "system-ui", "sans-serif"],
       },
+      screens: {
+        xs: "480px",
+      },
     },
   },
   plugins: [],

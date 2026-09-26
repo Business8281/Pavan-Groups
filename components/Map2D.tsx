@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { IndianPort, DestinationPort } from "@/lib/shippingData";
-import { Info } from "@animateicons/react/lucide";
+import { Info } from "lucide-react";
 import { getAssetPath } from "@/lib/basePath";
 
 interface Map2DProps {

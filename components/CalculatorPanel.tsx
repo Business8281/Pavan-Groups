@@ -16,7 +16,7 @@ import {
   Box,
   Globe,
   Compass,
-} from "@animateicons/react/lucide";
+} from "lucide-react";
 import { scrollToHash } from "@/components/SmoothScroll";
 
 interface CalculatorPanelProps {

@@ -26,9 +26,10 @@ import {
   ChevronDown,
   Share,
   Eye,
-  CircleCheck as CheckCircle2,
-} from "@animateicons/react/lucide";
+  CheckCircle2,
+} from "lucide-react";
 import { ProductStone } from "@/lib/productsData";
+import { useWishlist } from "@/context/WishlistContext";
 import ProductSceneVisualizer from "./ProductSceneVisualizer";
 import ProductContainerCalculator from "./ProductContainerCalculator";
 import StoneTextureRotator from "./StoneTextureRotator";
@@ -42,9 +43,10 @@ export default function ProductDetailView({
   product,
   relatedProducts,
 }: ProductDetailViewProps) {
+  const { isWishlisted, toggleWishlist } = useWishlist();
+  const isItemWishlisted = isWishlisted(product.id);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedFinish, setSelectedFinish] = useState(0);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
   const [activeTab, setActiveTab] = useState<"engineering" | "provenance" | "packaging" | "installation">("engineering");
@@ -194,16 +196,18 @@ export default function ProductDetailView({
 
             <button
               type="button"
-              onClick={() => setIsWishlisted(!isWishlisted)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-[#747474]/20 hover:border-[#c85a32] bg-white text-[#241919] transition-all cursor-pointer text-xs font-medium shadow-3xs"
+              onClick={() => toggleWishlist(product.id)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-[#747474]/20 hover:border-[#ef4444] bg-white text-[#241919] hover:text-[#ef4444] transition-all cursor-pointer text-xs font-medium shadow-3xs"
               title="Save to Project Shortlist"
             >
               <Heart
                 className={`w-3.5 h-3.5 ${
-                  isWishlisted ? "fill-[#d94e34] text-[#d94e34]" : "text-[#747474]"
+                  isItemWishlisted ? "fill-[#ef4444] text-[#ef4444]" : "text-[#747474]"
                 }`}
               />
-              <span>{isWishlisted ? "Shortlisted" : "Shortlist"}</span>
+              <span className={isItemWishlisted ? "text-[#ef4444] font-semibold" : ""}>
+                {isItemWishlisted ? "Shortlisted" : "Shortlist"}
+              </span>
             </button>
 
             <Link
@@ -273,7 +277,15 @@ export default function ProductDetailView({
               {product.gallery && product.gallery.length === 2 && (
                 <div className="absolute top-4 right-16 z-10 px-3 py-1.5 rounded-xl bg-black/75 backdrop-blur-md border border-white/20 text-white text-[11px] font-mono flex items-center gap-2 shadow-lg">
                   <span className={`w-2 h-2 rounded-full ${isHeroHovered ? "bg-emerald-400" : "bg-amber-400"} animate-pulse`} />
-                  <span className="font-semibold">{isHeroHovered ? "Hover View: Seated Ganesha" : "Hover to Flip View"}</span>
+                  <span className="font-semibold">
+                    {product.badge === "CUSTOM PHOTO-TO-STONE"
+                      ? isHeroHovered
+                        ? "Real Photo Reference"
+                        : "Hover / Tap to View Real Photo"
+                      : isHeroHovered
+                      ? "Alternate Perspective View"
+                      : "Hover to Flip View"}
+                  </span>
                 </div>
               )}
 

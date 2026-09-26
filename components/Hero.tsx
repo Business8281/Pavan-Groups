@@ -42,7 +42,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="sticky top-0 z-0 w-full min-h-[90vh] md:min-h-screen flex flex-col justify-between items-center overflow-hidden bg-[#090706] mt-[72px] md:mt-0 pt-16 md:pt-24 pb-6 select-none"
+      className="sticky top-0 z-0 w-full min-h-[90dvh] sm:min-h-[94dvh] md:min-h-screen flex flex-col justify-between items-center overflow-hidden bg-[#090706] mt-[72px] md:mt-0 pt-12 sm:pt-16 md:pt-24 pb-4 sm:pb-6 select-none"
     >
       <style jsx>{`
         /* ── LUXURY LIQUID PRISM WAVE ── */
@@ -120,8 +120,8 @@ export default function Hero() {
       <div className="relative z-10" />
 
       {/* ── SOLE HERO FOCUS: SYNCHRONIZED ARCHITECTURAL APERTURE SPLIT ── */}
-      <div className="relative z-10 px-4 sm:px-8 md:px-12 max-w-7xl mx-auto w-full flex flex-col items-center justify-center text-center my-auto">
-        <div className="relative w-full max-w-5xl h-28 sm:h-36 md:h-48 flex items-center justify-center">
+      <div className="relative z-10 px-3 sm:px-6 md:px-12 max-w-7xl mx-auto w-full flex flex-col items-center justify-center text-center my-auto">
+        <div className="relative w-full max-w-5xl h-24 sm:h-32 md:h-48 flex items-center justify-center">
           
           {/* Central Laser Filament Ray */}
           <motion.div
@@ -134,7 +134,7 @@ export default function Hero() {
                 : { scaleX: 1.4, opacity: 0 }
             }
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute h-[1.5px] w-full max-w-4xl bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_18px_#ffffff] z-20 pointer-events-none"
+            className="absolute h-[1.5px] w-full max-w-[90vw] sm:max-w-xl md:max-w-4xl bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_18px_#ffffff] z-20 pointer-events-none"
           />
 
           {/* Top Half of Typography (Rises from Laser Horizon) */}
@@ -152,7 +152,8 @@ export default function Hero() {
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
           >
             <span
-              className={`font-display font-light text-white uppercase text-[26px] xs:text-[34px] sm:text-[50px] md:text-[66px] lg:text-[76px] leading-none whitespace-nowrap tracking-[0.16em] sm:tracking-[0.2em] md:tracking-[0.24em] transition-all duration-700 ${
+              style={{ fontSize: "clamp(20px, 5.6vw, 76px)" }}
+              className={`font-display font-light text-white uppercase leading-none whitespace-nowrap tracking-[0.14em] sm:tracking-[0.2em] md:tracking-[0.24em] transition-all duration-700 ${
                 phase === "glow" ? "white-neon-glow" : "drop-shadow-[0_4px_24px_rgba(0,0,0,0.7)]"
               }`}
             >
@@ -175,7 +176,10 @@ export default function Hero() {
               style={{ clipPath: "inset(50% 0 0 0)" }}
               className="absolute inset-0 flex items-center justify-center pointer-events-none"
             >
-              <span className="font-display font-light text-white uppercase text-[26px] xs:text-[34px] sm:text-[50px] md:text-[66px] lg:text-[76px] leading-none whitespace-nowrap tracking-[0.16em] sm:tracking-[0.2em] md:tracking-[0.24em] drop-shadow-[0_4px_24px_rgba(0,0,0,0.7)]">
+              <span 
+                style={{ fontSize: "clamp(20px, 5.6vw, 76px)" }}
+                className="font-display font-light text-white uppercase leading-none whitespace-nowrap tracking-[0.14em] sm:tracking-[0.2em] md:tracking-[0.24em] drop-shadow-[0_4px_24px_rgba(0,0,0,0.7)]"
+              >
                 <span className="liquid-prism-title">
                   PAVAN STONES GROUP
                 </span>

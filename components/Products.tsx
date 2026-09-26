@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, useInView, useTransform, useSpring, useMotionValue } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "@animateicons/react/lucide";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { scrollToHash } from "@/components/SmoothScroll";
 
 interface CompanyCollection {
@@ -244,7 +244,7 @@ export default function Products() {
   const ringColor = useTransform(
     stageMotion,
     [0, 1, 2, 3],
-    ["#9a3412", "#b45309", "#0f766e", "#722424"]
+    ["#ff5500", "#ff5500", "#ff5500", "#ff5500"]
   );
 
   // Dynamic luxury glow aura
@@ -282,6 +282,7 @@ export default function Products() {
       }
 
       const isDesktop = window.innerWidth >= 1024;
+      const isMobile = window.innerWidth < 640;
       const cRect = stickyContainerRef.current.getBoundingClientRect();
       const imgRect = imageContainerRef.current.getBoundingClientRect();
       const card0 = card0Ref.current.getBoundingClientRect();
@@ -289,17 +290,17 @@ export default function Products() {
       const card2 = card2Ref.current.getBoundingClientRect();
 
       // ── Station 1: About facility image — right-center vertical seam ──
-      const startX = imgRect.right - cRect.left;
+      const startX = isMobile ? imgRect.right - cRect.left - 20 : imgRect.right - cRect.left;
       const startY = imgRect.top - cRect.top + imageContainerRef.current.offsetHeight / 2;
 
       // ── Station 2: Pavan Impex card image — RIGHT TOP CORNER (badge centered on the corner) ──
       const card0Img = card0ImgRef.current ? card0ImgRef.current.getBoundingClientRect() : card0;
-      const pavanX = card0Img.right - cRect.left;
+      const pavanX = isMobile ? card0Img.right - cRect.left - 24 : card0Img.right - cRect.left;
       const pavanY = card0Img.top - cRect.top;
 
       // ── Station 3: Sai Balaji Impex card image — LEFT TOP CORNER ──
       const card1Img = card1ImgRef.current ? card1ImgRef.current.getBoundingClientRect() : card1;
-      const balajiX = card1Img.left - cRect.left;
+      const balajiX = isMobile ? card1Img.left - cRect.left + 24 : card1Img.left - cRect.left;
       // Use docked Y when card1 is stuck, live Y when still sliding up
       const balajiY = card1.top <= 104
         ? (card1.top - cRect.top)
@@ -349,32 +350,32 @@ export default function Products() {
         nextX = dualCenterX;
         nextY = dualCenterY;
         stageVal = 3;
-        nextScale = isDesktop ? 0.80 : 0.75;
+        nextScale = isDesktop ? 0.80 : isMobile ? 0.65 : 0.75;
       } else if (card1Docked && p2 > 0) {
         // Station 3 → Station 4: Straight glide from Balaji top-left into center
         nextX = balajiX + (dualCenterX - balajiX) * easeP2;
         nextY = balajiY + (dualCenterY - balajiY) * easeP2;
         stageVal = 2 + p2;
-        nextScale = 1.0 - (isDesktop ? 0.20 : 0.25) * easeP2;
+        nextScale = 1.0 - (isDesktop ? 0.20 : isMobile ? 0.35 : 0.25) * easeP2;
       } else if (p1 > 0) {
         // Station 2 → Station 3: STRAIGHT DIAGONAL cross-down (Pavan Impex right-top → Sai Balaji left-top)
         // Pure lerp — no sine arc dip
         nextX = pavanX + (balajiX - pavanX) * easeP1;
         nextY = pavanY + (balajiY - pavanY) * easeP1;
         stageVal = 1 + p1;
-        nextScale = 1.0;
+        nextScale = isMobile ? 0.75 : 1.0;
       } else if (prog0 > 0) {
         // Station 1 → Station 2: Glide from About image seam to Pavan Impex right-top corner
         nextX = startX + (pavanX - startX) * easeProg0;
         nextY = startY + (pavanY - startY) * easeProg0;
         stageVal = easeProg0;
-        nextScale = 1.0;
+        nextScale = isMobile ? 0.75 : 1.0;
       } else {
         // Station 1: Heritage / About facility image seam (initial position)
         nextX = startX;
         nextY = startY;
         stageVal = 0;
-        nextScale = 1.0;
+        nextScale = isMobile ? 0.75 : 1.0;
       }
 
       targetX.set(nextX);
@@ -409,7 +410,7 @@ export default function Products() {
     <section
       ref={sectionRef}
       id="products"
-      className="relative z-10 py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-16 bg-[#ffffff] text-[#241919] shadow-[0_-25px_50px_-12px_rgba(0,0,0,0.25)] transition-shadow duration-300"
+      className="relative z-10 py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-16 bg-[#ffffff] text-[#241919] shadow-[0_-25px_50px_-12px_rgba(0,0,0,0.25)] transition-shadow duration-300"
     >
       {/* ── TRAVELLING ORBITAL STAMP BADGE (SMOOTH CONTINUOUS SCROLL TRANSIT) ── */}
       <div className="sticky top-0 left-0 w-full h-0 z-40 pointer-events-none overflow-visible">
@@ -426,7 +427,7 @@ export default function Products() {
             }}
             className="pointer-events-none select-none will-change-transform"
           >
-            <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 flex items-center justify-center">
+            <div className="relative w-32 h-32 xs:w-36 xs:h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 flex items-center justify-center">
 
               {/* Outer 360° Continuous Rotating SVG Text Ring */}
               <motion.div
@@ -475,7 +476,7 @@ export default function Products() {
                 animate={{ rotate: -360 }}
                 transition={{ repeat: Infinity, duration: 32, ease: "linear" }}
                 style={{ borderColor: ringColor }}
-                className="absolute inset-3 sm:inset-3.5 rounded-full border-2 border-dashed opacity-35 pointer-events-none"
+                className="absolute inset-2.5 sm:inset-3.5 rounded-full border-2 border-dashed opacity-35 pointer-events-none"
               />
 
               {/* Luxury Center Seal Core Disc with Glassmorphic Shimmer & Shadow */}
@@ -484,15 +485,15 @@ export default function Products() {
                   boxShadow: glowShadow,
                   borderColor: ringColor,
                 }}
-                className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-white/95 backdrop-blur-md border flex flex-col items-center justify-center text-center px-2 z-10 transition-colors duration-500 shadow-xl"
+                className="relative w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-white/95 backdrop-blur-md border flex flex-col items-center justify-center text-center px-1.5 sm:px-2 z-10 transition-colors duration-500 shadow-xl"
               >
                 {/* Subtle Ambient Radial Shimmer */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-black/[0.04] via-transparent to-white/60 pointer-events-none" />
 
-                <span className="font-sans font-extrabold text-xl sm:text-2xl md:text-3xl text-[#241919] leading-[1] tracking-tight relative z-10">
+                <span className="font-sans font-extrabold text-lg xs:text-xl sm:text-2xl md:text-3xl text-[#252422] leading-[1] tracking-tight relative z-10">
                   26+
                 </span>
-                <span className="font-mono font-bold text-[8px] sm:text-[9px] md:text-[10px] text-[#0f172a]/75 tracking-widest uppercase leading-none relative z-10">
+                <span className="font-mono font-bold text-[7px] xs:text-[8px] sm:text-[9px] md:text-[10px] text-[#ff5500] tracking-widest uppercase leading-none relative z-10">
                   YEARS
                 </span>
 
@@ -504,7 +505,7 @@ export default function Products() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto space-y-12 md:space-y-16">
+      <div className="max-w-7xl mx-auto space-y-10 md:space-y-16">
 
         {/* ── ABOUT PAVAN STONES GROUP SPLIT HERO SECTION (IMAGE 1 LAYOUT) ── */}
         <motion.div
@@ -517,9 +518,9 @@ export default function Products() {
           {/* ── LEFT COLUMN: ARCHITECTURAL FACILITY IMAGE + OVERLAPPING CIRCULAR BADGE ── */}
           <div className="lg:col-span-6 relative pr-0 sm:pr-8 md:pr-12">
             {/* Main Architectural Image Container */}
-            <div ref={imageContainerRef} className="relative aspect-[16/10] sm:aspect-[4/3] w-full rounded-lg shadow-md">
+            <div ref={imageContainerRef} className="relative aspect-[16/10] sm:aspect-[4/3] w-full rounded-xl overflow-hidden border border-[#252422]/15 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.08)] bg-white">
               {/* Inner clip wrapper for the image only */}
-              <div className="absolute inset-0 overflow-hidden rounded-lg">
+              <div className="absolute inset-0 overflow-hidden">
                 <img
                   src="/about-hero.jpg"
                   alt="Pavan Stones Group Natural Stone Processing & Quarry Facility"
@@ -528,29 +529,35 @@ export default function Products() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
               </div>
             </div>
-
           </div>
 
-          {/* ── RIGHT COLUMN: EDITORIAL NARRATIVE + KNOW MORE BUTTON ── */}
-          <div className="lg:col-span-6 space-y-5 sm:space-y-6 pt-4 lg:pt-0">
+          {/* ── RIGHT COLUMN: EDITORIAL NARRATIVE + COLOR COMBO & STATS + KNOW MORE BUTTON ── */}
+          <div className="lg:col-span-6 space-y-5 pt-2 lg:pt-0">
 
-            <h2 className="font-display text-5xl md:text-7xl font-medium leading-none tracking-tight">
-              <span className="text-[#241919]">Pavan Stones</span>{" "}
-              <span className="text-[#747474]">Group</span>
-            </h2>
+            {/* Rich Two-Tone Display Title */}
+            <div>
+              <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-light text-[#252422] leading-[1.08] tracking-tight">
+                Pavan Stones{" "}
+                <span className="italic font-normal text-[#ff5500]">Group</span>
+              </h2>
+              <div className="w-20 h-[3px] bg-gradient-to-r from-[#ff5500] to-[#ff5500]/20 rounded-full mt-3.5" />
+            </div>
 
-            <p className="text-[13px] sm:text-[13.5px] leading-[1.65] text-[#555555] font-light">
-              South India&apos;s premier natural stone conglomerate, extracting and processing finest Slate, Limestone, and Granite from Markapur, Cuddapah, and Chimakurthy reserves for landmark projects worldwide. Operating 9 state-of-the-art manufacturing facilities delivering over 150,000 SQM in annual production capacity.
+            {/* Narrative with Context Highlights */}
+            <p className="text-[14px] sm:text-[15px] leading-[1.75] text-[#555555] font-light">
+              South India&apos;s premier natural stone conglomerate, extracting and processing finest{" "}
+              <strong className="text-[#252422] font-semibold">Slate, Limestone, and Granite</strong> from Markapur, Cuddapah, and Chimakurthy reserves for landmark projects worldwide. Operating 9 state-of-the-art manufacturing facilities delivering over{" "}
+              <strong className="text-[#252422] font-semibold">150,000 SQM</strong> in annual production capacity.
             </p>
 
-            {/* High Impact Button (Exact Image 1 "KNOW MORE" Style!) */}
+            {/* High Impact Button */}
             <div className="pt-2">
               <Link
                 href="/about"
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#241919] hover:bg-[#c85a32] text-white text-xs font-mono uppercase tracking-[0.2em] font-bold transition-all duration-300 shadow-md hover:scale-[1.02] cursor-pointer"
+                className="inline-flex items-center justify-center gap-3 px-7 sm:px-8 py-3.5 sm:py-4 bg-[#252422] hover:bg-[#ff5500] text-white text-xs font-mono uppercase tracking-[0.2em] font-bold rounded-[4px] transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-[#ff5500]/25 hover:scale-[1.02] active:scale-[0.98] cursor-pointer touch-manipulation group"
               >
-                <span>Know More</span>
-                <ArrowRight className="w-4 h-4 text-[#94a3b8]" />
+                <span>Explore Group Heritage</span>
+                <ArrowUpRight className="w-4 h-4 text-[#ff5500] group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
               </Link>
             </div>
 
@@ -558,7 +565,7 @@ export default function Products() {
         </motion.div>
 
         {/* ── COMPANY SHOWCASES (STACKING CARDS SCROLL EFFECT) ── */}
-        <div className="relative space-y-8 md:space-y-12 pb-8">
+        <div className="relative space-y-6 sm:space-y-8 md:space-y-12 pb-8">
 
           {/* ── CARD 0: PAVAN IMPEX (WITH IMAGE) ── */}
           <motion.div
@@ -575,26 +582,26 @@ export default function Products() {
             }}
             className="sticky border-2 border-[#ea580c] shadow-xl md:shadow-2xl overflow-hidden will-change-transform relative"
           >
-            <div className="grid grid-cols-1 md:grid-cols-12 items-stretch min-h-[380px] lg:min-h-[440px] relative z-10">
-              <div className="md:col-span-6 lg:col-span-5 p-8 sm:p-12 lg:p-16 flex flex-col justify-center order-2 md:order-1">
+            <div className="grid grid-cols-1 md:grid-cols-12 items-stretch min-h-[360px] lg:min-h-[440px] relative z-10">
+              <div className="md:col-span-6 lg:col-span-5 p-5 sm:p-8 md:p-12 lg:p-16 flex flex-col justify-center order-2 md:order-1">
 
                 <h3
-                  className="font-display font-normal leading-[1.02] tracking-[-0.015em] mb-3 transition-colors"
+                  className="font-display font-normal leading-[1.02] tracking-[-0.015em] mb-2 sm:mb-3 transition-colors"
                   style={{
-                    fontSize: "clamp(40px, 5vw, 62px)",
+                    fontSize: "clamp(30px, 4.5vw, 62px)",
                     color: COLLECTIONS[0].titleColor,
                   }}
                 >
                   <StaggeredText text={COLLECTIONS[0].name} />
                 </h3>
                 <div
-                  className="w-20 h-[2px] mb-5"
+                  className="w-16 sm:w-20 h-[2px] mb-3 sm:mb-5"
                   style={{ background: COLLECTIONS[0].accentLine }}
                 />
-                <p className="text-[14.5px] sm:text-[15.5px] leading-[1.75] text-[#454545] font-light mb-8 max-w-lg">
+                <p className="text-[13.5px] sm:text-[15px] leading-[1.7] text-[#454545] font-light mb-6 sm:mb-8 max-w-lg">
                   {COLLECTIONS[0].description}
                 </p>
-                <div className="pt-2">
+                <div className="pt-1">
                   <Link
                     href={`/companies/${COLLECTIONS[0].slug}`}
                     style={{
@@ -603,7 +610,7 @@ export default function Products() {
                       borderColor: COLLECTIONS[0].buttonBorderColor,
                       boxShadow: `0 4px 14px ${COLLECTIONS[0].buttonShadow}`,
                     }}
-                    className="inline-flex items-center gap-2.5 px-7 py-3.5 text-xs font-mono uppercase tracking-wider font-bold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border text-white"
+                    className="inline-flex items-center gap-2.5 px-6 sm:px-7 py-3 sm:py-3.5 text-xs font-mono uppercase tracking-wider font-bold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border rounded-[4px] text-white touch-manipulation"
                   >
                     <span className="text-white">Explore</span>
                     <ArrowUpRight className="w-4 h-4 text-[#fdba74]" style={{ color: COLLECTIONS[0].buttonTextColor }} />
@@ -613,7 +620,7 @@ export default function Products() {
 
               <div
                 ref={card0ImgRef}
-                className="md:col-span-6 lg:col-span-7 relative min-h-[300px] md:min-h-full overflow-hidden group order-1 md:order-2"
+                className="md:col-span-6 lg:col-span-7 relative min-h-[220px] sm:min-h-[280px] md:min-h-full overflow-hidden group order-1 md:order-2"
               >
                 <img
                   src={COLLECTIONS[0].image}
@@ -654,10 +661,10 @@ export default function Products() {
             }}
             className="sticky border-2 border-[#ea580c] shadow-xl md:shadow-2xl overflow-hidden will-change-transform relative"
           >
-            <div className="grid grid-cols-1 md:grid-cols-12 items-stretch min-h-[380px] lg:min-h-[440px] relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-12 items-stretch min-h-[360px] lg:min-h-[440px] relative z-10">
               <div
                 ref={card1ImgRef}
-                className="md:col-span-6 lg:col-span-7 relative min-h-[300px] md:min-h-full overflow-hidden group order-1 md:order-1"
+                className="md:col-span-6 lg:col-span-7 relative min-h-[220px] sm:min-h-[280px] md:min-h-full overflow-hidden group order-1 md:order-1"
               >
                 <img
                   src={COLLECTIONS[1].image}
@@ -681,25 +688,25 @@ export default function Products() {
                 <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/25 via-transparent to-transparent" />
               </div>
 
-              <div className="md:col-span-6 lg:col-span-5 p-8 sm:p-12 lg:p-16 flex flex-col justify-center order-2 md:order-2">
+              <div className="md:col-span-6 lg:col-span-5 p-5 sm:p-8 md:p-12 lg:p-16 flex flex-col justify-center order-2 md:order-2">
 
                 <h3
-                  className="font-display font-normal leading-[1.02] tracking-[-0.015em] mb-3 transition-colors"
+                  className="font-display font-normal leading-[1.02] tracking-[-0.015em] mb-2 sm:mb-3 transition-colors"
                   style={{
-                    fontSize: "clamp(40px, 5vw, 62px)",
+                    fontSize: "clamp(30px, 4.5vw, 62px)",
                     color: COLLECTIONS[1].titleColor,
                   }}
                 >
                   <StaggeredText text={COLLECTIONS[1].name} />
                 </h3>
                 <div
-                  className="w-20 h-[2px] mb-5"
+                  className="w-16 sm:w-20 h-[2px] mb-3 sm:mb-5"
                   style={{ background: COLLECTIONS[1].accentLine }}
                 />
-                <p className="text-[14.5px] sm:text-[15.5px] leading-[1.75] text-[#454545] font-light mb-8 max-w-lg">
+                <p className="text-[13.5px] sm:text-[15px] leading-[1.7] text-[#454545] font-light mb-6 sm:mb-8 max-w-lg">
                   {COLLECTIONS[1].description}
                 </p>
-                <div className="pt-2">
+                <div className="pt-1">
                   <Link
                     href={`/companies/${COLLECTIONS[1].slug}`}
                     style={{
@@ -708,7 +715,7 @@ export default function Products() {
                       borderColor: COLLECTIONS[1].buttonBorderColor,
                       boxShadow: `0 4px 14px ${COLLECTIONS[1].buttonShadow}`,
                     }}
-                    className="inline-flex items-center gap-2.5 px-7 py-3.5 text-xs font-mono uppercase tracking-wider font-bold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border text-white"
+                    className="inline-flex items-center gap-2.5 px-6 sm:px-7 py-3 sm:py-3.5 text-xs font-mono uppercase tracking-wider font-bold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border rounded-[4px] text-white touch-manipulation"
                   >
                     <span className="text-white">Explore</span>
                     <ArrowUpRight className="w-4 h-4 text-[#fbbf24]" style={{ color: COLLECTIONS[1].buttonTextColor }} />
@@ -729,12 +736,12 @@ export default function Products() {
               top: "120px",
               zIndex: 30,
             }}
-            className="sticky border-2 border-[#ea580c] shadow-xl md:shadow-2xl overflow-hidden will-change-transform relative bg-white py-4 sm:py-6 lg:py-8"
+            className="sticky border-2 border-[#ea580c] shadow-xl md:shadow-2xl overflow-hidden will-change-transform relative bg-white py-3 sm:py-6 lg:py-8"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 lg:gap-[180px] xl:gap-[240px] items-stretch relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 md:gap-20 lg:gap-[160px] xl:gap-[200px] items-stretch relative z-10">
 
               {/* ── LEFT: PAVAN GRANITE (NO IMAGE - PURE WHITE WITH BRACKET "]" BORDER) ── */}
-              <div className="relative p-7 sm:p-9 lg:p-11 md:pr-14 lg:pr-16 flex flex-col justify-between">
+              <div className="relative p-5 sm:p-7 lg:p-11 md:pr-14 lg:pr-16 flex flex-col justify-between">
                 {/* Architectural Bracket "]" for Pavan Granite (covers 50% width top & bottom) */}
                 <div className="absolute inset-0 pointer-events-none z-10">
                   {/* Right vertical line of ] */}
@@ -749,7 +756,7 @@ export default function Products() {
 
                   {/* Title */}
                   <h3
-                    className="font-display font-normal leading-[1.05] tracking-[-0.015em] mb-3 transition-colors text-3xl sm:text-4xl lg:text-5xl"
+                    className="font-display font-normal leading-[1.05] tracking-[-0.015em] mb-2 sm:mb-3 transition-colors text-2xl sm:text-3xl lg:text-5xl"
                     style={{ color: COLLECTIONS[2].titleColor }}
                   >
                     <StaggeredText text={COLLECTIONS[2].name} />
@@ -757,18 +764,18 @@ export default function Products() {
 
                   {/* Accent Line */}
                   <div
-                    className="w-20 h-[2px] mb-5"
+                    className="w-16 sm:w-20 h-[2px] mb-3 sm:mb-5"
                     style={{ background: COLLECTIONS[2].accentLine }}
                   />
 
                   {/* Narrative */}
-                  <p className="text-[14px] sm:text-[15px] leading-[1.75] text-[#454545] font-light mb-8">
+                  <p className="text-[13.5px] sm:text-[14.5px] leading-[1.7] text-[#454545] font-light mb-6 sm:mb-8">
                     {COLLECTIONS[2].description}
                   </p>
                 </div>
 
                 {/* Direct Action Button */}
-                <div className="pt-2 relative z-10">
+                <div className="pt-1 relative z-10">
                   <Link
                     href={`/companies/${COLLECTIONS[2].slug}`}
                     style={{
@@ -777,7 +784,7 @@ export default function Products() {
                       borderColor: COLLECTIONS[2].buttonBorderColor,
                       boxShadow: `0 4px 14px ${COLLECTIONS[2].buttonShadow}`,
                     }}
-                    className="inline-flex items-center gap-2.5 px-6 py-3.5 text-xs font-mono uppercase tracking-wider font-bold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border w-full sm:w-auto justify-center text-white"
+                    className="inline-flex items-center gap-2.5 px-6 py-3 sm:py-3.5 text-xs font-mono uppercase tracking-wider font-bold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border rounded-[4px] w-full sm:w-auto justify-center text-white touch-manipulation"
                   >
                     <span className="text-white">Explore</span>
                     <ArrowUpRight className="w-4 h-4 text-[#5eead4]" style={{ color: COLLECTIONS[2].buttonTextColor }} />
@@ -786,7 +793,7 @@ export default function Products() {
               </div>
 
               {/* ── RIGHT: PAVAN STONES WORLD (NO IMAGE - PURE WHITE WITH BRACKET "[" BORDER) ── */}
-              <div className="relative p-7 sm:p-9 lg:p-11 md:pl-14 lg:pl-16 flex flex-col justify-between">
+              <div className="relative p-5 sm:p-7 lg:p-11 md:pl-14 lg:pl-16 flex flex-col justify-between">
                 {/* Architectural Bracket "[" for Pavan Stones World (covers 50% width top & bottom) */}
                 <div className="absolute inset-0 pointer-events-none z-10">
                   {/* Left vertical line of [ */}
@@ -801,7 +808,7 @@ export default function Products() {
 
                   {/* Title */}
                   <h3
-                    className="font-display font-normal leading-[1.05] tracking-[-0.015em] mb-3 transition-colors text-3xl sm:text-4xl lg:text-5xl"
+                    className="font-display font-normal leading-[1.05] tracking-[-0.015em] mb-2 sm:mb-3 transition-colors text-2xl sm:text-3xl lg:text-5xl"
                     style={{ color: COLLECTIONS[3].titleColor }}
                   >
                     <StaggeredText text={COLLECTIONS[3].name} />
@@ -809,18 +816,18 @@ export default function Products() {
 
                   {/* Accent Line */}
                   <div
-                    className="w-20 h-[2px] mb-5"
+                    className="w-16 sm:w-20 h-[2px] mb-3 sm:mb-5"
                     style={{ background: COLLECTIONS[3].accentLine }}
                   />
 
                   {/* Narrative */}
-                  <p className="text-[14px] sm:text-[15px] leading-[1.75] text-[#454545] font-light mb-8">
+                  <p className="text-[13.5px] sm:text-[14.5px] leading-[1.7] text-[#454545] font-light mb-6 sm:mb-8">
                     {COLLECTIONS[3].description}
                   </p>
                 </div>
 
                 {/* Direct Action Button */}
-                <div className="pt-2 relative z-10">
+                <div className="pt-1 relative z-10">
                   <Link
                     href={`/companies/${COLLECTIONS[3].slug}`}
                     style={{
@@ -829,7 +836,7 @@ export default function Products() {
                       borderColor: COLLECTIONS[3].buttonBorderColor,
                       boxShadow: `0 4px 14px ${COLLECTIONS[3].buttonShadow}`,
                     }}
-                    className="inline-flex items-center gap-2.5 px-6 py-3.5 text-xs font-mono uppercase tracking-wider font-bold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border w-full sm:w-auto justify-center text-white"
+                    className="inline-flex items-center gap-2.5 px-6 py-3 sm:py-3.5 text-xs font-mono uppercase tracking-wider font-bold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border rounded-[4px] w-full sm:w-auto justify-center text-white touch-manipulation"
                   >
                     <span className="text-white">Explore</span>
                     <ArrowUpRight className="w-4 h-4 text-[#f87171]" style={{ color: COLLECTIONS[3].buttonTextColor }} />

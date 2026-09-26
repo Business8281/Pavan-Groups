@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ArrowRight, ArrowUpRight, Lock, Package, Layers, FileText, TrendingUp } from "@animateicons/react/lucide";
+import { Check, ArrowRight, ArrowUpRight, Lock, Package, Layers, FileText, TrendingUp } from "lucide-react";
 
 interface StoneSpecimen {
   id: string;
   name: string;
   division: string;
-  category: "slate" | "limestone" | "granite";
+  category: "slate" | "limestone" | "granite" | "cnc";
   gradient: string;
   origin: string;
   defaultFinishes: string[];
@@ -106,24 +106,24 @@ const SPECIMENS: StoneSpecimen[] = [
     recommendedThickness: "20mm (3/4 in)",
   },
   {
-    id: "emerald-green-quartzite",
-    name: "Emerald Green Quartzite",
+    id: "mint-white-buddha-meditation-001",
+    name: "Mint White Sandstone Relief",
     division: "Pavan Stones World",
-    category: "granite",
-    gradient: "linear-gradient(135deg, #062c24 0%, #0d5c4a 50%, #031c17 100%)",
-    origin: "South Granulite Belt, India",
-    defaultFinishes: ["Diamond Mirror Polish", "Leathered Satin", "Honed Matte"],
-    recommendedThickness: "20mm (3/4 in)",
+    category: "cnc",
+    gradient: "linear-gradient(135deg, #f7f3eb 0%, #e2d9cb 50%, #c4b59f 100%)",
+    origin: "Rajasthan Atelier, India",
+    defaultFinishes: ["CNC 3D Milled Relief", "Hand-Honed Velvet", "Natural Sandstone Cleft"],
+    recommendedThickness: "25mm (1 in)",
   },
   {
-    id: "makrana-royal-white-marble",
-    name: "Makrana Pure White Marble",
+    id: "mint-white-om-ganesha-006",
+    name: "Mint White Om Ganesha Relief",
     division: "Pavan Stones World",
-    category: "limestone",
-    gradient: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%)",
-    origin: "Makrana, Rajasthan",
-    defaultFinishes: ["Silk Polish", "High Gloss Mirror", "Honed Velvet"],
-    recommendedThickness: "18mm (3/4 in)",
+    category: "cnc",
+    gradient: "linear-gradient(135deg, #f7f3eb 0%, #e2d9cb 50%, #c4b59f 100%)",
+    origin: "Rajasthan Atelier, India",
+    defaultFinishes: ["CNC 3D Milled Relief", "Hand-Honed Velvet"],
+    recommendedThickness: "25mm (1 in)",
   },
 ];
 
@@ -290,11 +290,11 @@ export default function SampleRequest() {
 
                   {/* Visual Specimen Swatch Grid */}
                   <div>
-                    <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-3 pl-9">
+                    <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-3 pl-0 sm:pl-9">
                       Click Stone Specimen: *
                     </label>
                     
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pl-9">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pl-0 sm:pl-9">
                       {SPECIMENS.map((spec) => {
                         const isSelected = selectedSpecimenId === spec.id;
                         return (
@@ -331,7 +331,7 @@ export default function SampleRequest() {
                   </div>
 
                   {/* Surface Finish Chips */}
-                  <div className="pl-9 mt-4">
+                  <div className="pl-0 sm:pl-9 mt-4">
                     <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-3">
                       Surface Finish Profile: *
                     </label>
@@ -365,7 +365,7 @@ export default function SampleRequest() {
                     </h3>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pl-9">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pl-0 sm:pl-9">
                     <div>
                       <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
                         Target Sizing / Form Factor:
@@ -405,7 +405,7 @@ export default function SampleRequest() {
                     </div>
                   </div>
 
-                  <div className="pl-9 mt-4">
+                  <div className="pl-0 sm:pl-9 mt-4">
                     <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
                       Estimated Project Requirement: *
                     </label>
@@ -435,7 +435,7 @@ export default function SampleRequest() {
                     </h3>
                   </div>
 
-                  <div className="pl-9">
+                  <div className="pl-0 sm:pl-9">
                     <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
                       Nearest Port of Discharge: *
                     </label>
@@ -454,7 +454,7 @@ export default function SampleRequest() {
                   </div>
 
                   {destinationPort.includes("Other") && (
-                    <div className="pl-9 mt-4">
+                    <div className="pl-0 sm:pl-9 mt-4">
                       <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
                         Specify Your Target Port / City:
                       </label>
@@ -481,7 +481,7 @@ export default function SampleRequest() {
                     </h3>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pl-9">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pl-0 sm:pl-9">
                     <div>
                       <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
                         Company / Practice: *
@@ -511,7 +511,7 @@ export default function SampleRequest() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pl-9 mt-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pl-0 sm:pl-9 mt-4">
                     <div>
                       <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
                         Corporate Email: *
@@ -541,7 +541,7 @@ export default function SampleRequest() {
                     </div>
                   </div>
 
-                  <div className="pl-9 mt-4">
+                  <div className="pl-0 sm:pl-9 mt-4">
                     <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
                       Sample Delivery Street Address (For DHL / FedEx): *
                     </label>
@@ -555,7 +555,7 @@ export default function SampleRequest() {
                     />
                   </div>
 
-                  <div className="pl-9 mt-4">
+                  <div className="pl-0 sm:pl-9 mt-4">
                     <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
                       Specific Architectural Requirements (Optional):
                     </label>
@@ -570,7 +570,7 @@ export default function SampleRequest() {
                 </div>
 
                 {/* ── SUBMIT BUTTON ── */}
-                <div className="pt-6 pl-9">
+                <div className="pt-6 pl-0 sm:pl-9">
                   <button
                     type="submit"
                     disabled={isSubmitting}

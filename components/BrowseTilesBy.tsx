@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "@animateicons/react/lucide";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 interface StoneCollection {
   id: string;
@@ -112,11 +112,11 @@ export default function BrowseTilesBy() {
         {/* ── SECTION HEADER ── */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-14 gap-6">
           <div>
-            <span className="text-[11px] font-mono uppercase tracking-[0.24em] text-[#c85a32] font-semibold block mb-2">
+            <span className="text-[11px] font-mono uppercase tracking-[0.24em] text-[#ff5500] font-bold block mb-2">
               Direct Quarry Extractions
             </span>
             <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-medium leading-none tracking-tight">
-              <span className="text-[#241919]">Explore Natural Stone</span>{" "}
+              <span className="text-[#252422]">Explore Natural Stone</span>{" "}
               <span className="text-[#747474]">Collections</span>
             </h2>
           </div>
@@ -159,7 +159,7 @@ export default function BrowseTilesBy() {
                     <div className="max-w-xl">
                       <h3 className="text-2xl lg:text-3xl font-sans font-bold text-white tracking-wide flex items-center gap-2">
                         <span>{stone.name}</span>
-                        <ArrowUpRight className="w-5 h-5 text-[#c85a32] opacity-90 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        <ArrowUpRight className="w-5 h-5 text-[#ff5500] opacity-90 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                       </h3>
                     </div>
                   </div>
@@ -181,60 +181,81 @@ export default function BrowseTilesBy() {
         </div>
 
         {/* ── MOBILE: INTERACTIVE SLAB STACK ── */}
-        <div className="flex flex-col gap-4 md:hidden">
+        <div className="flex flex-col gap-3 md:hidden">
           {STONE_COLLECTIONS.map((stone, idx) => {
             const isExpanded = idx === activeIndex;
 
             return (
-              <Link
+              <div
                 key={stone.id}
-                href={stone.linkHref}
-                onClick={(e) => {
-                  if (!isExpanded) {
-                    e.preventDefault();
-                    setActiveIndex(idx);
-                  }
-                }}
+                onClick={() => setActiveIndex(idx)}
                 className={`relative overflow-hidden block transition-all duration-500 ${
-                  isExpanded ? "h-[260px]" : "h-[85px]"
-                } bg-[#181615] rounded-none border border-[#747474]/20 cursor-pointer`}
+                  isExpanded ? "h-[290px]" : "h-[74px]"
+                } bg-[#181615] rounded-lg border ${
+                  isExpanded ? "border-[#ff5500] shadow-lg" : "border-[#747474]/20 shadow-xs"
+                } cursor-pointer touch-manipulation`}
               >
                 <img
                   src={stone.imageUrl}
                   alt={stone.name}
-                  className="absolute inset-0 w-full h-full object-cover brightness-[0.75] contrast-[1.05]"
+                  className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
+                    isExpanded ? "scale-105 brightness-[0.8]" : "scale-100 brightness-[0.55]"
+                  }`}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/30 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/30 pointer-events-none" />
 
-                <div className="relative z-10 w-full h-full p-4 flex flex-col justify-end">
+                <div className="relative z-10 w-full h-full p-4 sm:p-5 flex flex-col justify-between">
+                  {/* Top Bar for both states */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono font-bold text-[#ff5500]">
+                      {stone.num} · {stone.category}
+                    </span>
+                    <span className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-[4px] transition-colors ${
+                      isExpanded ? "bg-[#ff5500] text-white" : "bg-white/10 text-white/70"
+                    }`}>
+                      {isExpanded ? "Active" : "Tap to View"}
+                    </span>
+                  </div>
+
                   {isExpanded ? (
-                    <div>
-                      <h3 className="text-xl font-sans font-bold text-white flex items-center gap-2">
+                    <div className="space-y-2.5">
+                      <h3 className="text-xl font-sans font-bold text-white flex items-center justify-between">
                         <span>{stone.name}</span>
-                        <ArrowUpRight className="w-4 h-4 text-[#c85a32]" />
+                        <ArrowUpRight className="w-5 h-5 text-[#ff5500] flex-none" />
                       </h3>
+                      <p className="text-xs text-white/80 font-light line-clamp-2 leading-relaxed">
+                        {stone.description}
+                      </p>
+                      <Link
+                        href={stone.linkHref}
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#ff5500] text-white text-[11px] font-mono uppercase tracking-wider font-semibold rounded-[4px] hover:bg-[#e04b00] transition-colors shadow-xs"
+                      >
+                        <span>Explore Specs</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
                     </div>
                   ) : (
                     <div>
-                      <h3 className="text-base font-sans font-bold text-white">
+                      <h3 className="text-base font-sans font-semibold text-white">
                         {stone.name}
                       </h3>
                     </div>
                   )}
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>
 
         {/* ── BOTTOM ACTION BUTTON ── */}
-        <div className="mt-12 text-center">
+        <div className="mt-8 sm:mt-12 text-center">
           <Link
             href="/products"
-            className="inline-flex items-center justify-center gap-2 px-9 py-3.5 bg-[#241919] hover:bg-[#c85a32] text-[#f1f5f9] rounded-full text-xs font-sans font-medium transition-all shadow-md hover:shadow-lg hover:translate-y-[-1px] cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 px-7 sm:px-9 py-3.5 bg-[#252422] hover:bg-[#ff5500] active:scale-98 text-[#f1f5f9] rounded-[4px] text-xs font-sans font-medium transition-all shadow-md hover:shadow-lg cursor-pointer touch-manipulation"
           >
             <span>View All Stone Slabs & Products</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#94a3b8]" />
+            <ArrowRight className="w-3.5 h-3.5 text-white/80" />
           </Link>
         </div>
 

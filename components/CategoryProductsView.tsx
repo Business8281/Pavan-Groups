@@ -40,6 +40,8 @@ import {
   matchesSearch,
 } from "@/lib/productFilterUtils";
 import ProductCardImage from "@/components/ProductCardImage";
+import { useWishlist } from "@/context/WishlistContext";
+import ProductPagination, { useResponsiveItemsPerPage } from "@/components/ProductPagination";
 
 export interface CategoryConfig {
   key: string;
@@ -227,7 +229,7 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<
-    "featured" | "price-asc" | "price-desc" | "rating" | "name-asc" | "name-desc"
+    "featured" | "rating" | "name-asc" | "name-desc"
   >("featured");
 
   // Sync with URL query parameters
@@ -250,7 +252,9 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
 
     if (companyParam) {
       const compLower = companyParam.toLowerCase();
-      if (compLower.includes("pavan impex") || compLower === "pavan-impex") {
+      if (compLower.includes("psg") || compLower.includes("psg stones") || compLower === "psg-stones") {
+        setSelectedCompanies(["PSG Stones"]);
+      } else if (compLower.includes("pavan impex") || compLower === "pavan-impex") {
         setSelectedCompanies(["Pavan Impex"]);
       } else if (compLower.includes("sai balaji") || compLower === "sai-balaji-impex") {
         setSelectedCompanies(["Sai Balaji Impex"]);
@@ -286,8 +290,9 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
   // UI States
   const [isFilterOpen, setIsFilterOpen] = useState(true);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [wishlist, setWishlist] = useState<Record<string, boolean>>({});
+  const { isWishlisted, toggleWishlist } = useWishlist();
   const [quickViewProduct, setQuickViewProduct] = useState<ProductStone | null>(null);
+  const [activeQuickViewImage, setActiveQuickViewImage] = useState<string | null>(null);
 
   // Accordion Expand States (Closed by default)
   const [openSections, setOpenSections] = useState<{
@@ -476,16 +481,6 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
       if (sortBy === "name-asc") return a.name.localeCompare(b.name);
       if (sortBy === "name-desc") return b.name.localeCompare(a.name);
       if (sortBy === "rating") return (b.rating || 4.5) - (a.rating || 4.5);
-      if (sortBy === "price-asc") {
-        const priceA = parseFloat(a.price?.replace(/[^0-9.]/g, "") || "0");
-        const priceB = parseFloat(b.price?.replace(/[^0-9.]/g, "") || "0");
-        return priceA - priceB;
-      }
-      if (sortBy === "price-desc") {
-        const priceA = parseFloat(a.price?.replace(/[^0-9.]/g, "") || "0");
-        const priceB = parseFloat(b.price?.replace(/[^0-9.]/g, "") || "0");
-        return priceB - priceA;
-      }
       return 0;
     });
   }, [
@@ -501,15 +496,33 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
     sortBy,
   ]);
 
-  const toggleWishlist = (id: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setWishlist((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
+  // Responsive items per page (20 desktop / 16 tablet / 8 mobile)
+  const itemsPerPage = useResponsiveItemsPerPage();
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // Reset page to 1 whenever any filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    searchQuery,
+    selectedVarieties,
+    selectedCompanies,
+    selectedFinishes,
+    selectedSizes,
+    selectedColors,
+    selectedAreas,
+    sortBy,
+    currentConfig.key,
+  ]);
+
+  // Paginated category products slice
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredProducts.slice(start, start + itemsPerPage);
+  }, [filteredProducts, currentPage, itemsPerPage]);
 
   return (
-    <div className="bg-[#ffffff] text-[#111111] min-h-screen pt-16 sm:pt-20 pb-24 font-sans selection:bg-[#241919] selection:text-white">
+    <div className="bg-[#ffffff] text-[#111111] min-h-screen pt-16 sm:pt-20 pb-24 font-sans selection:bg-[#ff5500] selection:text-white">
       
       {/* ── 1. EXPANDED FULL-WIDTH SCREEN BANNER (NO BLACK SHADE, FULL VIVID PHOTO) ── */}
       <section className="relative w-full h-72 sm:h-80 md:h-96 lg:h-[400px] overflow-hidden bg-[#e5e5e5] flex items-center">
@@ -607,7 +620,7 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
             </button>
 
             {/* Live Search Input Bar */}
-            <div className="relative flex items-center w-full sm:w-60 md:w-68">
+            <div className="relative flex items-center w-full sm:w-56 md:w-60">
               <Search className="w-3.5 h-3.5 text-[#71717a] absolute left-2.5 pointer-events-none" />
               <input
                 type="text"
@@ -626,6 +639,44 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
                 </button>
               )}
             </div>
+
+            {/* Horizontal Company Filter Buttons */}
+            {availableCompanies.length > 1 && (
+              <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 no-scrollbar flex-nowrap sm:flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setSelectedCompanies([])}
+                  className={`text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1.5 transition-all cursor-pointer whitespace-nowrap border ${
+                    selectedCompanies.length === 0
+                      ? "bg-[#111111] text-white border-[#111111]"
+                      : "bg-[#f4f4f5] text-[#555555] hover:text-[#111111] border-[#e4e4e7] hover:border-[#111111]"
+                  }`}
+                >
+                  All Companies
+                </button>
+                {availableCompanies.map((comp) => {
+                  const isSelected = selectedCompanies.includes(comp.id);
+
+                  return (
+                    <button
+                      key={comp.id}
+                      type="button"
+                      onClick={() => toggleFilter(selectedCompanies, setSelectedCompanies, comp.id)}
+                      className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1.5 transition-all cursor-pointer whitespace-nowrap border ${
+                        isSelected
+                          ? "bg-[#111111] text-white border-[#111111]"
+                          : "bg-[#f4f4f5] text-[#555555] hover:text-[#111111] border-[#e4e4e7] hover:border-[#111111]"
+                      }`}
+                    >
+                      <span>{comp.label}</span>
+                      <span className={`text-[10px] font-mono ${isSelected ? "text-[#cccccc]" : "text-[#888888]"}`}>
+                        ({comp.count})
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
 
             {/* Active Filter Chips */}
             <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap min-w-0">
@@ -675,8 +726,6 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
                 >
                   <option value="featured">SORT BY: FEATURED</option>
                   <option value="rating">SORT BY: TOP RATED</option>
-                  <option value="price-asc">SORT BY: PRICE (LOW TO HIGH)</option>
-                  <option value="price-desc">SORT BY: PRICE (HIGH TO LOW)</option>
                   <option value="name-asc">SORT BY: NAME (A - Z)</option>
                   <option value="name-desc">SORT BY: NAME (Z - A)</option>
                 </select>
@@ -964,7 +1013,7 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
           )}
 
           {/* ── RIGHT PRODUCT GRID (BORDER-GRID AESTHETIC) ── */}
-          <main className="flex-1 min-w-0">
+          <main id="category-catalog-grid" className="flex-1 min-w-0">
             {filteredProducts.length === 0 ? (
               <div className="text-center py-20 px-6 border border-[#e5e5e5] bg-[#fafafa]">
                 <Sparkles className="w-8 h-8 mx-auto text-[#71717a] mb-3 stroke-[1.5]" />
@@ -990,14 +1039,36 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
                     : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
                 }`}
               >
-                {filteredProducts.map((product) => {
-                  const isWishlisted = wishlist[product.id];
+                {paginatedProducts.map((product) => {
+                  const isItemWishlisted = isWishlisted(product.id);
 
                   return (
                     <div
                       key={product.id}
-                      className="border-r border-b border-[#e5e5e5] bg-white group flex flex-col justify-between transition-colors hover:border-[#111111]/40 relative"
+                      className="border-r border-b border-[#e5e5e5] bg-white group flex flex-col justify-between transition-all duration-200 hover:z-10 relative"
                     >
+                      {/* Dual-Tone (#252422 / #e63946) Hover Border Overlay */}
+                      <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
+                        {/* Top Border (Solid #252422) */}
+                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#252422]" />
+                        {/* Bottom Border (Solid #e63946) */}
+                        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#e63946]" />
+                        {/* Right Border (#252422 at top-right going down 20%, then #e63946) */}
+                        <div
+                          className="absolute top-0 bottom-0 right-0 w-[2px]"
+                          style={{
+                            background: "linear-gradient(to bottom, #252422 0%, #252422 20%, #e63946 20%, #e63946 100%)",
+                          }}
+                        />
+                        {/* Left Border (#252422 from top 80%, turning to #e63946 at bottom-left 20% going up) */}
+                        <div
+                          className="absolute top-0 bottom-0 left-0 w-[2px]"
+                          style={{
+                            background: "linear-gradient(to bottom, #252422 0%, #252422 80%, #e63946 80%, #e63946 100%)",
+                          }}
+                        />
+                      </div>
+
                       {/* Top Action Tags & Badge Bar */}
                       <div className="relative aspect-[4/3] sm:aspect-square w-full overflow-hidden bg-[#f9f9f9]">
 
@@ -1010,9 +1081,9 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
                         >
                           <Heart
                             className={`w-3.5 h-3.5 transition-colors ${
-                              isWishlisted
-                                ? "fill-[#d94e34] text-[#d94e34]"
-                                : "text-[#71717a] hover:text-[#111111]"
+                              isItemWishlisted
+                                ? "fill-[#ef4444] text-[#ef4444]"
+                                : "text-[#71717a] hover:text-[#ef4444]"
                             }`}
                           />
                         </button>
@@ -1027,21 +1098,18 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
                         </Link>
 
                         {/* Quick View Hover Overlay */}
-                        <div className="absolute inset-x-2 bottom-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:flex items-center gap-1.5">
+                        <div className="absolute inset-x-0 bottom-2.5 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 hidden sm:flex justify-center pointer-events-none">
                           <button
                             type="button"
-                            onClick={() => setQuickViewProduct(product)}
-                            className="flex-1 py-1.5 bg-white/95 hover:bg-white text-[#111111] text-[10px] font-bold uppercase tracking-wider border border-[#e5e5e5] shadow-xs flex items-center justify-center gap-1 cursor-pointer transition-colors"
+                            onClick={() => {
+                              setQuickViewProduct(product);
+                              setActiveQuickViewImage(product.gallery?.[0] || product.image);
+                            }}
+                            className="pointer-events-auto px-3.5 py-1.5 bg-white/95 hover:bg-[#660708] text-[#241919] hover:text-[#d3d3d3] text-[9.5px] font-mono font-bold uppercase tracking-wider rounded-[5px] shadow-md border border-[#241919]/10 backdrop-blur-md flex items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 hover:scale-105"
                           >
                             <Eye className="w-3 h-3" />
                             <span>Quick View</span>
                           </button>
-                          <Link
-                            href={`/request-sample?stone=${product.id}`}
-                            className="flex-1 py-1.5 bg-[#111111] hover:bg-black text-white text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center justify-center gap-1 cursor-pointer transition-colors text-center"
-                          >
-                            <span>Sample</span>
-                          </Link>
                         </div>
 
                       </div>
@@ -1051,19 +1119,19 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
                         <div>
                           {/* Title */}
                           <Link href={`/products/${product.id}`}>
-                            <h2 className="text-[13px] sm:text-[14px] font-semibold text-[#111111] leading-snug hover:underline line-clamp-1">
+                            <h2 className="text-[13px] sm:text-[14px] font-semibold text-[#241919] leading-snug hover:text-[#c85a32] transition-colors line-clamp-1">
                               {product.name}
                             </h2>
                           </Link>
 
                           {/* 5-Star Rating Row */}
                           <div className="flex items-center gap-1 mt-1 mb-1.5">
-                            <div className="flex text-[#111111]">
+                            <div className="flex text-[#f59e0b]">
                               {[...Array(5)].map((_, i) => (
-                                <Star key={i} className="w-3 h-3 fill-current text-[#111111]" />
+                                <Star key={i} className="w-3 h-3 fill-current text-[#f59e0b]" />
                               ))}
                             </div>
-                            <span className="text-[10px] font-mono text-[#71717a] ml-1">
+                            <span className="text-[10px] font-mono text-[#747474] ml-1">
                               ({product.reviewCount || 24})
                             </span>
                           </div>
@@ -1071,7 +1139,7 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
                           {/* Badge tag under rating */}
                           {product.badge && (
                             <div className="mt-1 mb-0.5">
-                              <span className="inline-block px-1.5 py-0.5 bg-black text-white text-[9px] font-mono uppercase tracking-wider font-semibold rounded-none">
+                              <span className="inline-block text-[#d97706] text-[9.5px] font-mono uppercase tracking-wider font-extrabold">
                                 {product.badge}
                               </span>
                             </div>
@@ -1079,14 +1147,14 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
                         </div>
 
                         {/* Bottom Direct Links */}
-                        <div className="mt-3 pt-2.5 border-t border-[#f4f4f5] flex items-center justify-between text-[10.5px] font-mono uppercase tracking-wider text-[#555555]">
-                          <span className="truncate max-w-[130px]">{product.company}</span>
+                        <div className="mt-3 pt-2.5 border-t border-[#f4f4f5] flex items-center justify-between text-[10.5px] font-mono uppercase tracking-wider">
+                          <span className="truncate max-w-[130px] font-semibold text-[#ff5500]">{product.company}</span>
                           <Link
                             href={`/products/${product.id}`}
-                            className="inline-flex items-center gap-0.5 text-[#111111] font-semibold hover:underline"
+                            className="inline-flex items-center gap-0.5 font-bold transition-colors group/specs"
                           >
-                            <span>Specs</span>
-                            <ArrowUpRight className="w-3 h-3" />
+                            <span className="text-[#111111] group-hover/specs:underline">Specs</span>
+                            <ArrowUpRight className="w-3 h-3 text-[#ff5500] group-hover/specs:translate-x-0.5 group-hover/specs:-translate-y-0.5 transition-transform" />
                           </Link>
                         </div>
 
@@ -1096,6 +1164,16 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
                   );
                 })}
               </div>
+            )}
+
+            {/* Pagination Controls */}
+            {filteredProducts.length > 0 && (
+              <ProductPagination
+                totalItems={filteredProducts.length}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+                scrollTargetId="category-catalog-grid"
+              />
             )}
           </main>
 
@@ -1359,71 +1437,136 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-3xl bg-white border border-[#e5e5e5] shadow-2xl z-10 overflow-hidden"
+              className="relative w-full max-w-3xl bg-white border border-[#241919]/10 rounded-2xl shadow-2xl shadow-[#241919]/25 z-10 overflow-hidden"
             >
               <button
                 type="button"
                 onClick={() => setQuickViewProduct(null)}
-                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-[#111111] border border-[#e5e5e5] cursor-pointer"
+                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-[#faf8f5]/90 hover:bg-[#c85a32] flex items-center justify-center text-[#241919] hover:text-white border border-[#241919]/15 shadow-sm cursor-pointer transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
 
               <div className="grid grid-cols-1 md:grid-cols-2">
-                <div className="relative aspect-square bg-[#f5f5f5]">
-                  <img
-                    src={quickViewProduct.image}
-                    alt={quickViewProduct.name}
-                    className="w-full h-full object-cover"
-                  />
-                  {quickViewProduct.badge && (
-                    <div className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[9px] font-mono uppercase tracking-wider font-semibold">
-                      {quickViewProduct.badge}
-                    </div>
-                  )}
+                {/* Image Column - Fills entire left height seamlessly */}
+                <div className="relative flex flex-col justify-between bg-[#f8fafc] p-5 sm:p-6 border-b md:border-b-0 md:border-r border-[#e2e8f0]">
+                  {/* Main Image Area */}
+                  <div className="relative w-full flex-1 min-h-[220px] sm:min-h-[260px] flex items-center justify-center">
+                    <img
+                      src={activeQuickViewImage || quickViewProduct.image}
+                      alt={quickViewProduct.name}
+                      className="max-h-[280px] w-full object-contain drop-shadow-sm transition-all duration-300"
+                    />
+                    {quickViewProduct.badge && (
+                      <div className="absolute top-2 left-2 px-2.5 py-1 bg-white/95 backdrop-blur-xs text-[#d97706] text-[9.5px] font-mono uppercase tracking-wider font-extrabold rounded-[4px] shadow-xs border border-[#d97706]/30">
+                        {quickViewProduct.badge}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Left Bottom Section: Multi-angle Thumbnails or Quality Badges */}
+                  <div className="mt-4 pt-3 border-t border-[#e2e8f0]">
+                    {quickViewProduct.gallery && quickViewProduct.gallery.length > 1 ? (
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                          {quickViewProduct.gallery.map((img, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => setActiveQuickViewImage(img)}
+                              className={`relative w-11 h-11 rounded-lg overflow-hidden border-2 flex-none cursor-pointer transition-all ${
+                                (activeQuickViewImage || quickViewProduct.image) === img
+                                  ? "border-[#059669] ring-2 ring-[#059669]/20 scale-105"
+                                  : "border-[#e2e8f0] hover:border-[#059669]/50 opacity-70 hover:opacity-100"
+                              }`}
+                            >
+                              <img src={img} alt={`Angle ${idx + 1}`} className="w-full h-full object-cover" />
+                            </button>
+                          ))}
+                        </div>
+                        <div className="flex items-center justify-between text-[10px] font-mono text-[#64748b]">
+                          <span className="flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+                            {quickViewProduct.company} Verified
+                          </span>
+                          <span>{quickViewProduct.gallery.length} Quarry Views</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-[#64748b]">
+                        <div className="flex items-center gap-1.5 bg-white px-2.5 py-2 rounded-lg border border-[#e2e8f0] shadow-2xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+                          <span className="truncate">100% Natural Stone</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 bg-white px-2.5 py-2 rounded-lg border border-[#e2e8f0] shadow-2xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+                          <span className="truncate">FOB / CIF Export</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div className="p-6 sm:p-8 flex flex-col justify-between">
+                {/* Details */}
+                <div className="p-6 sm:p-8 flex flex-col justify-between bg-white">
                   <div>
-                    <div className="text-[10px] font-mono uppercase tracking-widest text-[#71717a] mb-1">
-                      {quickViewProduct.company} • {quickViewProduct.origin.split(",")[0]}
+                    <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#059669] font-bold mb-1.5 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+                      <span>{quickViewProduct.company} • {quickViewProduct.origin.split(",")[0]}</span>
                     </div>
-                    <h3 className="text-xl font-bold text-[#111111] leading-tight mb-2">
+                    <h3 className="text-xl sm:text-2xl font-bold text-[#0f172a] leading-tight mb-2">
                       {quickViewProduct.name}
                     </h3>
 
-                    <div className="flex items-center gap-1 mb-3">
-                      <div className="flex text-[#111111]">
+                    {/* Star Rating */}
+                    <div className="flex items-center gap-1.5 mb-3">
+                      <div className="flex text-[#f59e0b]">
                         {[...Array(5)].map((_, i) => (
                           <Star key={i} className="w-3.5 h-3.5 fill-current" />
                         ))}
                       </div>
-                      <span className="text-xs font-mono text-[#71717a] ml-1">
-                        {quickViewProduct.rating || 4.9} ({quickViewProduct.reviewCount || 24} reviews)
+                      <span className="text-xs font-mono font-bold text-[#059669]">
+                        {quickViewProduct.rating || 5}
+                      </span>
+                      <span className="text-xs font-mono text-[#64748b]">
+                        ({quickViewProduct.reviewCount || 24} reviews)
                       </span>
                     </div>
 
-                    <div className="text-lg font-bold text-[#111111] mb-4">
-                      {quickViewProduct.price || "Direct Quarry Pricing"}
-                    </div>
-
-                    <p className="text-xs text-[#555555] leading-relaxed line-clamp-4 mb-4">
+                    <p className="text-xs sm:text-[13px] text-[#475569] leading-relaxed line-clamp-3 mb-4 font-normal">
                       {quickViewProduct.description}
                     </p>
+
+                    {/* Spec Highlights Container */}
+                    <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-3.5 my-3 space-y-2 text-[11.5px]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[#64748b] font-mono text-[10.5px] uppercase tracking-wider">Primary Finish:</span>
+                        <span className="font-semibold text-[#0f172a]">{quickViewProduct.finish}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-[#64748b] font-mono text-[10.5px] uppercase tracking-wider">Calibrated Thickness:</span>
+                        <span className="font-semibold text-[#0f172a]">{quickViewProduct.thickness}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-[#64748b] font-mono text-[10.5px] uppercase tracking-wider">Quarry Type:</span>
+                        <span className="font-semibold text-[#0f172a]">{quickViewProduct.quarryType ? quickViewProduct.quarryType.split("(")[0] : "Quarry Extract"}</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="space-y-2 pt-2">
+                  {/* Actions */}
+                  <div className="space-y-2.5 pt-2">
                     <Link
                       href={`/products/${quickViewProduct.id}`}
-                      className="w-full text-center py-2.5 bg-[#111111] hover:bg-black text-white text-xs font-bold uppercase tracking-wider block transition-colors"
+                      className="w-full text-center py-2.5 sm:py-3 bg-[#111111] hover:bg-black active:scale-[0.99] text-white text-xs sm:text-sm font-sans font-bold uppercase tracking-wider rounded-lg block transition-all shadow-md hover:shadow-lg shadow-black/20 cursor-pointer"
                     >
-                      View Complete Technical Dossier
+                      View Product Details
                     </Link>
                     <Link
                       href={`/request-sample?stone=${quickViewProduct.id}`}
-                      className="w-full text-center py-2 bg-transparent hover:bg-[#f5f5f5] text-[#111111] border border-[#111111] text-xs font-bold uppercase tracking-wider block transition-colors"
+                      className="w-full text-center py-2.5 sm:py-3 bg-transparent hover:bg-[#111111] active:scale-[0.99] text-[#111111] hover:text-white text-xs sm:text-sm font-sans font-bold uppercase tracking-wider rounded-lg block transition-all border-2 border-[#111111] cursor-pointer"
                     >
-                      Order Physical Quarry Sample Box
+                      Request Sample
                     </Link>
                   </div>
 

@@ -248,7 +248,8 @@ export const APPLICATION_AREAS = [
 ];
 
 export const QUARRY_DIVISIONS = [
-  { id: "Pavan Impex", label: "Pavan Impex (Markapur Slates & CNC)" },
+  { id: "Pavan Impex", label: "Pavan Impex (Markapur Slates)" },
+  { id: "PSG Stones", label: "PSG Stones (CNC & Murals)" },
   { id: "Sai Balaji Impex", label: "Sai Balaji Impex (Cuddapah Limestones)" },
   { id: "Pavan Granite", label: "Pavan Granite (Chimakurthy Galaxy)" },
   { id: "Pavan Stones World", label: "Pavan Stones World (Exotic Stones & Slabs)" },

@@ -3,7 +3,7 @@ import { use, useState, useRef } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { ArrowRight } from "@animateicons/react/lucide";
+import { ArrowRight } from "lucide-react";
 import RangeCarousel from "@/components/RangeCarousel";
 import DimensionalMatrix from "@/components/DimensionalMatrix";
 import CompanyEditorialShowcase from "@/components/CompanyEditorialShowcase";
@@ -568,15 +568,15 @@ const COMPANIES_DATABASE: Record<string, CompanyData> = {
     ],
     products: [
       {
-        id: "emerald-green-quartzite",
-        name: "Exotic Emerald Green Quartzite Slabs",
-        colors: ["Vibrant Emerald", "Viridian Green", "Golden Veins"],
-        description: "Precious architectural exotic quartzite with crystalline luminescence and undulating viridian veins.",
-        finishes: ["Diamond Mirror Polish", "Leathered Satin", "Honed Matte"],
-        gradient: "linear-gradient(135deg, #062c24 0%, #0d5c4a 50%, #031c17 100%)",
-        recommendedUse: "Backlit reception walls, waterfall kitchen islands, and monumental bathroom suites.",
-        slipRating: "R10",
-        heatResistance: "Heat & Acid Proof",
+        id: "cuddapah-black-limestone",
+        name: "Cuddapah Midnight Black Natural Limestone",
+        colors: ["Jet Black", "Charcoal Mist", "Velvet Black"],
+        description: "Quarried exclusively by Sai Balaji Impex from our certified Cuddapah reserves, celebrated worldwide for dense non-porous structure and velvety honed tactile finish.",
+        finishes: ["Honed Velvet", "Natural Cleft", "Tumbled Antique", "Brushed Leather"],
+        gradient: "linear-gradient(135deg, #111215 0%, #1e2025 50%, #0a0b0d 100%)",
+        recommendedUse: "Residential flooring, pool surrounds, commercial corridors, and exterior patios.",
+        slipRating: "R11 (Honed) / R13 (Tumbled)",
+        heatResistance: "Naturally Cool Footfall & Weatherproof",
       },
     ],
     specifications: {
@@ -627,7 +627,7 @@ export default function CompanyDedicatedPage() {
   };
 
   return (
-    <main className="relative bg-[#f2f2f2] min-h-screen text-[#140d0a] selection:bg-[#3e352a] selection:text-white">
+    <main className="relative bg-[#f2f2f2] min-h-screen text-[#140d0a] selection:bg-[#ff5500] selection:text-white">
       
       {/* ── ANIMATED HERO SECTION (STICKY COVER EFFECT) ── */}
       <section className="sticky top-0 z-0 w-full aspect-video md:aspect-auto md:h-screen min-h-[480px] md:min-h-[600px] flex items-center justify-center overflow-hidden bg-[#140d0a] pt-[72px]">

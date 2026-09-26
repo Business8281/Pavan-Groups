@@ -11,7 +11,7 @@ import { scrollToHash } from "@/components/SmoothScroll";
 import { 
   ChevronRight,
   ArrowRight,
-} from "@animateicons/react/lucide";
+} from "lucide-react";
 
 
 interface ProductDetail {
@@ -576,15 +576,15 @@ const COMPANIES_DATABASE: Record<string, CompanyData> = {
     ],
     products: [
       {
-        id: "emerald-green-quartzite",
-        name: "Exotic Emerald Green Quartzite Slabs",
-        colors: ["Vibrant Emerald", "Viridian Green", "Golden Veins"],
-        description: "Precious architectural exotic quartzite with crystalline luminescence and undulating viridian veins.",
-        finishes: ["Diamond Mirror Polish", "Leathered Satin", "Honed Matte"],
-        gradient: "linear-gradient(135deg, #062c24 0%, #0d5c4a 50%, #031c17 100%)",
-        recommendedUse: "Backlit reception walls, waterfall kitchen islands, and monumental bathroom suites.",
-        slipRating: "R10",
-        heatResistance: "Heat & Acid Proof",
+        id: "markapur-black-slate-tiles",
+        name: "Markapur Midnight Black Slate Tiles",
+        colors: ["Charcoal Black", "Anthracite", "Deep Graphite"],
+        description: "Extracted from the historic Markapur slate formations by Pavan Impex, celebrated for its rich non-fading charcoal-black tone and authentic hand-split natural cleft surface.",
+        finishes: ["Natural Cleft", "Honed Matte", "Brushed Velvet"],
+        gradient: "linear-gradient(135deg, #18181b 0%, #27272a 50%, #09090b 100%)",
+        recommendedUse: "Interior living floors, rustic fireplaces, pool decks, and exterior facade cladding.",
+        slipRating: "R12 (Non-Slip Cleft)",
+        heatResistance: "Frost & Weatherproof",
       },
     ],
     specifications: {
@@ -634,7 +634,7 @@ export default function CompanyDedicatedPage() {
   };
 
   return (
-    <main className="relative bg-[#f2f2f2] min-h-screen text-[#140d0a] selection:bg-[#3e352a] selection:text-white">
+    <main className="relative bg-[#f2f2f2] min-h-screen text-[#140d0a] selection:bg-[#ff5500] selection:text-white">
       
       {/* ── ANIMATED HERO SECTION (STICKY COVER EFFECT) ── */}
       <section className="sticky top-0 z-0 w-full aspect-video md:aspect-auto md:h-screen min-h-[480px] md:min-h-[600px] flex items-center justify-center overflow-hidden bg-[#140d0a] pt-[72px]">

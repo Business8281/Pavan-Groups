@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight } from "@animateicons/react/lucide";
+import { ArrowRight } from "lucide-react";
 
 const pillars = [
   { icon: "⬡", title: "Origin Traceability", desc: "Every block traced to its quarry face. GPS-tagged, ethically sourced." },

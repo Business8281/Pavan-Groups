@@ -19,8 +19,6 @@ import {
   Sparkles,
   ChevronRight,
 } from "lucide-react";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
 import ShippingAustralia from "@/components/ShippingAustralia";
 import TheJourney from "@/components/TheJourney";
 import Link from "next/link";
@@ -205,12 +203,10 @@ export default function ExportPage() {
   };
 
   return (
-    <div className="bg-[#fcfbf9] min-h-screen text-[#140d0a] font-sans selection:bg-[#ff5500]/20 flex flex-col">
-      <Navigation />
-
-      <main className="flex-grow pt-20 lg:pt-28 pb-0 flex flex-col justify-between w-full relative">
+    <div className="bg-[#fcfbf9] min-h-screen text-[#140d0a] font-sans selection:bg-[#ff5500] selection:text-white flex flex-col">
+      <main className="flex-grow pt-24 sm:pt-28 lg:pt-32 pb-12 flex flex-col justify-between w-full relative">
         {/* ── HERO BANNER ── */}
-        <section className="px-6 md:px-14 lg:px-20 max-w-7xl mx-auto w-full pt-8 pb-10">
+        <section className="px-4 sm:px-6 md:px-14 lg:px-20 max-w-7xl mx-auto w-full pt-4 pb-10">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-8 border-b border-[#140d0a]/10">
             <div className="max-w-3xl space-y-4">
               <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-light leading-[1.08] tracking-tight text-[#140d0a]">
@@ -594,8 +590,6 @@ export default function ExportPage() {
           <ShippingAustralia />
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, ArrowRight } from "@animateicons/react/lucide";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 interface Product {
   id: string;

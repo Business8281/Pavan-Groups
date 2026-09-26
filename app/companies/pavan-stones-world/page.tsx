@@ -3,7 +3,7 @@ import { use, useState, useRef } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { ArrowRight } from "@animateicons/react/lucide";
+import { ArrowRight } from "lucide-react";
 import RangeCarousel from "@/components/RangeCarousel";
 import DimensionalMatrix from "@/components/DimensionalMatrix";
 import CompanyEditorialShowcase from "@/components/CompanyEditorialShowcase";
@@ -566,47 +566,47 @@ const COMPANIES_DATABASE: Record<string, CompanyData> = {
     ],
     products: [
       {
-        id: "emerald-green-quartzite",
-        name: "Exotic Emerald Green Quartzite Slabs",
-        colors: ["Vibrant Emerald", "Viridian Green", "Golden Veins"],
-        description: "Precious architectural exotic quartzite with crystalline luminescence and undulating viridian veins. Acid-proof and naturally translucent for backlighting.",
-        finishes: ["Diamond Mirror Polish", "Leathered Satin", "Honed Matte"],
-        gradient: "linear-gradient(135deg, #062c24 0%, #0d5c4a 50%, #031c17 100%)",
-        recommendedUse: "Backlit reception walls, waterfall kitchen islands, and monumental bathroom suites.",
-        slipRating: "R10",
-        heatResistance: "Heat & Acid Proof",
-      },
-      {
-        id: "makrana-royal-white-marble",
-        name: "Makrana Royal Pure White Marble",
-        colors: ["Pure Alabaster White", "Subtle Grey Veining"],
-        description: "The legendary 99% pure calcitic marble of the Taj Mahal. Virtually zero moisture absorption, non-yellowing, and perpetually cool underfoot.",
-        finishes: ["Silk Polish", "High Gloss Mirror", "Honed Velvet"],
-        gradient: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%)",
-        recommendedUse: "Palatial living pavilions, sacred sanctums, and museum corridors.",
-        slipRating: "R10",
+        id: "mint-white-buddha-meditation-001",
+        name: "Mint White Sandstone Buddha Meditation (Design 001)",
+        colors: ["Mint White", "Sandstone Cream", "Warm Crystalline Ivory"],
+        description: "Precision 5-axis CNC dimensional bas-relief carving sculpted from authentic Mint White Sandstone for serene luxury spaces and meditation sanctuaries.",
+        finishes: ["CNC 3D Milled Relief", "Hand-Honed Velvet", "Natural Sandstone Cleft"],
+        gradient: "linear-gradient(135deg, #f7f3eb 0%, #e2d9cb 50%, #c4b59f 100%)",
+        recommendedUse: "Meditation backdrops, luxury resort foyers, and tranquil courtyard water feature elevations.",
+        slipRating: "R11",
         heatResistance: "Class A1 Fireproof",
       },
       {
-        id: "teakwood-sandstone-architectural",
-        name: "Teakwood Architectural Veined Sandstone",
-        colors: ["Golden Teak", "Warm Amber", "Earthy Sienna Bands"],
-        description: "Warm timber-grain sedimentary sandstone quarried for high-end architectural facades, courtyard terraces, and villa verandas.",
-        finishes: ["Honed Sawn", "Sandblasted Anti-Skid", "Brushed Antique"],
-        gradient: "linear-gradient(135deg, #7c5835 0%, #b38758 50%, #5e3f22 100%)",
-        recommendedUse: "Architectural exterior rainscreens, boundary walls, and sun terraces.",
-        slipRating: "R11 / R13",
-        heatResistance: "UV & Fire Proof",
+        id: "mint-white-radha-krishna-002",
+        name: "Mint White Sandstone Radha Krishna (Design 002)",
+        colors: ["Mint White", "Ivory Cream", "Satin Texture"],
+        description: "Divine sculptural bas-relief mural capturing intricate flowing drapery and devotional harmony in fine-grained natural Mint White stone.",
+        finishes: ["CNC 3D Milled Relief", "Hand-Honed Velvet"],
+        gradient: "linear-gradient(135deg, #f7f3eb 0%, #e2d9cb 50%, #c4b59f 100%)",
+        recommendedUse: "Pooja room sanctuaries, palatial living rooms, and grand villa entrance facades.",
+        slipRating: "R11",
+        heatResistance: "Class A1 Fireproof",
       },
       {
-        id: "rainforest-golden-exotic-marble",
-        name: "Rainforest Golden Serpentine Exotic Marble",
-        colors: ["Golden Brown", "Dark Chocolate", "Moss Green Veins"],
-        description: "Dramatic golden-brown serpentinite with dark earth-toned spiderweb veining reminiscent of ancient root systems.",
-        finishes: ["Leathered Antique", "Mirror Polish", "Honed"],
-        gradient: "linear-gradient(135deg, #422817 0%, #6e4627 50%, #2e1a0e 100%)",
-        recommendedUse: "Feature fireplaces, executive boardroom tables, and luxury powder rooms.",
-        slipRating: "R10",
+        id: "mint-white-om-ganesha-006",
+        name: "Mint White Sandstone Om Ganesha (Design 006)",
+        colors: ["Mint White", "Warm Cream", "Chalk Tone"],
+        description: "Auspicious deep 3D dimensional relief featuring Lord Ganesha intertwined with sacred Om symbolism in monolithic Mint White sandstone.",
+        finishes: ["CNC 3D Milled Relief", "Hand-Honed Velvet", "Polished Detail"],
+        gradient: "linear-gradient(135deg, #f7f3eb 0%, #e2d9cb 50%, #c4b59f 100%)",
+        recommendedUse: "Grand entrance portals, prayer halls, and architectural elevation centerpieces.",
+        slipRating: "R11",
+        heatResistance: "Class A1 Fireproof",
+      },
+      {
+        id: "mint-white-tree-of-life-061",
+        name: "Mint White Sandstone Tree of Life (Design 061)",
+        colors: ["Mint White", "Organic Ivory", "Earthy Sandstone"],
+        description: "Mastercrafted architectural botanical mural featuring expansive organic branching and tactile foliage contours.",
+        finishes: ["CNC 3D Milled Relief", "Hand-Honed Velvet"],
+        gradient: "linear-gradient(135deg, #f7f3eb 0%, #e2d9cb 50%, #c4b59f 100%)",
+        recommendedUse: "Feature fireplace walls, wellness spa atriums, and contemporary garden facades.",
+        slipRating: "R11",
         heatResistance: "Class A1 Fireproof",
       },
     ],
@@ -684,7 +684,7 @@ export default function CompanyDedicatedPage() {
   };
 
   return (
-    <main className="relative bg-[#f2f2f2] min-h-screen text-[#140d0a] selection:bg-[#722424] selection:text-white">
+    <main className="relative bg-[#f2f2f2] min-h-screen text-[#140d0a] selection:bg-[#ff5500] selection:text-white">
       
       {/* ── ANIMATED HERO SECTION (STICKY COVER EFFECT) ── */}
       <section className="sticky top-0 z-0 w-full aspect-video md:aspect-auto md:h-screen min-h-[480px] md:min-h-[600px] flex items-center justify-center overflow-hidden bg-[#0c1c22] pt-[72px]">

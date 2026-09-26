@@ -4,10 +4,12 @@ import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import Preloader from "@/components/Preloader";
 import SmoothScroll from "@/components/SmoothScroll";
+import { WishlistProvider } from "@/context/WishlistContext";
+import WishlistDrawer from "@/components/WishlistDrawer";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <WishlistProvider>
       {/* Intro Preloader */}
       <Preloader />
 
@@ -22,6 +24,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         </PageTransition>
         <Footer />
       </SmoothScroll>
-    </>
+
+      {/* Slide-over Wishlist Drawer */}
+      <WishlistDrawer />
+    </WishlistProvider>
   );
 }

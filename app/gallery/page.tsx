@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight } from "@animateicons/react/lucide";
+import { ArrowRight } from "lucide-react";
 
 const categories = ["Granite", "Marble", "Quartz", "Sandstone", "Limestone", "Onyx", "Travertine", "Slate", "Quartzite"];
 
@@ -82,16 +82,9 @@ export default function GalleryPage() {
   };
 
   return (
-    <main className="min-h-screen relative flex flex-col font-sans bg-white">
-      
-      {/* Header */}
-      <div className="relative z-10 w-full p-6 flex justify-between items-center">
-        <Link href="/" className="text-[#241919] font-display text-xl uppercase tracking-[0.2em] font-bold">
-          Pavan Stones Group
-        </Link>
-      </div>
+    <main className="min-h-screen relative flex flex-col font-sans bg-white pt-24 sm:pt-28 lg:pt-32 pb-16">
       {/* Dynamic Gallery Section - Premium Stack */}
-      <section className="relative z-10 bg-white overflow-hidden pt-4 pb-12 md:pt-6 md:pb-16 flex flex-col items-center justify-center border-b border-[#747474]/15">
+      <section className="relative z-10 bg-white overflow-hidden pt-2 pb-12 md:pt-4 md:pb-16 flex flex-col items-center justify-center border-b border-[#747474]/15">
         
         {/* Gallery Heading */}
         <div className="text-center mb-4 md:mb-6 px-6 z-20">
@@ -101,7 +94,7 @@ export default function GalleryPage() {
         </div>
 
         {/* Container */}
-        <div className="relative w-full max-w-7xl mx-auto h-[600px] flex items-center justify-center">
+        <div className="relative w-full max-w-7xl mx-auto h-[380px] sm:h-[480px] md:h-[600px] flex items-center justify-center">
           
           {/* Full-Width Immersive Carousel */}
           {angledImages.map((img, index) => {
@@ -169,7 +162,7 @@ export default function GalleryPage() {
                   damping: 15, 
                   mass: 1 
                 }}
-                className="absolute w-[85vw] max-w-[900px] h-[50vh] md:h-[70vh] max-h-[800px] bg-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-black/5 rounded-xl overflow-hidden cursor-pointer"
+                className="absolute w-[88vw] sm:w-[85vw] max-w-[900px] h-[320px] sm:h-[420px] md:h-[70vh] max-h-[800px] bg-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-black/5 rounded-xl overflow-hidden cursor-pointer touch-manipulation"
                 style={{ perspective: 1000 }}
               >
                 <div className="w-full h-full relative group">
@@ -187,13 +180,16 @@ export default function GalleryPage() {
                   
                   {/* Title / View Button on the Center Hero Card */}
                   {index === 3 && (
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 md:p-12 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <h3 className="text-white font-display text-3xl md:text-5xl font-light tracking-wide mb-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6 sm:p-8 md:p-12 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500">
+                      <h3 className="text-white font-display text-2xl sm:text-3xl md:text-5xl font-light tracking-wide mb-2 sm:mb-4">
                         Premium Selection
                       </h3>
-                      <button className="self-start text-white text-xs tracking-[0.3em] uppercase font-bold border border-white/50 px-8 py-3 backdrop-blur-md hover:bg-white hover:text-black transition-all duration-300">
+                      <Link 
+                        href="/products"
+                        className="self-start text-white text-[10px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] uppercase font-bold border border-white/50 px-5 sm:px-8 py-2 sm:py-3 backdrop-blur-md hover:bg-white hover:text-black transition-all duration-300"
+                      >
                         View Details
-                      </button>
+                      </Link>
                     </div>
                   )}
                 </div>
@@ -201,6 +197,25 @@ export default function GalleryPage() {
             );
           })}
           
+        </div>
+
+        {/* Mobile Navigation Controls */}
+        <div className="flex items-center justify-center gap-4 mt-6 z-20 md:hidden">
+          <button
+            type="button"
+            onClick={handlePrev}
+            className="px-4 py-2 bg-[#241919] text-white text-xs font-mono uppercase tracking-wider rounded-full shadow-xs active:scale-95 touch-manipulation"
+          >
+            ← Previous
+          </button>
+          <span className="text-xs font-mono text-[#747474]">Swipe / Tap to Rotate</span>
+          <button
+            type="button"
+            onClick={handleNext}
+            className="px-4 py-2 bg-[#241919] text-white text-xs font-mono uppercase tracking-wider rounded-full shadow-xs active:scale-95 touch-manipulation"
+          >
+            Next →
+          </button>
         </div>
       </section>
 

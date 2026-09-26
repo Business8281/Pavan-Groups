@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { ArrowRight, Phone, Mail } from "@animateicons/react/lucide";
+import { ArrowRight, Phone, Mail } from "lucide-react";
 
 export default function CTA() {
   return (
@@ -42,8 +42,8 @@ export default function CTA() {
 
         <div className="flex flex-col sm:flex-row gap-4 pt-4">
           <a
-            href="mailto:exports@pavangroups.com"
-            className="inline-flex items-center justify-center gap-3 px-9 py-4 text-xs font-mono uppercase tracking-[0.2em] font-bold bg-[#0f172a] hover:bg-[#a0522d] text-[#ffffff] transition-all shadow-md hover:scale-[1.02] active:scale-[0.98]"
+            href="mailto:export@pavangroups.com"
+            className="inline-flex items-center justify-center gap-3 px-9 py-4 text-xs font-mono uppercase tracking-[0.2em] font-bold bg-[#0f172a] hover:bg-[#a0522d] text-[#ffffff] transition-all shadow-md hover:scale-[1.02] active:scale-[0.98] touch-manipulation"
           >
             <Mail className="w-4 h-4 text-[#94a3b8]" />
             <span>Request Container Quote</span>
@@ -51,11 +51,11 @@ export default function CTA() {
           </a>
 
           <a
-            href="tel:+919876543210"
-            className="inline-flex items-center justify-center gap-3 px-9 py-4 border border-[#94a3b8]/30 text-xs font-mono uppercase tracking-[0.2em] font-semibold text-[#f1f5f9] hover:bg-white/5 transition-all hover:border-[#94a3b8]"
+            href="tel:+919246462600"
+            className="inline-flex items-center justify-center gap-3 px-9 py-4 border border-[#94a3b8]/30 text-xs font-mono uppercase tracking-[0.2em] font-semibold text-[#f1f5f9] hover:bg-white/5 transition-all hover:border-[#94a3b8] touch-manipulation"
           >
             <Phone className="w-4 h-4 text-[#94a3b8]" />
-            <span>+91 98765 43210</span>
+            <span>+91 9246462600</span>
           </a>
         </div>
 
