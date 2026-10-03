@@ -7,7 +7,7 @@
 
 /* ─── Design tokens (Luminous Stone Palette) ─────────────────────── */
 :root {
-  --white: #f8fafc;
+  --white: #ffffff;
   --white-pure: #ffffff;
   --sand: #f2ece2;
   --sand-dark: #e8dfd3;
@@ -48,9 +48,16 @@ body {
   font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
 }
 
+*::selection,
 ::selection {
-  background: var(--coral);
-  color: #ffffff;
+  background-color: #ff5500 !important;
+  color: #ffffff !important;
+}
+
+*::-moz-selection,
+::-moz-selection {
+  background-color: #ff5500 !important;
+  color: #ffffff !important;
 }
 
 /* Lenis smooth scroll */

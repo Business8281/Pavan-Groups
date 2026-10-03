@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight } from "@animateicons/react/lucide";
+import { ArrowRight } from "lucide-react";
 
 const pillars = [
   { icon: "⬡", title: "Origin Traceability", desc: "Every block traced to its quarry face. GPS-tagged, ethically sourced." },
@@ -41,7 +41,7 @@ export default function About() {
           spaces into timeless architectural legacies.
         </p>
         <p className="text-ink/60 leading-[1.8] mb-10 text-[15px]">
-          Operating through Pavan Impex, Sai Balaji Impex, Pavan Granite, and Pavan Stones World, we manage quarrying, custom processing, export, and installation across Slate, Limestone, Premium Granite, and Architectural Stone Masterpieces for architects across 40+ countries.
+          Operating through <span className="font-medium text-[#9a3412]">Pavan Impex</span>, <span className="font-medium text-[#b45309]">Sai Balaji Impex</span>, <span className="font-medium text-[#0f766e]">Pavan Granite</span>, and <span className="font-medium text-[#722424]">Pavan Stones World</span>, we manage quarrying, custom processing, export, and installation across Slate, Limestone, Premium Granite, and Architectural Stone Masterpieces for architects across 40+ countries.
         </p>
         <Link
           href="/about"

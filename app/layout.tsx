@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className="bg-[#f8fafc] text-[#140d0a] font-sans font-light antialiased selection:bg-[#c85a32] selection:text-white">
+      <body className="bg-white text-[#252422] font-sans font-light antialiased selection:bg-[#ff5500] selection:text-white">
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

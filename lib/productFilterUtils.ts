@@ -50,6 +50,14 @@ export const TOP_CATEGORIES_METADATA: FilterCategoryOption[] = [
     href: "/products?category=north-indian-granite",
     image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80",
   },
+  {
+    id: "pebbles",
+    slug: "pebbles",
+    title: "NATURAL PEBBLES",
+    subtitle: "Rough & Polished River Agates",
+    href: "/products/pebbles",
+    image: "/images/pavan-impex/pavan-impex-448.jpg",
+  },
 ];
 
 export interface FilterDefinition {
@@ -248,7 +256,8 @@ export const APPLICATION_AREAS = [
 ];
 
 export const QUARRY_DIVISIONS = [
-  { id: "Pavan Impex", label: "Pavan Impex (Markapur Slates & CNC)" },
+  { id: "Pavan Impex", label: "Pavan Impex (Markapur Slates)" },
+  { id: "PSG Stones", label: "PSG Stones (CNC & Murals)" },
   { id: "Sai Balaji Impex", label: "Sai Balaji Impex (Cuddapah Limestones)" },
   { id: "Pavan Granite", label: "Pavan Granite (Chimakurthy Galaxy)" },
   { id: "Pavan Stones World", label: "Pavan Stones World (Exotic Stones & Slabs)" },
@@ -569,9 +578,72 @@ export const NORTH_INDIAN_GRANITE_SUBTYPES: SubtypeDefinition[] = [
   },
 ];
 
+// 6. PEBBLES (Official Subtypes)
+export const PEBBLES_SUBTYPES: SubtypeDefinition[] = [
+  {
+    id: "rough-pebbles",
+    label: "Rough Natural Pebbles",
+    hex: "#78716c",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.finish}`.toLowerCase();
+      return str.includes("rough") || str.includes("cleft");
+    },
+  },
+  {
+    id: "polished-river-pebbles",
+    label: "Polished River Pebbles",
+    hex: "#f5f5f4",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("white") || str.includes("flat") || str.includes("onyx") || str.includes("jasper") || str.includes("amber");
+    },
+  },
+  {
+    id: "exotic-agate-pebbles",
+    label: "Agate & Exotic Gem Pebbles",
+    hex: "#0284c7",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description}`.toLowerCase();
+      return str.includes("agate") || str.includes("moss") || str.includes("lilac") || str.includes("lavender") || str.includes("pink");
+    },
+  },
+];
+
 // Subtype Getter and Matcher Utilities
+export function getProductCategoryLabel(product: ProductStone): string {
+  if (!product) return "";
+  const cat = (product.category || "").toLowerCase();
+
+  if (cat === "cnc") return "CNC Designs";
+  if (cat === "crazy-pattern" || cat === "crazy pattern") return "Crazy Pattern";
+  if (cat === "mosaic") return "Mosaic";
+  if (cat === "pebbles") return "Pebbles";
+  if (cat === "slate") return "Slate Stone";
+  if (cat === "limestone") return "Limestone";
+  if (cat === "pavers") return "Pavers";
+  if (cat === "cladding") return "Wall Cladding";
+  if (cat === "applications") return "Applications";
+  if (cat === "granite") {
+    const originLower = (product.origin || "").toLowerCase();
+    const badgeLower = (product.badge || "").toLowerCase();
+    if (
+      originLower.includes("rajasthan") ||
+      originLower.includes("north") ||
+      badgeLower.includes("north indian")
+    ) {
+      return "North Indian Granite";
+    }
+    return "South Indian Granite";
+  }
+
+  return product.category
+    ? product.category.charAt(0).toUpperCase() + product.category.slice(1)
+    : "";
+}
+
 export function getCategorySubtypes(categoryKey: string): SubtypeDefinition[] {
   const cat = categoryKey.toLowerCase();
+  if (cat.includes("pebble")) return PEBBLES_SUBTYPES;
   if (cat.includes("slate") || cat.includes("cnc")) return SLATE_STONE_VARIETIES;
   if (cat.includes("application") || cat.includes("paver") || cat.includes("cladding")) return APPLICATION_SUBTYPES;
   if (cat.includes("limestone")) return LIMESTONE_SUBTYPES;
@@ -625,6 +697,15 @@ export function matchesNorthIndianGraniteSubtype(product: ProductStone, selected
   });
 }
 
+export function matchesPebblesSubtype(product: ProductStone, selectedSubtypes: string[]): boolean {
+  if (selectedSubtypes.length === 0) return true;
+  return selectedSubtypes.some((sId) => {
+    const def = PEBBLES_SUBTYPES.find((d) => d.id === sId || d.label.toLowerCase() === sId.toLowerCase());
+    if (def) return def.test(product);
+    return false;
+  });
+}
+
 export function matchesCategorySubtype(product: ProductStone, categoryKey: string, selectedSubtypes: string[]): boolean {
   if (selectedSubtypes.length === 0) return true;
   const subtypes = getCategorySubtypes(categoryKey);
@@ -641,16 +722,25 @@ export function matchesCategory(product: ProductStone, selectedCategories: strin
   return selectedCategories.some((cat) => {
     const catLower = cat.toLowerCase().trim();
 
-    // 1) SLATE STONE (CNC products come under SLATE STONE category!)
+    // 1) SLATE STONE
     if (
       catLower === "slate" ||
       catLower === "slates" ||
       catLower === "slate-stone" ||
-      catLower === "slate stone" ||
-      catLower === "cnc" ||
-      catLower === "cnc-carvings"
+      catLower === "slate stone"
     ) {
-      return product.category === "slate" || product.category === "cnc";
+      return product.category === "slate";
+    }
+
+    // 2) CNC DESIGNS & CARVINGS
+    if (
+      catLower === "cnc" ||
+      catLower === "cnc-designs" ||
+      catLower === "cnc designs" ||
+      catLower === "cnc-carvings" ||
+      catLower === "cnc carvings"
+    ) {
+      return product.category === "cnc";
     }
 
     // 2) APPLICATIONS (Wall Cladding, Pavers, Cobbles)
@@ -664,12 +754,22 @@ export function matchesCategory(product: ProductStone, selectedCategories: strin
       return product.category === "pavers" || product.category === "cladding";
     }
 
-    // 3) LIMESTONE
+    // 3) MOSAIC / MOSAICS
+    if (
+      catLower === "mosaic" ||
+      catLower === "mosaics" ||
+      catLower === "stone-mosaic" ||
+      catLower === "slate-mosaic"
+    ) {
+      return product.category === "mosaic";
+    }
+
+    // 4) LIMESTONE
     if (catLower === "limestone" || catLower === "limestones") {
       return product.category === "limestone";
     }
 
-    // 4) SOUTH INDIAN GRANITE
+    // 5) SOUTH INDIAN GRANITE
     if (
       catLower === "south-indian-granite" ||
       catLower === "south indian granite" ||
@@ -685,7 +785,7 @@ export function matchesCategory(product: ProductStone, selectedCategories: strin
       );
     }
 
-    // 5) NORTH INDIAN GRANITE
+    // 6) NORTH INDIAN GRANITE
     if (
       catLower === "north-indian-granite" ||
       catLower === "north indian granite" ||
@@ -701,9 +801,32 @@ export function matchesCategory(product: ProductStone, selectedCategories: strin
       );
     }
 
+    // 7) PEBBLES (Rough & Polished River Agate Pebbles)
+    if (
+      catLower === "pebbles" ||
+      catLower === "pebble" ||
+      catLower === "rough-pebbles" ||
+      catLower === "polished-pebbles"
+    ) {
+      return product.category === "pebbles";
+    }
+
     // Fallback for general granite
     if (catLower === "granite" || catLower === "granites") {
       return product.category === "granite";
+    }
+
+    // 8) CRAZY PATTERN (Organic flagstone paving)
+    if (
+      catLower === "crazy pattern" ||
+      catLower === "crazy-pattern" ||
+      catLower === "crazy_pattern"
+    ) {
+      return (
+        product.category === "crazy-pattern" ||
+        (product.category as any) === "crazy pattern" ||
+        product.name.toLowerCase().includes("crazy pattern")
+      );
     }
 
     return product.category === catLower;
@@ -813,6 +936,9 @@ export function calculateFacetCounts(products: ProductStone[]) {
     cnc: 0,
     pavers: 0,
     cladding: 0,
+    pebbles: 0,
+    mosaic: 0,
+    "crazy-pattern": 0,
   };
 
   const companies: Record<string, number> = {};
@@ -829,13 +955,18 @@ export function calculateFacetCounts(products: ProductStone[]) {
 
   products.forEach((p) => {
     // Categories
-    if (p.category === "slate" || p.category === "cnc") {
+    if (p.category === "mosaic") {
+      categories.mosaic = (categories.mosaic || 0) + 1;
+    } else if (p.category === "cnc") {
+      categories.cnc = (categories.cnc || 0) + 1;
+    } else if (p.category === "slate") {
       categories.slate = (categories.slate || 0) + 1;
-      if (p.category === "cnc") categories.cnc = (categories.cnc || 0) + 1;
     } else if (p.category === "pavers" || p.category === "cladding") {
       categories.applications = (categories.applications || 0) + 1;
       if (p.category === "pavers") categories.pavers = (categories.pavers || 0) + 1;
       if (p.category === "cladding") categories.cladding = (categories.cladding || 0) + 1;
+    } else if (p.category === "pebbles") {
+      categories.pebbles = (categories.pebbles || 0) + 1;
     } else if (p.category === "limestone") {
       categories.limestone = (categories.limestone || 0) + 1;
     } else if (p.category === "granite") {
@@ -851,6 +982,8 @@ export function calculateFacetCounts(products: ProductStone[]) {
       } else {
         categories["south-indian-granite"] = (categories["south-indian-granite"] || 0) + 1;
       }
+    } else if (p.category === "crazy-pattern" || (p.category as any) === "crazy pattern") {
+      categories["crazy-pattern"] = (categories["crazy-pattern"] || 0) + 1;
     }
 
     // Companies
@@ -925,6 +1058,11 @@ export function calculateFacetCounts(products: ProductStone[]) {
     }).length;
   });
 
+  const pebblesSubtypes: Record<string, number> = {};
+  PEBBLES_SUBTYPES.forEach((pb) => {
+    pebblesSubtypes[pb.id] = products.filter((p) => p.category === "pebbles" && pb.test(p)).length;
+  });
+
   return {
     categories,
     companies,
@@ -937,6 +1075,7 @@ export function calculateFacetCounts(products: ProductStone[]) {
     limestoneSubtypes,
     southGraniteSubtypes,
     northGraniteSubtypes,
+    pebblesSubtypes,
   };
 }
 

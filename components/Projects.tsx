@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "@animateicons/react/lucide";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 const projects = [
   {
@@ -67,8 +67,8 @@ export default function Projects() {
           </h2>
         </div>
         <Link
-          href="/projects"
-          className="inline-flex items-center gap-2.5 text-[10px] tracking-[0.22em] uppercase text-[#c85a32] font-medium border-b pb-1 hover:gap-5 transition-all duration-300"
+          href="/gallery"
+          className="inline-flex items-center gap-2.5 text-[10px] tracking-[0.22em] uppercase text-[#c85a32] font-medium border-b pb-1 hover:gap-5 transition-all duration-300 touch-manipulation"
           style={{ borderColor: "rgba(255,68,58,0.3)" }}
         >
           <span>All Projects Archive</span>
@@ -81,8 +81,8 @@ export default function Projects() {
         {projects.map((p, i) => (
           <Link
             key={p.title}
-            href={`/projects?category=${encodeURIComponent(p.category)}`}
-            className="group flex items-center justify-between py-6 border-b cursor-pointer gap-4"
+            href="/gallery"
+            className="group flex items-center justify-between py-6 border-b cursor-pointer gap-4 touch-manipulation"
             style={{ borderColor: "rgba(0,0,0,0.1)" }}
           >
             {/* Index + title */}

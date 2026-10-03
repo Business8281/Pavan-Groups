@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { scrollToHash } from "@/components/SmoothScroll";
-import { Layers, Clock, ShieldCheck, TrendingUp, Droplet, Thermometer, Globe, ArrowRight } from "@animateicons/react/lucide";
+import { Layers, Clock, ShieldCheck, TrendingUp, Droplet, Thermometer, Globe, ArrowRight } from "lucide-react";
 
 // ── STONE DATA WITH IMAGE CONTAINERS & EXTENDED DOSSIERS ──
 interface DetailedDossier {

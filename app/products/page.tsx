@@ -32,11 +32,13 @@ import {
   LIMESTONE_SUBTYPES,
   SOUTH_INDIAN_GRANITE_SUBTYPES,
   NORTH_INDIAN_GRANITE_SUBTYPES,
+  PEBBLES_SUBTYPES,
   matchesSlateVariety,
   matchesApplicationSubtype,
   matchesLimestoneSubtype,
   matchesSouthIndianGraniteSubtype,
   matchesNorthIndianGraniteSubtype,
+  matchesPebblesSubtype,
   matchesCategory,
   matchesCompany,
   matchesFinish,
@@ -47,8 +49,11 @@ import {
   normalizeFinishParam,
   normalizeSizeParam,
   normalizeColorParam,
+  getProductCategoryLabel,
 } from "@/lib/productFilterUtils";
 import ProductCardImage from "@/components/ProductCardImage";
+import { useWishlist } from "@/context/WishlistContext";
+import ProductPagination, { useResponsiveItemsPerPage } from "@/components/ProductPagination";
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -63,6 +68,7 @@ function ProductsContent() {
   const [selectedLimestoneSubtypes, setSelectedLimestoneSubtypes] = useState<string[]>([]);
   const [selectedSouthGraniteSubtypes, setSelectedSouthGraniteSubtypes] = useState<string[]>([]);
   const [selectedNorthGraniteSubtypes, setSelectedNorthGraniteSubtypes] = useState<string[]>([]);
+  const [selectedPebblesSubtypes, setSelectedPebblesSubtypes] = useState<string[]>([]);
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [selectedFinishes, setSelectedFinishes] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -70,18 +76,36 @@ function ProductsContent() {
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<
-    "featured" | "price-asc" | "price-desc" | "rating" | "name-asc" | "name-desc"
+    "featured" | "rating" | "name-asc" | "name-desc"
   >("featured");
 
-  // Dynamic live facets:
-  // When categories are selected, facet counts reflect products in those categories.
-  // When no category is selected, facet counts reflect all products.
-  const activePoolForFacets = useMemo(() => {
-    if (selectedCategories.length === 0) return PRODUCTS_DATABASE;
-    return PRODUCTS_DATABASE.filter((p) => matchesCategory(p, selectedCategories));
-  }, [selectedCategories]);
+  // Company-scoped product pool
+  const companyPool = useMemo(() => {
+    if (selectedCompanies.length === 0) return PRODUCTS_DATABASE;
+    return PRODUCTS_DATABASE.filter((p) => matchesCompany(p, selectedCompanies));
+  }, [selectedCompanies]);
 
-  const liveFacets = useMemo(() => calculateFacetCounts(activePoolForFacets), [activePoolForFacets]);
+  // Dynamic live facets:
+  const liveFacets = useMemo(() => {
+    // Categories reflect the company pool so all categories of the selected company show their count
+    const compFacets = calculateFacetCounts(companyPool);
+
+    // Other facets reflect category selection if active
+    const activePool = selectedCategories.length > 0
+      ? companyPool.filter((p) => matchesCategory(p, selectedCategories))
+      : companyPool;
+    const poolFacets = calculateFacetCounts(activePool);
+
+    const globalFacets = calculateFacetCounts(
+      searchQuery ? PRODUCTS_DATABASE.filter((p) => matchesSearch(p, searchQuery)) : PRODUCTS_DATABASE
+    );
+
+    return {
+      ...poolFacets,
+      categories: compFacets.categories,
+      companies: globalFacets.companies,
+    };
+  }, [companyPool, selectedCategories, searchQuery]);
 
   // Top Category Banner Definitions with live dynamic counts
   const TOP_CATEGORIES = useMemo(
@@ -131,6 +155,15 @@ function ProductsContent() {
         href: "/products/north-indian-granite",
         image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80",
       },
+      {
+        id: "pebbles",
+        slug: "pebbles",
+        title: "NATURAL PEBBLES",
+        subtitle: "Rough & Polished River Agates",
+        count: liveFacets.categories.pebbles || 28,
+        href: "/products/pebbles",
+        image: "/images/pavan-impex/pavan-impex-448.jpg",
+      },
     ],
     [liveFacets]
   );
@@ -138,8 +171,9 @@ function ProductsContent() {
   // UI States
   const [isFilterOpen, setIsFilterOpen] = useState(true);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [wishlist, setWishlist] = useState<Record<string, boolean>>({});
+  const { isWishlisted, toggleWishlist } = useWishlist();
   const [quickViewProduct, setQuickViewProduct] = useState<ProductStone | null>(null);
+  const [activeQuickViewImage, setActiveQuickViewImage] = useState<string | null>(null);
 
   // Sync Filters from URL Query Params
   useEffect(() => {
@@ -158,7 +192,11 @@ function ProductsContent() {
 
     if (categoryParam) {
       const catLower = categoryParam.toLowerCase();
-      if (catLower.includes("slate") || catLower.includes("cnc")) setSelectedCategories(["slate"]);
+      if (catLower.includes("crazy")) setSelectedCategories(["crazy-pattern"]);
+      else if (catLower.includes("cnc")) setSelectedCategories(["cnc"]);
+      else if (catLower.includes("mosaic")) setSelectedCategories(["mosaic"]);
+      else if (catLower.includes("pebble")) setSelectedCategories(["pebbles"]);
+      else if (catLower.includes("slate")) setSelectedCategories(["slate"]);
       else if (catLower.includes("application") || catLower.includes("paver") || catLower.includes("cladding")) setSelectedCategories(["applications"]);
       else if (catLower.includes("limestone")) setSelectedCategories(["limestone"]);
       else if (catLower.includes("south")) setSelectedCategories(["south-indian-granite"]);
@@ -169,7 +207,9 @@ function ProductsContent() {
 
     if (companyParam) {
       const compLower = companyParam.toLowerCase();
-      if (compLower.includes("pavan impex") || compLower === "pavan-impex") {
+      if (compLower.includes("psg") || compLower.includes("psg stones") || compLower === "psg-stones") {
+        setSelectedCompanies(["PSG Stones"]);
+      } else if (compLower.includes("pavan impex") || compLower === "pavan-impex") {
         setSelectedCompanies(["Pavan Impex"]);
       } else if (compLower.includes("sai balaji") || compLower === "sai-balaji-impex") {
         setSelectedCompanies(["Sai Balaji Impex"]);
@@ -215,6 +255,7 @@ function ProductsContent() {
     limestoneSubtype: boolean;
     southGraniteSubtype: boolean;
     northGraniteSubtype: boolean;
+    pebblesSubtype: boolean;
     company: boolean;
     color: boolean;
     finish: boolean;
@@ -227,6 +268,7 @@ function ProductsContent() {
     limestoneSubtype: false,
     southGraniteSubtype: false,
     northGraniteSubtype: false,
+    pebblesSubtype: false,
     company: false,
     color: false,
     finish: false,
@@ -258,6 +300,21 @@ function ProductsContent() {
     }
   };
 
+  const handleSubCategoryFilter = (catKey: string) => {
+    if (selectedCategories.includes(catKey) && selectedCategories.length === 1) {
+      setSelectedCategories([]);
+    } else {
+      setSelectedCategories([catKey]);
+    }
+    // Clear other specific subtype filters so they do not collide
+    setSelectedSlateVarieties([]);
+    setSelectedApplicationSubtypes([]);
+    setSelectedLimestoneSubtypes([]);
+    setSelectedSouthGraniteSubtypes([]);
+    setSelectedNorthGraniteSubtypes([]);
+    setSelectedPebblesSubtypes([]);
+  };
+
   const clearAllFilters = () => {
     setSelectedCategories([]);
     setSelectedSlateVarieties([]);
@@ -265,6 +322,7 @@ function ProductsContent() {
     setSelectedLimestoneSubtypes([]);
     setSelectedSouthGraniteSubtypes([]);
     setSelectedNorthGraniteSubtypes([]);
+    setSelectedPebblesSubtypes([]);
     setSelectedCompanies([]);
     setSelectedFinishes([]);
     setSelectedSizes([]);
@@ -286,8 +344,13 @@ function ProductsContent() {
 
     selectedCategories.forEach((cat) => {
       const match = TOP_CATEGORIES.find((c) => c.id === cat);
+      let label = match ? match.title : cat.toUpperCase();
+      if (cat === "cnc") label = "CNC DESIGNS";
+      if (cat === "mosaic") label = "MOSAICS";
+      if (cat === "pebbles") label = "PEBBLES";
+      if (cat === "crazy-pattern" || cat === "crazy pattern") label = "CRAZY PATTERN";
       chips.push({
-        label: match ? match.title : cat.toUpperCase(),
+        label,
         remove: () => setSelectedCategories((prev) => prev.filter((c) => c !== cat)),
       });
     });
@@ -329,6 +392,14 @@ function ProductsContent() {
       chips.push({
         label: match ? match.label : ngId,
         remove: () => setSelectedNorthGraniteSubtypes((prev) => prev.filter((ng) => ng !== ngId)),
+      });
+    });
+
+    selectedPebblesSubtypes.forEach((pbId) => {
+      const match = PEBBLES_SUBTYPES.find((pb) => pb.id === pbId || pb.label.toLowerCase() === pbId.toLowerCase());
+      chips.push({
+        label: match ? match.label : pbId,
+        remove: () => setSelectedPebblesSubtypes((prev) => prev.filter((pb) => pb !== pbId)),
       });
     });
 
@@ -398,6 +469,7 @@ function ProductsContent() {
       if (!matchesLimestoneSubtype(product, selectedLimestoneSubtypes)) return false;
       if (!matchesSouthIndianGraniteSubtype(product, selectedSouthGraniteSubtypes)) return false;
       if (!matchesNorthIndianGraniteSubtype(product, selectedNorthGraniteSubtypes)) return false;
+      if (!matchesPebblesSubtype(product, selectedPebblesSubtypes)) return false;
       if (!matchesCompany(product, selectedCompanies)) return false;
       if (!matchesFinish(product, selectedFinishes)) return false;
       if (!matchesSize(product, selectedSizes)) return false;
@@ -411,16 +483,6 @@ function ProductsContent() {
       if (sortBy === "name-asc") return a.name.localeCompare(b.name);
       if (sortBy === "name-desc") return b.name.localeCompare(a.name);
       if (sortBy === "rating") return (b.rating || 4.5) - (a.rating || 4.5);
-      if (sortBy === "price-asc") {
-        const priceA = parseFloat(a.price?.replace(/[^0-9.]/g, "") || "0");
-        const priceB = parseFloat(b.price?.replace(/[^0-9.]/g, "") || "0");
-        return priceA - priceB;
-      }
-      if (sortBy === "price-desc") {
-        const priceA = parseFloat(a.price?.replace(/[^0-9.]/g, "") || "0");
-        const priceB = parseFloat(b.price?.replace(/[^0-9.]/g, "") || "0");
-        return priceB - priceA;
-      }
       return 0; // featured natural order
     });
   }, [
@@ -431,6 +493,7 @@ function ProductsContent() {
     selectedLimestoneSubtypes,
     selectedSouthGraniteSubtypes,
     selectedNorthGraniteSubtypes,
+    selectedPebblesSubtypes,
     selectedCompanies,
     selectedFinishes,
     selectedSizes,
@@ -439,14 +502,38 @@ function ProductsContent() {
     sortBy,
   ]);
 
-  const toggleWishlist = (id: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setWishlist((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
+  // Responsive items per page (20 desktop / 16 tablet / 8 mobile)
+  const itemsPerPage = useResponsiveItemsPerPage();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Reset page to 1 whenever any filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    searchQuery,
+    selectedCategories,
+    selectedSlateVarieties,
+    selectedApplicationSubtypes,
+    selectedLimestoneSubtypes,
+    selectedSouthGraniteSubtypes,
+    selectedNorthGraniteSubtypes,
+    selectedPebblesSubtypes,
+    selectedCompanies,
+    selectedFinishes,
+    selectedSizes,
+    selectedColors,
+    selectedAreas,
+    sortBy,
+  ]);
+
+  // Paginated product slice
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredProducts.slice(start, start + itemsPerPage);
+  }, [filteredProducts, currentPage, itemsPerPage]);
 
   return (
-    <div className="bg-[#ffffff] text-[#111111] min-h-screen pt-20 sm:pt-24 pb-24 font-sans selection:bg-[#241919] selection:text-white">
+    <div className="bg-[#ffffff] text-[#111111] min-h-screen pt-20 sm:pt-24 pb-24 font-sans selection:bg-[#ff5500] selection:text-white">
       
       {/* ── 1. HEADER SECTION (MATCHING REFERENCE IMAGE) ── */}
       <section className="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 pt-4 pb-6 text-center">
@@ -460,7 +547,7 @@ function ProductsContent() {
 
       {/* ── 2. TOP CATEGORY BANNERS ROW (DEDICATED CATEGORY PAGE ROUTING) ── */}
       <section className="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 mb-6">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 lg:gap-3.5">
           {TOP_CATEGORIES.map((cat) => {
             const isActive = selectedCategories.includes(cat.id);
 
@@ -556,13 +643,13 @@ function ProductsContent() {
             </button>
 
             {/* Live Search Input Bar */}
-            <div className="relative flex items-center w-full sm:w-64 md:w-72">
+            <div className="relative flex items-center w-full sm:w-56 md:w-60">
               <Search className="w-3.5 h-3.5 text-[#71717a] absolute left-2.5 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search 96 stone specimens..."
+                placeholder={`Search ${PRODUCTS_DATABASE.length} stone specimens...`}
                 className="w-full bg-[#f4f4f5] hover:bg-[#ededf0] focus:bg-white text-[11.5px] text-[#111111] placeholder:text-[#888888] pl-8 pr-7 py-1.5 border border-[#e4e4e7] focus:border-[#111111] focus:outline-none transition-colors rounded-none"
               />
               {searchQuery && (
@@ -576,33 +663,63 @@ function ProductsContent() {
               )}
             </div>
 
-            {/* Active Filter Chips */}
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap min-w-0">
-              {activeChips.map((chip, idx) => (
-                <span
-                  key={idx}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#f4f4f5] border border-[#e4e4e7] text-[11px] font-medium text-[#18181b] rounded-none"
-                >
-                  <span className="truncate max-w-[140px] sm:max-w-none">{chip.label}</span>
-                  <button
-                    type="button"
-                    onClick={chip.remove}
-                    className="w-3.5 h-3.5 flex items-center justify-center text-[#71717a] hover:text-[#09090b] cursor-pointer"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              ))}
+            {/* Horizontal Company Filter Buttons */}
+            <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 no-scrollbar flex-nowrap sm:flex-wrap">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCompanies([]);
+                  setSelectedCategories([]);
+                }}
+                className={`text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1.5 transition-all cursor-pointer whitespace-nowrap border ${
+                  selectedCompanies.length === 0
+                    ? "bg-[#111111] text-white border-[#111111]"
+                    : "bg-[#f4f4f5] text-[#555555] hover:text-[#111111] border-[#e4e4e7] hover:border-[#111111]"
+                }`}
+              >
+                All Companies
+              </button>
+              {[
+                { key: "Pavan Stones World", label: "Pavan Stones World" },
+                { key: "PSG Stones", label: "PSG Stones" },
+                { key: "Pavan Granite", label: "Pavan Granite" },
+                { key: "Pavan Impex", label: "Pavan Impex" },
+                { key: "Sai Balaji Impex", label: "Sai Balaji Impex" },
+              ].map((comp) => {
+                const isSelected = selectedCompanies.includes(comp.key);
+                const count = liveFacets.companies[comp.key] || 0;
 
-              {activeChips.length > 0 && (
-                <button
-                  type="button"
-                  onClick={clearAllFilters}
-                  className="text-[11px] font-semibold text-[#18181b] hover:underline cursor-pointer ml-1 py-1"
-                >
-                  Clear All
-                </button>
-              )}
+                return (
+                  <button
+                    key={comp.key}
+                    type="button"
+                    onClick={() => {
+                      if (isSelected) {
+                        setSelectedCompanies(selectedCompanies.filter((c) => c !== comp.key));
+                      } else {
+                        setSelectedCompanies([comp.key]);
+                        setSelectedCategories([]);
+                        setSelectedSlateVarieties([]);
+                        setSelectedApplicationSubtypes([]);
+                        setSelectedLimestoneSubtypes([]);
+                        setSelectedSouthGraniteSubtypes([]);
+                        setSelectedNorthGraniteSubtypes([]);
+                        setSelectedPebblesSubtypes([]);
+                      }
+                    }}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1.5 transition-all cursor-pointer whitespace-nowrap border ${
+                      isSelected
+                        ? "bg-[#111111] text-white border-[#111111]"
+                        : "bg-[#f4f4f5] text-[#555555] hover:text-[#111111] border-[#e4e4e7] hover:border-[#111111]"
+                    }`}
+                  >
+                    <span>{comp.label}</span>
+                    <span className={`text-[10px] font-mono ${isSelected ? "text-[#cccccc]" : "text-[#888888]"}`}>
+                      ({count})
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -624,8 +741,6 @@ function ProductsContent() {
                 >
                   <option value="featured">SORT BY: FEATURED</option>
                   <option value="rating">SORT BY: TOP RATED</option>
-                  <option value="price-asc">SORT BY: PRICE (LOW TO HIGH)</option>
-                  <option value="price-desc">SORT BY: PRICE (HIGH TO LOW)</option>
                   <option value="name-asc">SORT BY: NAME (A - Z)</option>
                   <option value="name-desc">SORT BY: NAME (Z - A)</option>
                 </select>
@@ -633,6 +748,462 @@ function ProductsContent() {
               </div>
             </div>
           </div>
+
+          {/* ── COMPANY SUB-COLLECTIONS QUICK BAR (APPEARS FOR ALL COMPANIES OR WHEN A COMPANY IS SELECTED) ── */}
+          {(selectedCompanies.length === 0 || selectedCompanies.length === 1) && (
+            <div className="w-full pt-2.5 mt-1 border-t border-[#f0f0f0] flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider text-[#111111] mr-1">
+                <span className="w-2 h-2 rounded-full bg-[#ff5500]" />
+                <span>
+                  {selectedCompanies.length === 0
+                    ? "All Categories:"
+                    : `${selectedCompanies[0]} Collections:`}
+                </span>
+              </div>
+
+              {/* All items for selected company or all companies */}
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategories([]);
+                  setSelectedSlateVarieties([]);
+                  setSelectedApplicationSubtypes([]);
+                  setSelectedLimestoneSubtypes([]);
+                  setSelectedSouthGraniteSubtypes([]);
+                  setSelectedNorthGraniteSubtypes([]);
+                  setSelectedPebblesSubtypes([]);
+                }}
+                className={`text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                  selectedCategories.length === 0
+                    ? "bg-[#111111] text-white border-[#111111] shadow-xs"
+                    : "bg-[#f4f4f5] text-[#555555] hover:text-[#111111] border-[#e4e4e7] hover:bg-[#eaeaea]"
+                }`}
+              >
+                All (
+                {selectedCompanies.length === 0
+                  ? PRODUCTS_DATABASE.length
+                  : liveFacets.companies[selectedCompanies[0]] ||
+                    PRODUCTS_DATABASE.filter((p) => p.company === selectedCompanies[0]).length}
+                )
+              </button>
+
+              {/* ── ALL COMPANIES CATEGORY FILTERS ── */}
+              {selectedCompanies.length === 0 && (
+                <>
+                  {/* Crazy Pattern */}
+                  <button
+                    type="button"
+                    onClick={() => handleSubCategoryFilter("crazy-pattern")}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                      selectedCategories.includes("crazy-pattern")
+                        ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                        : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                    }`}
+                  >
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        selectedCategories.includes("crazy-pattern") ? "bg-white" : "bg-[#ff5500]"
+                      }`}
+                    />
+                    <span>Crazy Pattern</span>
+                    <span
+                      className={`text-[10px] font-mono ${
+                        selectedCategories.includes("crazy-pattern") ? "text-white/90" : "text-[#71717a]"
+                      }`}
+                    >
+                      ({liveFacets.categories["crazy-pattern"] || PRODUCTS_DATABASE.filter((p) => p.category === "crazy-pattern").length})
+                    </span>
+                  </button>
+
+                  {/* Mosaics */}
+                  <button
+                    type="button"
+                    onClick={() => handleSubCategoryFilter("mosaic")}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                      selectedCategories.includes("mosaic")
+                        ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                        : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                    }`}
+                  >
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        selectedCategories.includes("mosaic") ? "bg-white" : "bg-[#ff5500]"
+                      }`}
+                    />
+                    <span>Mosaics</span>
+                    <span
+                      className={`text-[10px] font-mono ${
+                        selectedCategories.includes("mosaic") ? "text-white/90" : "text-[#71717a]"
+                      }`}
+                    >
+                      ({liveFacets.categories.mosaic || PRODUCTS_DATABASE.filter((p) => p.category === "mosaic").length})
+                    </span>
+                  </button>
+
+                  {/* CNC Designs */}
+                  <button
+                    type="button"
+                    onClick={() => handleSubCategoryFilter("cnc")}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                      selectedCategories.includes("cnc")
+                        ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                        : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                    }`}
+                  >
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        selectedCategories.includes("cnc") ? "bg-white" : "bg-[#ff5500]"
+                      }`}
+                    />
+                    <span>CNC Designs</span>
+                    <span
+                      className={`text-[10px] font-mono ${
+                        selectedCategories.includes("cnc") ? "text-white/90" : "text-[#71717a]"
+                      }`}
+                    >
+                      ({liveFacets.categories.cnc || PRODUCTS_DATABASE.filter((p) => p.category === "cnc").length})
+                    </span>
+                  </button>
+
+                  {/* Pebbles */}
+                  <button
+                    type="button"
+                    onClick={() => handleSubCategoryFilter("pebbles")}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                      selectedCategories.includes("pebbles")
+                        ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                        : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                    }`}
+                  >
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        selectedCategories.includes("pebbles") ? "bg-white" : "bg-[#ff5500]"
+                      }`}
+                    />
+                    <span>Pebbles</span>
+                    <span
+                      className={`text-[10px] font-mono ${
+                        selectedCategories.includes("pebbles") ? "text-white/90" : "text-[#71717a]"
+                      }`}
+                    >
+                      ({liveFacets.categories.pebbles || PRODUCTS_DATABASE.filter((p) => p.category === "pebbles").length})
+                    </span>
+                  </button>
+
+                  {/* Granite */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (
+                        selectedCategories.length === 1 &&
+                        (selectedCategories[0] === "granite" ||
+                          selectedCategories[0] === "south-indian-granite" ||
+                          selectedCategories[0] === "north-indian-granite")
+                      ) {
+                        setSelectedCategories([]);
+                      } else {
+                        handleSubCategoryFilter("granite");
+                      }
+                    }}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                      selectedCategories.includes("granite") ||
+                      selectedCategories.includes("south-indian-granite") ||
+                      selectedCategories.includes("north-indian-granite")
+                        ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                        : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                    }`}
+                  >
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        selectedCategories.includes("granite") ||
+                        selectedCategories.includes("south-indian-granite") ||
+                        selectedCategories.includes("north-indian-granite")
+                          ? "bg-white"
+                          : "bg-[#ff5500]"
+                      }`}
+                    />
+                    <span>Granite</span>
+                    <span
+                      className={`text-[10px] font-mono ${
+                        selectedCategories.includes("granite") ||
+                        selectedCategories.includes("south-indian-granite") ||
+                        selectedCategories.includes("north-indian-granite")
+                          ? "text-white/90"
+                          : "text-[#71717a]"
+                      }`}
+                    >
+                      ({liveFacets.categories.granite || PRODUCTS_DATABASE.filter((p) => p.category === "granite").length})
+                    </span>
+                  </button>
+
+                  {/* Limestone */}
+                  <button
+                    type="button"
+                    onClick={() => handleSubCategoryFilter("limestone")}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                      selectedCategories.includes("limestone")
+                        ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                        : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                    }`}
+                  >
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        selectedCategories.includes("limestone") ? "bg-white" : "bg-[#ff5500]"
+                      }`}
+                    />
+                    <span>Limestone</span>
+                    <span
+                      className={`text-[10px] font-mono ${
+                        selectedCategories.includes("limestone") ? "text-white/90" : "text-[#71717a]"
+                      }`}
+                    >
+                      ({liveFacets.categories.limestone || PRODUCTS_DATABASE.filter((p) => p.category === "limestone").length})
+                    </span>
+                  </button>
+
+                  {/* Pavers & Cobbles */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (
+                        selectedCategories.length === 1 &&
+                        (selectedCategories[0] === "applications" || selectedCategories[0] === "pavers")
+                      ) {
+                        setSelectedCategories([]);
+                      } else {
+                        handleSubCategoryFilter("applications");
+                      }
+                    }}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                      selectedCategories.includes("applications") || selectedCategories.includes("pavers")
+                        ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                        : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                    }`}
+                  >
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        selectedCategories.includes("applications") || selectedCategories.includes("pavers")
+                          ? "bg-white"
+                          : "bg-[#ff5500]"
+                      }`}
+                    />
+                    <span>Pavers & Cobbles</span>
+                    <span
+                      className={`text-[10px] font-mono ${
+                        selectedCategories.includes("applications") || selectedCategories.includes("pavers")
+                          ? "text-white/90"
+                          : "text-[#71717a]"
+                      }`}
+                    >
+                      ({liveFacets.categories.applications || PRODUCTS_DATABASE.filter((p) => p.category === "pavers" || p.category === "cladding").length})
+                    </span>
+                  </button>
+                </>
+              )}
+
+              {/* ── PAVAN IMPEX SPECIFIC COLLECTIONS ── */}
+              {selectedCompanies[0] === "Pavan Impex" && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => handleSubCategoryFilter("mosaic")}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                      selectedCategories.includes("mosaic")
+                        ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                        : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                    }`}
+                  >
+                    <span className={`w-2 h-2 rounded-full ${selectedCategories.includes("mosaic") ? "bg-white" : "bg-[#ff5500]"}`} />
+                    <span>Mosaics</span>
+                    <span className={`text-[10px] font-mono ${selectedCategories.includes("mosaic") ? "text-white/90" : "text-[#71717a]"}`}>
+                      ({PRODUCTS_DATABASE.filter((p) => p.company === "Pavan Impex" && p.category === "mosaic").length})
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSubCategoryFilter("cnc")}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                      selectedCategories.includes("cnc")
+                        ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                        : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                    }`}
+                  >
+                    <span className={`w-2 h-2 rounded-full ${selectedCategories.includes("cnc") ? "bg-white" : "bg-[#ff5500]"}`} />
+                    <span>CNC Designs</span>
+                    <span className={`text-[10px] font-mono ${selectedCategories.includes("cnc") ? "text-white/90" : "text-[#71717a]"}`}>
+                      ({PRODUCTS_DATABASE.filter((p) => p.company === "Pavan Impex" && p.category === "cnc").length})
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSubCategoryFilter("pebbles")}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                      selectedCategories.includes("pebbles")
+                        ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                        : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                    }`}
+                  >
+                    <span className={`w-2 h-2 rounded-full ${selectedCategories.includes("pebbles") ? "bg-white" : "bg-[#ff5500]"}`} />
+                    <span>Pebbles</span>
+                    <span className={`text-[10px] font-mono ${selectedCategories.includes("pebbles") ? "text-white/90" : "text-[#71717a]"}`}>
+                      ({PRODUCTS_DATABASE.filter((p) => p.company === "Pavan Impex" && p.category === "pebbles").length})
+                    </span>
+                  </button>
+                </>
+              )}
+
+              {/* ── PSG STONES ── */}
+              {selectedCompanies[0] === "PSG Stones" && (
+                <button
+                  type="button"
+                  onClick={() => handleSubCategoryFilter("cnc")}
+                  className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                    selectedCategories.includes("cnc") || selectedCategories.includes("slate")
+                      ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                      : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                  }`}
+                >
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      selectedCategories.includes("cnc") || selectedCategories.includes("slate")
+                        ? "bg-white"
+                        : "bg-[#ff5500]"
+                    }`}
+                  />
+                  <span>CNC 3D Reliefs & Murals</span>
+                  <span
+                    className={`text-[10px] font-mono ${
+                      selectedCategories.includes("cnc") || selectedCategories.includes("slate")
+                        ? "text-white/90"
+                        : "text-[#71717a]"
+                    }`}
+                  >
+                    ({PRODUCTS_DATABASE.filter((p) => p.company === "PSG Stones").length})
+                  </span>
+                </button>
+              )}
+
+              {/* ── SAI BALAJI IMPEX ── */}
+              {selectedCompanies[0] === "Sai Balaji Impex" && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => handleSubCategoryFilter("limestone")}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                      selectedCategories.includes("limestone")
+                        ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                        : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                    }`}
+                  >
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        selectedCategories.includes("limestone") ? "bg-white" : "bg-[#ff5500]"
+                      }`}
+                    />
+                    <span>Limestone Tiles & Slabs</span>
+                    <span
+                      className={`text-[10px] font-mono ${
+                        selectedCategories.includes("limestone") ? "text-white/90" : "text-[#71717a]"
+                      }`}
+                    >
+                      ({PRODUCTS_DATABASE.filter((p) => p.company === "Sai Balaji Impex" && p.category === "limestone").length})
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSubCategoryFilter("applications")}
+                    className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                      selectedCategories.includes("applications") || selectedCategories.includes("pavers")
+                        ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                        : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                    }`}
+                  >
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        selectedCategories.includes("applications") || selectedCategories.includes("pavers")
+                          ? "bg-white"
+                          : "bg-[#ff5500]"
+                      }`}
+                    />
+                    <span>Tumbled Pavers & Cobbles</span>
+                    <span
+                      className={`text-[10px] font-mono ${
+                        selectedCategories.includes("applications") || selectedCategories.includes("pavers")
+                          ? "text-white/90"
+                          : "text-[#71717a]"
+                      }`}
+                    >
+                      ({PRODUCTS_DATABASE.filter((p) => p.company === "Sai Balaji Impex" && (p.category === "pavers" || p.category === "cladding")).length})
+                    </span>
+                  </button>
+                </>
+              )}
+
+              {/* ── PAVAN GRANITE ── */}
+              {selectedCompanies[0] === "Pavan Granite" && (
+                <button
+                  type="button"
+                  onClick={() => handleSubCategoryFilter("south-indian-granite")}
+                  className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                    selectedCategories.includes("south-indian-granite") || selectedCategories.includes("granite")
+                      ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                      : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                  }`}
+                >
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      selectedCategories.includes("south-indian-granite") || selectedCategories.includes("granite")
+                        ? "bg-white"
+                        : "bg-[#ff5500]"
+                    }`}
+                  />
+                  <span>Black Galaxy & Steel Grey</span>
+                  <span
+                    className={`text-[10px] font-mono ${
+                      selectedCategories.includes("south-indian-granite") || selectedCategories.includes("granite")
+                        ? "text-white/90"
+                        : "text-[#71717a]"
+                    }`}
+                  >
+                    ({PRODUCTS_DATABASE.filter((p) => p.company === "Pavan Granite").length})
+                  </span>
+                </button>
+              )}
+
+              {/* ── PAVAN STONES WORLD ── */}
+              {selectedCompanies[0] === "Pavan Stones World" && (
+                <button
+                  type="button"
+                  onClick={() => handleSubCategoryFilter("cnc")}
+                  className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-1 transition-all cursor-pointer border ${
+                    selectedCategories.includes("cnc") || selectedCategories.includes("slate")
+                      ? "bg-[#ff5500] text-white border-[#ff5500] shadow-xs"
+                      : "bg-white text-[#111111] hover:border-[#ff5500] border-[#e4e4e7] hover:bg-[#fff7ed]"
+                  }`}
+                >
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      selectedCategories.includes("cnc") || selectedCategories.includes("slate")
+                        ? "bg-white"
+                        : "bg-[#ff5500]"
+                    }`}
+                  />
+                  <span>Sandstone CNC & Murals</span>
+                  <span
+                    className={`text-[10px] font-mono ${
+                      selectedCategories.includes("cnc") || selectedCategories.includes("slate")
+                        ? "text-white/90"
+                        : "text-[#71717a]"
+                    }`}
+                  >
+                    ({PRODUCTS_DATABASE.filter((p) => p.company === "Pavan Stones World").length})
+                  </span>
+                </button>
+              )}
+            </div>
+          )}
 
         </div>
       </section>
@@ -665,12 +1236,15 @@ function ProductsContent() {
                   {openSections.category && (
                     <div className="mt-3.5 space-y-2.5">
                       {[
-                        { key: "slate", label: "Slate Stone (incl. CNC)", count: liveFacets.categories.slate || 90 },
-                        { key: "applications", label: "Applications (Pavers & Cladding)", count: liveFacets.categories.applications || 2 },
-                        { key: "limestone", label: "Limestone", count: liveFacets.categories.limestone || 2 },
-                        { key: "south-indian-granite", label: "South Indian Granite", count: liveFacets.categories["south-indian-granite"] || 3 },
-                        { key: "north-indian-granite", label: "North Indian Granite", count: liveFacets.categories["north-indian-granite"] || 2 },
-                      ].map((item) => (
+                        { key: "mosaic", label: "Natural Stone Mosaics", count: liveFacets.categories.mosaic || 0 },
+                        { key: "cnc", label: "CNC Designs & 3D Reliefs", count: liveFacets.categories.cnc || 0 },
+                        { key: "pebbles", label: "Natural Pebbles (Rough & Polished)", count: liveFacets.categories.pebbles || 0 },
+                        { key: "slate", label: "Slate Stone (Natural Cleft)", count: liveFacets.categories.slate || 0 },
+                        { key: "applications", label: "Applications (Pavers & Cladding)", count: liveFacets.categories.applications || 0 },
+                        { key: "limestone", label: "Limestone", count: liveFacets.categories.limestone || 0 },
+                        { key: "south-indian-granite", label: "South Indian Granite", count: liveFacets.categories["south-indian-granite"] || 0 },
+                        { key: "north-indian-granite", label: "North Indian Granite", count: liveFacets.categories["north-indian-granite"] || 0 },
+                      ].filter((item) => selectedCompanies.length === 0 || item.count > 0).map((item) => (
                         <label
                           key={item.key}
                           className="flex items-center justify-between text-[12px] text-[#444444] hover:text-[#111111] cursor-pointer group"
@@ -983,6 +1557,63 @@ function ProductsContent() {
                   </div>
                 )}
 
+                {/* Filter 1.6: Pebbles (Official Subtypes) */}
+                {(selectedCategories.length === 0 || selectedCategories.includes("pebbles")) && (
+                  <div className="py-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleSection("pebblesSubtype")}
+                      className="w-full flex items-center justify-between text-left text-[11.5px] font-bold uppercase tracking-wider text-[#111111] hover:text-black cursor-pointer"
+                    >
+                      <span>Pebble Variety</span>
+                      {openSections.pebblesSubtype ? (
+                        <ChevronUp className="w-3.5 h-3.5" />
+                      ) : (
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+
+                    {openSections.pebblesSubtype && (
+                      <div className="mt-3.5 space-y-2.5">
+                        {PEBBLES_SUBTYPES.map((pb) => {
+                          const count = liveFacets.pebblesSubtypes?.[pb.id] || 0;
+                          return (
+                            <label
+                              key={pb.id}
+                              className="flex items-center justify-between text-[12px] text-[#444444] hover:text-[#111111] cursor-pointer group"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedPebblesSubtypes.includes(pb.id)}
+                                  onChange={() =>
+                                    toggleFilter(selectedPebblesSubtypes, setSelectedPebblesSubtypes, pb.id)
+                                  }
+                                  className="w-3.5 h-3.5 rounded-none border-[#cccccc] text-[#111111] focus:ring-0 cursor-pointer"
+                                />
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0"
+                                    style={{
+                                      background: pb.hex,
+                                    }}
+                                  />
+                                  <span className="group-hover:translate-x-0.5 transition-transform font-medium">
+                                    {pb.label}
+                                  </span>
+                                </div>
+                              </div>
+                              <span className="text-[10.5px] text-[#888888] font-mono">
+                                ({count})
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Filter 2: Stone Division / Operating Quarry */}
                 <div className="py-4">
                   <button
@@ -1001,7 +1632,8 @@ function ProductsContent() {
                   {openSections.company && (
                     <div className="mt-3.5 space-y-2.5">
                       {[
-                        { key: "Pavan Impex", label: "Pavan Impex (Slates & CNC)", count: liveFacets.companies["Pavan Impex"] || 0 },
+                        { key: "Pavan Impex", label: "Pavan Impex (Slates)", count: liveFacets.companies["Pavan Impex"] || 0 },
+                        { key: "PSG Stones", label: "PSG Stones (CNC & Murals)", count: liveFacets.companies["PSG Stones"] || 0 },
                         { key: "Sai Balaji Impex", label: "Sai Balaji (Limestones)", count: liveFacets.companies["Sai Balaji Impex"] || 0 },
                         { key: "Pavan Granite", label: "Pavan Granite (Black Galaxy)", count: liveFacets.companies["Pavan Granite"] || 0 },
                         { key: "Pavan Stones World", label: "Pavan Stones World (Exotics)", count: liveFacets.companies["Pavan Stones World"] || 0 },
@@ -1280,7 +1912,7 @@ function ProductsContent() {
           )}
 
           {/* ── RIGHT PRODUCT GRID (BORDER-GRID AESTHETIC LIKE SCREENSHOT) ── */}
-          <main className="flex-1 min-w-0">
+          <main id="product-catalog-grid" className="flex-1 min-w-0">
             {filteredProducts.length === 0 ? (
               <div className="text-center py-24 px-6 border border-[#e5e5e5] bg-[#fafafa]">
                 <Sparkles className="w-8 h-8 mx-auto text-[#71717a] mb-3 stroke-[1.5]" />
@@ -1306,14 +1938,36 @@ function ProductsContent() {
                     : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
                 }`}
               >
-                {filteredProducts.map((product) => {
-                  const isWishlisted = wishlist[product.id];
+                {paginatedProducts.map((product) => {
+                  const isItemWishlisted = isWishlisted(product.id);
 
                   return (
                     <div
                       key={product.id}
-                      className="border-r border-b border-[#e5e5e5] bg-white group flex flex-col justify-between transition-colors hover:border-[#111111]/40 relative"
+                      className="border-r border-b border-[#e5e5e5] bg-white group flex flex-col justify-between transition-all duration-200 hover:z-10 relative"
                     >
+                      {/* Dual-Tone (#252422 / #e63946) Hover Border Overlay */}
+                      <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
+                        {/* Top Border (Solid #252422) */}
+                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#252422]" />
+                        {/* Bottom Border (Solid #e63946) */}
+                        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#e63946]" />
+                        {/* Right Border (#252422 at top-right going down 20%, then #e63946) */}
+                        <div
+                          className="absolute top-0 bottom-0 right-0 w-[2px]"
+                          style={{
+                            background: "linear-gradient(to bottom, #252422 0%, #252422 20%, #e63946 20%, #e63946 100%)",
+                          }}
+                        />
+                        {/* Left Border (#252422 from top 80%, turning to #e63946 at bottom-left 20% going up) */}
+                        <div
+                          className="absolute top-0 bottom-0 left-0 w-[2px]"
+                          style={{
+                            background: "linear-gradient(to bottom, #252422 0%, #252422 80%, #e63946 80%, #e63946 100%)",
+                          }}
+                        />
+                      </div>
+
                       {/* Top Action Tags & Badge Bar */}
                       <div className="relative aspect-[4/3] sm:aspect-square w-full overflow-hidden bg-[#f9f9f9]">
 
@@ -1326,9 +1980,9 @@ function ProductsContent() {
                         >
                           <Heart
                             className={`w-3.5 h-3.5 transition-colors ${
-                              isWishlisted
-                                ? "fill-[#d94e34] text-[#d94e34]"
-                                : "text-[#71717a] hover:text-[#111111]"
+                              isItemWishlisted
+                                ? "fill-[#ef4444] text-[#ef4444]"
+                                : "text-[#71717a] hover:text-[#ef4444]"
                             }`}
                           />
                         </button>
@@ -1346,21 +2000,18 @@ function ProductsContent() {
                         </Link>
 
                         {/* Quick View Button Hover Overlay */}
-                        <div className="absolute inset-x-2 bottom-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:flex items-center gap-1.5">
+                        <div className="absolute inset-x-0 bottom-2.5 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 hidden sm:flex justify-center pointer-events-none">
                           <button
                             type="button"
-                            onClick={() => setQuickViewProduct(product)}
-                            className="flex-1 py-1.5 bg-white/95 hover:bg-white text-[#111111] text-[10px] font-bold uppercase tracking-wider border border-[#e5e5e5] shadow-xs flex items-center justify-center gap-1 cursor-pointer transition-colors"
+                            onClick={() => {
+                              setQuickViewProduct(product);
+                              setActiveQuickViewImage(product.gallery?.[0] || product.image);
+                            }}
+                            className="pointer-events-auto px-3.5 py-1.5 bg-white/95 hover:bg-[#660708] text-[#241919] hover:text-[#d3d3d3] text-[9.5px] font-mono font-bold uppercase tracking-wider rounded-[5px] shadow-md border border-[#241919]/10 backdrop-blur-md flex items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 hover:scale-105"
                           >
                             <Eye className="w-3 h-3" />
                             <span>Quick View</span>
                           </button>
-                          <Link
-                            href={`/request-sample?stone=${product.id}`}
-                            className="flex-1 py-1.5 bg-[#111111] hover:bg-black text-white text-[10px] font-bold uppercase tracking-wider shadow-xs flex items-center justify-center gap-1 cursor-pointer transition-colors text-center"
-                          >
-                            <span>Sample</span>
-                          </Link>
                         </div>
 
                       </div>
@@ -1370,22 +2021,22 @@ function ProductsContent() {
                         <div>
                           {/* Product Title */}
                           <Link href={`/products/${product.id}`}>
-                            <h2 className="text-[13px] sm:text-[14px] font-semibold text-[#111111] leading-snug hover:underline line-clamp-1">
+                            <h2 className="text-[13px] sm:text-[14px] font-semibold text-[#241919] leading-snug hover:text-[#c85a32] transition-colors line-clamp-1">
                               {product.name}
                             </h2>
                           </Link>
 
-                          {/* 5-Star Rating Row (Exact match to reference stars) */}
+                          {/* 5-Star Rating Row */}
                           <div className="flex items-center gap-1 mt-1 mb-1.5">
-                            <div className="flex text-[#111111]">
+                            <div className="flex text-[#f59e0b]">
                               {[...Array(5)].map((_, i) => (
                                 <Star
                                   key={i}
-                                  className="w-3 h-3 fill-current text-[#111111]"
+                                  className="w-3 h-3 fill-current text-[#f59e0b]"
                                 />
                               ))}
                             </div>
-                            <span className="text-[10px] font-mono text-[#71717a] ml-1">
+                            <span className="text-[10px] font-mono text-[#747474] ml-1">
                               ({product.reviewCount || 24})
                             </span>
                           </div>
@@ -1393,7 +2044,7 @@ function ProductsContent() {
                           {/* Badge tag under rating */}
                           {product.badge && (
                             <div className="mt-1 mb-0.5">
-                              <span className="inline-block px-1.5 py-0.5 bg-black text-white text-[9px] font-mono uppercase tracking-wider font-semibold rounded-none">
+                              <span className="inline-block text-[#d97706] text-[9.5px] font-mono uppercase tracking-wider font-extrabold">
                                 {product.badge}
                               </span>
                             </div>
@@ -1401,14 +2052,14 @@ function ProductsContent() {
                         </div>
 
                         {/* Bottom Direct Links */}
-                        <div className="mt-3 pt-2.5 border-t border-[#f4f4f5] flex items-center justify-between text-[10.5px] font-mono uppercase tracking-wider text-[#555555]">
-                          <span className="truncate max-w-[130px]">{product.company}</span>
+                        <div className="mt-3 pt-2.5 border-t border-[#f4f4f5] flex items-center justify-between text-[10.5px] font-mono uppercase tracking-wider">
+                          <span className="truncate max-w-[170px] font-semibold text-[#ff5500]">{getProductCategoryLabel(product)}</span>
                           <Link
                             href={`/products/${product.id}`}
-                            className="inline-flex items-center gap-0.5 text-[#111111] font-semibold hover:underline"
+                            className="inline-flex items-center gap-0.5 font-bold transition-colors group/specs"
                           >
-                            <span>Specs</span>
-                            <ArrowUpRight className="w-3 h-3" />
+                            <span className="text-[#111111] group-hover/specs:underline">Specs</span>
+                            <ArrowUpRight className="w-3 h-3 text-[#ff5500] group-hover/specs:translate-x-0.5 group-hover/specs:-translate-y-0.5 transition-transform" />
                           </Link>
                         </div>
 
@@ -1418,6 +2069,16 @@ function ProductsContent() {
                   );
                 })}
               </div>
+            )}
+
+            {/* Pagination Controls */}
+            {filteredProducts.length > 0 && (
+              <ProductPagination
+                totalItems={filteredProducts.length}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+                scrollTargetId="product-catalog-grid"
+              />
             )}
           </main>
 
@@ -1469,12 +2130,15 @@ function ProductsContent() {
                     </span>
                     <div className="space-y-2">
                       {[
-                        { key: "slate", label: "Slate Stone (incl. CNC)", count: liveFacets.categories.slate || 88 },
-                        { key: "applications", label: "Applications (Pavers & Cladding)", count: liveFacets.categories.applications || 2 },
-                        { key: "limestone", label: "Limestone", count: liveFacets.categories.limestone || 2 },
-                        { key: "south-indian-granite", label: "South Indian Granite", count: liveFacets.categories["south-indian-granite"] || 3 },
-                        { key: "north-indian-granite", label: "North Indian Granite", count: liveFacets.categories["north-indian-granite"] || 2 },
-                      ].map((item) => (
+                        { key: "mosaic", label: "Natural Stone Mosaics", count: liveFacets.categories.mosaic || 0 },
+                        { key: "cnc", label: "CNC Designs & 3D Reliefs", count: liveFacets.categories.cnc || 0 },
+                        { key: "pebbles", label: "Natural Pebbles (Rough & Polished)", count: liveFacets.categories.pebbles || 0 },
+                        { key: "slate", label: "Slate Stone (Natural Cleft)", count: liveFacets.categories.slate || 0 },
+                        { key: "applications", label: "Applications (Pavers & Cladding)", count: liveFacets.categories.applications || 0 },
+                        { key: "limestone", label: "Limestone", count: liveFacets.categories.limestone || 0 },
+                        { key: "south-indian-granite", label: "South Indian Granite", count: liveFacets.categories["south-indian-granite"] || 0 },
+                        { key: "north-indian-granite", label: "North Indian Granite", count: liveFacets.categories["north-indian-granite"] || 0 },
+                      ].filter((item) => selectedCompanies.length === 0 || item.count > 0).map((item) => (
                         <label key={item.key} className="flex items-center justify-between text-xs text-[#444444]">
                           <div className="flex items-center gap-2">
                             <input
@@ -1681,6 +2345,43 @@ function ProductsContent() {
                     </div>
                   )}
 
+                  {/* Pebbles (Official Subtypes) */}
+                  {(selectedCategories.length === 0 || selectedCategories.includes("pebbles")) && (
+                    <div className="py-3">
+                      <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
+                        Pebble Variety
+                      </span>
+                      <div className="space-y-2">
+                        {PEBBLES_SUBTYPES.map((pb) => (
+                          <label key={pb.id} className="flex items-center justify-between text-xs text-[#444444]">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={selectedPebblesSubtypes.includes(pb.id)}
+                                onChange={() =>
+                                  toggleFilter(selectedPebblesSubtypes, setSelectedPebblesSubtypes, pb.id)
+                                }
+                                className="w-4 h-4 rounded-none border-[#cccccc] text-[#111111]"
+                              />
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full border border-black/20 shrink-0"
+                                  style={{
+                                    background: pb.hex,
+                                  }}
+                                />
+                                <span className="font-medium">{pb.label}</span>
+                              </div>
+                            </div>
+                            <span className="text-[10px] text-[#888888] font-mono">
+                              ({liveFacets.pebblesSubtypes?.[pb.id] || 0})
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Quarry Division */}
                   <div className="py-3">
                     <span className="block text-[11px] font-bold uppercase tracking-wider mb-2 text-[#111111]">
@@ -1688,7 +2389,8 @@ function ProductsContent() {
                     </span>
                     <div className="space-y-2">
                       {[
-                        { key: "Pavan Impex", label: "Pavan Impex (Slates & CNC)", count: liveFacets.companies["Pavan Impex"] || 0 },
+                        { key: "Pavan Impex", label: "Pavan Impex (Slates)", count: liveFacets.companies["Pavan Impex"] || 0 },
+                        { key: "PSG Stones", label: "PSG Stones (CNC & Murals)", count: liveFacets.companies["PSG Stones"] || 0 },
                         { key: "Sai Balaji Impex", label: "Sai Balaji (Limestones)", count: liveFacets.companies["Sai Balaji Impex"] || 0 },
                         { key: "Pavan Granite", label: "Pavan Granite (Black Galaxy)", count: liveFacets.companies["Pavan Granite"] || 0 },
                         { key: "Pavan Stones World", label: "Pavan Stones World (Exotics)", count: liveFacets.companies["Pavan Stones World"] || 0 },
@@ -1934,91 +2636,136 @@ function ProductsContent() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-3xl bg-white border border-[#e5e5e5] shadow-2xl z-10 overflow-hidden"
+              className="relative w-full max-w-3xl bg-white border border-[#241919]/10 rounded-2xl shadow-2xl shadow-[#241919]/25 z-10 overflow-hidden"
             >
               <button
                 type="button"
                 onClick={() => setQuickViewProduct(null)}
-                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-[#111111] border border-[#e5e5e5] cursor-pointer"
+                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-[#faf8f5]/90 hover:bg-[#c85a32] flex items-center justify-center text-[#241919] hover:text-white border border-[#241919]/15 shadow-sm cursor-pointer transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
 
               <div className="grid grid-cols-1 md:grid-cols-2">
-                {/* Image */}
-                <div className="relative aspect-square bg-[#f5f5f5]">
-                  <img
-                    src={quickViewProduct.image}
-                    alt={quickViewProduct.name}
-                    className="w-full h-full object-cover"
-                  />
-                  {quickViewProduct.badge && (
-                    <div className="absolute top-3 left-3 px-2 py-0.5 bg-black text-white text-[9px] font-mono uppercase tracking-wider font-semibold">
-                      {quickViewProduct.badge}
-                    </div>
-                  )}
+                {/* Image Column - Fills entire left height seamlessly */}
+                <div className="relative flex flex-col justify-between bg-[#f8fafc] p-5 sm:p-6 border-b md:border-b-0 md:border-r border-[#e2e8f0]">
+                  {/* Main Image Area */}
+                  <div className="relative w-full flex-1 min-h-[220px] sm:min-h-[260px] flex items-center justify-center">
+                    <img
+                      src={activeQuickViewImage || quickViewProduct.image}
+                      alt={quickViewProduct.name}
+                      className="max-h-[280px] w-full object-contain drop-shadow-sm transition-all duration-300"
+                    />
+                    {quickViewProduct.badge && (
+                      <div className="absolute top-2 left-2 px-2.5 py-1 bg-white/95 backdrop-blur-xs text-[#d97706] text-[9.5px] font-mono uppercase tracking-wider font-extrabold rounded-[4px] shadow-xs border border-[#d97706]/30">
+                        {quickViewProduct.badge}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Left Bottom Section: Multi-angle Thumbnails or Quality Badges */}
+                  <div className="mt-4 pt-3 border-t border-[#e2e8f0]">
+                    {quickViewProduct.gallery && quickViewProduct.gallery.length > 1 ? (
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                          {quickViewProduct.gallery.map((img, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => setActiveQuickViewImage(img)}
+                              className={`relative w-11 h-11 rounded-lg overflow-hidden border-2 flex-none cursor-pointer transition-all ${
+                                (activeQuickViewImage || quickViewProduct.image) === img
+                                  ? "border-[#059669] ring-2 ring-[#059669]/20 scale-105"
+                                  : "border-[#e2e8f0] hover:border-[#059669]/50 opacity-70 hover:opacity-100"
+                              }`}
+                            >
+                              <img src={img} alt={`Angle ${idx + 1}`} className="w-full h-full object-cover" />
+                            </button>
+                          ))}
+                        </div>
+                        <div className="flex items-center justify-between text-[10px] font-mono text-[#64748b]">
+                          <span className="flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+                            {quickViewProduct.company} Verified
+                          </span>
+                          <span>{quickViewProduct.gallery.length} Quarry Views</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-[#64748b]">
+                        <div className="flex items-center gap-1.5 bg-white px-2.5 py-2 rounded-lg border border-[#e2e8f0] shadow-2xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+                          <span className="truncate">100% Natural Stone</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 bg-white px-2.5 py-2 rounded-lg border border-[#e2e8f0] shadow-2xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+                          <span className="truncate">FOB / CIF Export</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Details */}
-                <div className="p-6 sm:p-8 flex flex-col justify-between">
+                <div className="p-6 sm:p-8 flex flex-col justify-between bg-white">
                   <div>
-                    <div className="text-[10px] font-mono uppercase tracking-widest text-[#71717a] mb-1">
-                      {quickViewProduct.company} • {quickViewProduct.origin.split(",")[0]}
+                    <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#059669] font-bold mb-1.5 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
+                      <span>{quickViewProduct.company} • {quickViewProduct.origin.split(",")[0]}</span>
                     </div>
-                    <h3 className="text-xl font-bold text-[#111111] leading-tight mb-2">
+                    <h3 className="text-xl sm:text-2xl font-bold text-[#0f172a] leading-tight mb-2">
                       {quickViewProduct.name}
                     </h3>
                     
                     {/* Star Rating */}
-                    <div className="flex items-center gap-1 mb-3">
-                      <div className="flex text-[#111111]">
+                    <div className="flex items-center gap-1.5 mb-3">
+                      <div className="flex text-[#f59e0b]">
                         {[...Array(5)].map((_, i) => (
                           <Star key={i} className="w-3.5 h-3.5 fill-current" />
                         ))}
                       </div>
-                      <span className="text-xs font-mono text-[#71717a] ml-1">
-                        {quickViewProduct.rating || 4.9} ({quickViewProduct.reviewCount || 24} reviews)
+                      <span className="text-xs font-mono font-bold text-[#059669]">
+                        {quickViewProduct.rating || 5}
+                      </span>
+                      <span className="text-xs font-mono text-[#64748b]">
+                        ({quickViewProduct.reviewCount || 24} reviews)
                       </span>
                     </div>
 
-                    <div className="text-lg font-bold text-[#111111] mb-4">
-                      {quickViewProduct.price || "Direct Quarry Pricing"}
-                    </div>
-
-                    <p className="text-xs text-[#555555] leading-relaxed line-clamp-4 mb-4">
+                    <p className="text-xs sm:text-[13px] text-[#475569] leading-relaxed line-clamp-3 mb-4 font-normal">
                       {quickViewProduct.description}
                     </p>
 
-                    {/* Spec Highlights */}
-                    <div className="border-t border-b border-[#e5e5e5] py-3 my-3 space-y-1.5 text-[11px]">
-                      <div className="flex justify-between">
-                        <span className="text-[#71717a]">Primary Finish:</span>
-                        <span className="font-semibold text-[#111111]">{quickViewProduct.finish}</span>
+                    {/* Spec Highlights Container */}
+                    <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-3.5 my-3 space-y-2 text-[11.5px]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[#64748b] font-mono text-[10.5px] uppercase tracking-wider">Primary Finish:</span>
+                        <span className="font-semibold text-[#0f172a]">{quickViewProduct.finish}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#71717a]">Calibrated Thickness:</span>
-                        <span className="font-semibold text-[#111111]">{quickViewProduct.thickness}</span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-[#64748b] font-mono text-[10.5px] uppercase tracking-wider">Calibrated Thickness:</span>
+                        <span className="font-semibold text-[#0f172a]">{quickViewProduct.thickness}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-[#71717a]">Quarry Type:</span>
-                        <span className="font-semibold text-[#111111]">{quickViewProduct.quarryType.split("(")[0]}</span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-[#64748b] font-mono text-[10.5px] uppercase tracking-wider">Quarry Type:</span>
+                        <span className="font-semibold text-[#0f172a]">{quickViewProduct.quarryType.split("(")[0]}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="space-y-2 pt-2">
+                  <div className="space-y-2.5 pt-2">
                     <Link
                       href={`/products/${quickViewProduct.id}`}
-                      className="w-full text-center py-2.5 bg-[#111111] hover:bg-black text-white text-xs font-bold uppercase tracking-wider block transition-colors"
+                      className="w-full text-center py-2.5 sm:py-3 bg-[#111111] hover:bg-black active:scale-[0.99] text-white text-xs sm:text-sm font-sans font-bold uppercase tracking-wider rounded-lg block transition-all shadow-md hover:shadow-lg shadow-black/20 cursor-pointer"
                     >
-                      View Complete Technical Dossier
+                      View Product Details
                     </Link>
                     <Link
                       href={`/request-sample?stone=${quickViewProduct.id}`}
-                      className="w-full text-center py-2 bg-transparent hover:bg-[#f5f5f5] text-[#111111] border border-[#111111] text-xs font-bold uppercase tracking-wider block transition-colors"
+                      className="w-full text-center py-2.5 sm:py-3 bg-transparent hover:bg-[#111111] active:scale-[0.99] text-[#111111] hover:text-white text-xs sm:text-sm font-sans font-bold uppercase tracking-wider rounded-lg block transition-all border-2 border-[#111111] cursor-pointer"
                     >
-                      Order Physical Quarry Sample Box
+                      Request Sample
                     </Link>
                   </div>
 

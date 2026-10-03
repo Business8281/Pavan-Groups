@@ -3,7 +3,7 @@ import { use, useState, useRef } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { ArrowRight } from "@animateicons/react/lucide";
+import { ArrowRight } from "lucide-react";
 import RangeCarousel from "@/components/RangeCarousel";
 import DimensionalMatrix from "@/components/DimensionalMatrix";
 import CompanyEditorialShowcase from "@/components/CompanyEditorialShowcase";
@@ -567,15 +567,15 @@ const COMPANIES_DATABASE: Record<string, CompanyData> = {
     ],
     products: [
       {
-        id: "emerald-green-quartzite",
-        name: "Exotic Emerald Green Quartzite Slabs",
-        colors: ["Vibrant Emerald", "Viridian Green", "Golden Veins"],
-        description: "Precious architectural exotic quartzite with crystalline luminescence and undulating viridian veins.",
-        finishes: ["Diamond Mirror Polish", "Leathered Satin", "Honed Matte"],
-        gradient: "linear-gradient(135deg, #062c24 0%, #0d5c4a 50%, #031c17 100%)",
-        recommendedUse: "Backlit reception walls, waterfall kitchen islands, and monumental bathroom suites.",
-        slipRating: "R10",
-        heatResistance: "Heat & Acid Proof",
+        id: "black-galaxy-granite",
+        name: "Chimakurthy Black Galaxy Granite",
+        colors: ["Deep Pitch Black", "Golden Bronzite Flecks", "Copper Stars"],
+        description: "World-renowned plutonic granite studded with golden-bronze bronzite crystal stars from our exclusive Chimakurthy quarries.",
+        finishes: ["95+ Mirror Polish", "Honed Matte", "Leathered Velvet", "Flamed"],
+        gradient: "linear-gradient(135deg, #090a0c 0%, #221f17 50%, #040506 100%)",
+        recommendedUse: "Luxury kitchen islands, vanity tops, executive lobbies, and grand entrances.",
+        slipRating: "R9 (Polished) / R12 (Flamed)",
+        heatResistance: "Extreme Heat & Chemical Resistant",
       },
     ],
     specifications: {
@@ -625,7 +625,7 @@ export default function CompanyDedicatedPage() {
   };
 
   return (
-    <main className="relative bg-[#f2f2f2] min-h-screen text-[#140d0a] selection:bg-[#3e352a] selection:text-white">
+    <main className="relative bg-[#f2f2f2] min-h-screen text-[#140d0a] selection:bg-[#ff5500] selection:text-white">
       
       {/* ── ANIMATED HERO SECTION (STICKY COVER EFFECT) ── */}
       <section className="sticky top-0 z-0 w-full aspect-video md:aspect-auto md:h-screen min-h-[480px] md:min-h-[600px] flex items-center justify-center overflow-hidden bg-[#140d0a] pt-[72px]">
@@ -704,26 +704,7 @@ export default function CompanyDedicatedPage() {
                 <p>
                   Specializing in monumental architectural stone,<br className="hidden sm:inline" />
                   the dedicated team at{" "}
-                  <span className="relative inline-block whitespace-nowrap mx-1.5">
-                    <span className="relative z-10 font-semibold text-[#140d0a]">Pavan Granite</span>
-                    <svg
-                      viewBox="0 0 405 195"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      preserveAspectRatio="none"
-                      className="absolute -inset-x-2.5 -top-2 -bottom-1 w-[calc(100%+20px)] h-[calc(100%+12px)] pointer-events-none overflow-visible"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M 168.0,31.0 C 156.8,31.0 145.5,30.2 123.0,31.0 C 100.5,31.8 98.0,30.5 78.0,34.0 C 58.0,37.5 56.2,37.2 43.0,45.0 C 29.8,52.8 31.0,53.2 25.0,65.0 C 19.0,76.8 19.0,77.0 19.0,92.0 C 19.0,107.0 19.5,110.8 25.0,125.0 C 30.5,139.2 29.0,139.0 41.0,149.0 C 53.0,159.0 52.5,158.5 73.0,165.0 C 93.5,171.5 91.0,170.8 123.0,175.0 C 155.0,179.2 163.5,181.0 201.0,182.0 C 238.5,183.0 240.0,182.8 273.0,179.0 C 306.0,175.2 308.0,175.5 333.0,167.0 C 358.0,158.5 358.5,162.5 373.0,145.0 C 387.5,127.5 390.5,119.0 391.0,97.0 C 391.5,75.0 388.2,73.2 375.0,57.0 C 361.8,40.8 362.2,42.5 338.0,32.0 C 313.8,21.5 311.8,20.5 278.0,15.0 C 244.2,9.5 241.8,10.2 203.0,10.0 C 164.2,9.8 158.0,10.2 123.0,14.0 C 88.0,17.8 85.5,18.2 63.0,25.0 C 40.5,31.8 44.2,31.8 33.0,41.0 C 21.8,50.2 23.5,53.0 18.0,62.0 C 12.5,71.0 13.0,71.2 11.0,77.0 C 9.0,82.8 10.2,83.0 10.0,85.0"
-                        stroke="#ff5500"
-                        strokeWidth="2.2"
-                        vectorEffect="non-scaling-stroke"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>{" "}
+                  <span className="font-semibold text-[#0f766e]">Pavan Granite</span>{" "}
                   delivers quarry-direct<br className="hidden sm:inline" />
                   premium gangsaw granite slabs, calibrated tiles, and precision countertops to commercial developments and luxury residences across 40+ countries.
                 </p>

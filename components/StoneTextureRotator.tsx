@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Sun, Sparkles, SlidersHorizontal, RefreshCw } from "@animateicons/react/lucide";
+import { Sun, Sparkles, SlidersHorizontal, RefreshCw } from "lucide-react";
 import { ProductStone } from "@/lib/productsData";
 
 interface StoneTextureRotatorProps {

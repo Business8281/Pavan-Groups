@@ -9,8 +9,8 @@ import {
   Truck,
   Compass,
   Globe,
-  CircleCheck,
-} from "@animateicons/react/lucide";
+  CheckCircle2 as CircleCheck,
+} from "lucide-react";
 
 // ── RICH 8-STAGE FACTORY TO JOBSITE SUPPLY CHAIN DATA ──
 const JOURNEY_STEPS_RICH = [

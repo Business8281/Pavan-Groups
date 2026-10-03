@@ -14,8 +14,8 @@ import {
   Globe,
   Truck,
   FileCheck,
-  CircleCheck as CheckCircle2,
-} from "@animateicons/react/lucide";
+  CheckCircle2,
+} from "lucide-react";
 
 interface FAQItem {
   id: string;
@@ -155,7 +155,7 @@ export default function WhyChooseUs() {
   return (
     <section
       id="why-choose-us"
-      className="relative z-30 py-12 md:py-20 px-4 sm:px-6 md:px-12 lg:px-16 bg-white text-[#241919] border-t border-[#747474]/15 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.18)]"
+      className="relative z-30 py-12 md:py-20 px-4 sm:px-6 md:px-12 lg:px-16 bg-white text-[#252422] border-t border-[#252422]/10 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.06)]"
     >
       <div className="max-w-7xl mx-auto">
 
@@ -165,62 +165,55 @@ export default function WhyChooseUs() {
           {/* ── LEFT COLUMN: STICKY BRAND OVERVIEW & TRUST CARD ── */}
           <div className="lg:col-span-4 lg:sticky lg:top-28 space-y-6">
 
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#514a38] text-white shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#94a3b8] animate-pulse" />
-              <span className="text-[9.5px] font-mono tracking-[0.24em] uppercase font-bold">
-                FAQS & TRUST ASSURANCE
-              </span>
-            </div>
-
             <h2
               className="font-display font-light leading-[1.02] tracking-[-0.015em]"
               style={{ fontSize: "clamp(34px, 4.2vw, 54px)" }}
             >
-              <span className="text-[#241919]">Why Buy From</span>{" "}
-              <span className="text-[#0f172a] italic font-normal">Pavan Stones Group?</span>
+              <span className="text-[#252422]">Why Buy From</span>{" "}
+              <span className="text-[#ff5500] italic font-normal">Pavan Stones Group?</span>
             </h2>
 
-            <p className="text-[14px] sm:text-[15px] text-[#454545] font-light leading-relaxed">
+            <p className="text-[14px] sm:text-[15px] text-[#555555] font-light leading-relaxed">
               Frequently asked questions regarding our direct quarry concessions, global container export protocols, pre-shipment quality testing, and international logistics support.
             </p>
 
             {/* Trust Badges Card */}
-            <div className="bg-white border border-[#747474]/15 p-6 rounded-xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.06)] space-y-3 group">
-              <span className="text-[10px] font-mono uppercase tracking-[0.18em] font-bold text-[#c85a32] block">
+            <div className="bg-white border border-[#252422]/15 p-6 rounded-xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.06)] space-y-3 group">
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] font-bold text-[#ff5500] block">
                 EXPORT COMMITMENTS
               </span>
 
-              <div className="space-y-3.5 text-[12.5px] font-sans text-[#555555]">
+              <div className="space-y-3.5 text-[12.5px] font-sans text-[#252422]">
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[#f8fafc] flex items-center justify-center flex-none border border-[#0f172a]/10">
-                    <CheckCircle2 className="w-3 h-3 text-[#c85a32]" />
+                  <div className="w-5 h-5 rounded-full bg-[#ff5500]/10 flex items-center justify-center flex-none border border-[#ff5500]/25">
+                    <CheckCircle2 className="w-3 h-3 text-[#ff5500]" />
                   </div>
                   <span>Direct Quarry Extraction & Processing</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[#f8fafc] flex items-center justify-center flex-none border border-[#0f172a]/10">
-                    <CheckCircle2 className="w-3 h-3 text-[#c85a32]" />
+                  <div className="w-5 h-5 rounded-full bg-[#ff5500]/10 flex items-center justify-center flex-none border border-[#ff5500]/25">
+                    <CheckCircle2 className="w-3 h-3 text-[#ff5500]" />
                   </div>
                   <span>100% Pre-Shipment Dry-Lay Inspection</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[#f8fafc] flex items-center justify-center flex-none border border-[#0f172a]/10">
-                    <CheckCircle2 className="w-3 h-3 text-[#c85a32]" />
+                  <div className="w-5 h-5 rounded-full bg-[#ff5500]/10 flex items-center justify-center flex-none border border-[#ff5500]/25">
+                    <CheckCircle2 className="w-3 h-3 text-[#ff5500]" />
                   </div>
                   <span>4K Lot Photos & Container Sealing Proof</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[#f8fafc] flex items-center justify-center flex-none border border-[#0f172a]/10">
-                    <CheckCircle2 className="w-3 h-3 text-[#c85a32]" />
+                  <div className="w-5 h-5 rounded-full bg-[#ff5500]/10 flex items-center justify-center flex-none border border-[#ff5500]/25">
+                    <CheckCircle2 className="w-3 h-3 text-[#ff5500]" />
                   </div>
                   <span>Zero Transit Breakage Guarantee</span>
                 </div>
               </div>
 
-              <div className="pt-4 mt-4 border-t border-[#747474]/15">
+              <div className="pt-4 mt-4 border-t border-[#252422]/10">
                 <Link
                   href="/contact"
-                  className="w-full inline-flex items-center justify-center gap-2 py-3.5 bg-[#241919] hover:bg-[#c85a32] text-white rounded-lg text-xs font-mono uppercase tracking-[0.2em] font-bold transition-all duration-300 shadow-md hover:shadow-[#c85a32]/25 cursor-pointer"
+                  className="w-full inline-flex items-center justify-center gap-2 py-3.5 bg-[#252422] hover:bg-[#ff5500] text-white rounded-[4px] text-xs font-mono uppercase tracking-[0.2em] font-bold transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-[#ff5500]/25 cursor-pointer"
                 >
                   <span>Contact Export Desk</span>
                   <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
@@ -239,39 +232,44 @@ export default function WhyChooseUs() {
               return (
                 <div
                   key={faq.id}
-                  className={`border transition-all duration-300 rounded-xl overflow-hidden bg-white ${isOpen
-                      ? "border-[#c85a32]/40 shadow-[0_8px_30px_-12px_rgba(255,68,58,0.15)]"
-                      : "border-[#747474]/15 hover:border-[#747474]/30 shadow-sm"
-                    }`}
+                  className={`border transition-all duration-300 rounded-xl overflow-hidden bg-white ${
+                    isOpen
+                      ? "border-[#ff5500]/40 shadow-[0_12px_35px_-12px_rgba(255,85,0,0.18)]"
+                      : "border-[#252422]/15 hover:border-[#252422]/30 shadow-xs"
+                  }`}
                 >
                   {/* Accordion Trigger Button */}
                   <button
                     type="button"
                     onClick={() => toggleFAQ(faq.id)}
-                    className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer select-none transition-colors hover:bg-[#fcfaf7]"
+                    className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer select-none transition-colors hover:bg-gray-50/60"
                   >
                     <div className="flex items-center gap-3.5 sm:gap-4 flex-1">
 
                       {/* Number Tag */}
-                      <span className={`text-[11px] font-mono font-bold flex-none transition-colors ${isOpen ? "text-[#c85a32]" : "text-[#747474]/50"
-                        }`}>
+                      <span className={`text-[11px] font-mono font-bold flex-none transition-colors ${
+                        isOpen ? "text-[#ff5500]" : "text-[#747474]/60"
+                      }`}>
                         {faq.num}
                       </span>
 
                       {/* Icon Circle */}
-                      <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-none transition-all duration-300 ${isOpen
-                          ? "bg-[#c85a32] text-white shadow-md shadow-[#c85a32]/20"
-                          : "bg-[#f8fafc] text-[#747474] border border-[#0f172a]/10"
-                        }`}>
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-none transition-all duration-300 ${
+                        isOpen
+                          ? "bg-[#ff5500] text-white shadow-md shadow-[#ff5500]/25"
+                          : "bg-gray-50 text-[#252422] border border-[#252422]/10"
+                      }`}>
                         <Icon className="w-4 h-4" />
                       </div>
 
                       {/* Question Heading & Topic */}
                       <div>
-                        <span className={`text-[9.5px] font-mono uppercase tracking-[0.2em] font-bold block mb-1 transition-colors ${isOpen ? "text-[#c85a32]" : "text-[#747474]"}`}>
+                        <span className={`text-[9.5px] font-mono uppercase tracking-[0.2em] font-bold block mb-1 transition-colors ${
+                          isOpen ? "text-[#ff5500]" : "text-[#747474]"
+                        }`}>
                           {faq.topic}
                         </span>
-                        <h3 className="font-sans font-bold text-[14.5px] sm:text-[16px] text-[#241919] leading-snug">
+                        <h3 className="font-sans font-bold text-[14.5px] sm:text-[16px] text-[#252422] leading-snug">
                           {faq.question}
                         </h3>
                       </div>
@@ -279,8 +277,9 @@ export default function WhyChooseUs() {
                     </div>
 
                     {/* Expand/Collapse Chevron Indicator */}
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-none transition-transform duration-300 ${isOpen ? "bg-[#c85a32]/10 text-[#c85a32] rotate-180" : "text-[#747474]"
-                      }`}>
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-none transition-all duration-300 ${
+                      isOpen ? "bg-[#ff5500]/10 text-[#ff5500] rotate-180" : "text-[#747474] bg-gray-50"
+                    }`}>
                       <ChevronDown className="w-4 h-4" />
                     </div>
                   </button>
@@ -294,28 +293,13 @@ export default function WhyChooseUs() {
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden border-t border-[#747474]/10 bg-white"
+                        className="overflow-hidden border-t border-[#252422]/10 bg-gray-50/40"
                       >
-                        <div className="p-5 sm:p-6 sm:pl-16 space-y-4">
-
+                        <div className="p-5 sm:p-6 sm:pl-16">
                           {/* Answer Narrative */}
-                          <p className="text-[13.5px] sm:text-[14.5px] leading-[1.7] text-[#454545] font-light">
+                          <p className="text-[13.5px] sm:text-[14.5px] leading-[1.7] text-[#444444] font-normal">
                             {faq.answer}
                           </p>
-
-                          {/* Highlight Badges */}
-                          <div className="pt-2 flex flex-wrap gap-2">
-                            {faq.highlights.map((badge) => (
-                              <span
-                                key={badge}
-                                className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-[#747474]/20 rounded text-[11px] font-mono text-[#241919]"
-                              >
-                                <span className="w-1 h-1 rounded-full bg-[#0f172a]" />
-                                <span>{badge}</span>
-                              </span>
-                            ))}
-                          </div>
-
                         </div>
                       </motion.div>
                     )}

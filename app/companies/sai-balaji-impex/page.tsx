@@ -3,7 +3,7 @@ import { use, useState, useRef } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { ArrowRight } from "@animateicons/react/lucide";
+import { ArrowRight } from "lucide-react";
 import RangeCarousel from "@/components/RangeCarousel";
 import DimensionalMatrix from "@/components/DimensionalMatrix";
 import CompanyEditorialShowcase from "@/components/CompanyEditorialShowcase";
@@ -568,15 +568,15 @@ const COMPANIES_DATABASE: Record<string, CompanyData> = {
     ],
     products: [
       {
-        id: "emerald-green-quartzite",
-        name: "Exotic Emerald Green Quartzite Slabs",
-        colors: ["Vibrant Emerald", "Viridian Green", "Golden Veins"],
-        description: "Precious architectural exotic quartzite with crystalline luminescence and undulating viridian veins.",
-        finishes: ["Diamond Mirror Polish", "Leathered Satin", "Honed Matte"],
-        gradient: "linear-gradient(135deg, #062c24 0%, #0d5c4a 50%, #031c17 100%)",
-        recommendedUse: "Backlit reception walls, waterfall kitchen islands, and monumental bathroom suites.",
-        slipRating: "R10",
-        heatResistance: "Heat & Acid Proof",
+        id: "cuddapah-black-limestone",
+        name: "Cuddapah Midnight Black Natural Limestone",
+        colors: ["Jet Black", "Charcoal Mist", "Velvet Black"],
+        description: "Quarried exclusively by Sai Balaji Impex from our certified Cuddapah reserves, celebrated worldwide for dense non-porous structure and velvety honed tactile finish.",
+        finishes: ["Honed Velvet", "Natural Cleft", "Tumbled Antique", "Brushed Leather"],
+        gradient: "linear-gradient(135deg, #111215 0%, #1e2025 50%, #0a0b0d 100%)",
+        recommendedUse: "Residential flooring, pool surrounds, commercial corridors, and exterior patios.",
+        slipRating: "R11 (Honed) / R13 (Tumbled)",
+        heatResistance: "Naturally Cool Footfall & Weatherproof",
       },
     ],
     specifications: {
@@ -627,7 +627,7 @@ export default function CompanyDedicatedPage() {
   };
 
   return (
-    <main className="relative bg-[#f2f2f2] min-h-screen text-[#140d0a] selection:bg-[#3e352a] selection:text-white">
+    <main className="relative bg-[#f2f2f2] min-h-screen text-[#140d0a] selection:bg-[#ff5500] selection:text-white">
       
       {/* ── ANIMATED HERO SECTION (STICKY COVER EFFECT) ── */}
       <section className="sticky top-0 z-0 w-full aspect-video md:aspect-auto md:h-screen min-h-[480px] md:min-h-[600px] flex items-center justify-center overflow-hidden bg-[#140d0a] pt-[72px]">
@@ -706,26 +706,7 @@ export default function CompanyDedicatedPage() {
                 <p>
                   Specializing in fine architectural limestone,<br className="hidden sm:inline" />
                   the dedicated team at{" "}
-                  <span className="relative inline-block whitespace-nowrap mx-1.5">
-                    <span className="relative z-10 font-semibold text-[#140d0a]">Sai Balaji Impex</span>
-                    <svg
-                      viewBox="0 0 740 460"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      preserveAspectRatio="none"
-                      className="absolute -left-4 -right-8 -top-3 -bottom-1.5 w-[calc(100%+48px)] h-[calc(100%+18px)] pointer-events-none overflow-visible"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M 719.9,309.7 C 713.7,304.2 714.3,304.2 697.9,290.0 C 681.5,275.8 684.3,279.6 661.4,258.9 C 638.5,238.2 643.4,241.0 616.0,216.0 C 588.6,191.0 596.9,194.0 563.7,169.7 C 530.5,145.4 540.2,146.0 497.5,129.2 C 454.8,112.4 464.0,117.5 411.3,109.8 C 358.6,102.1 368.5,106.8 309.3,101.8 C 250.1,96.8 259.2,89.4 200.0,92.0 C 140.8,94.6 144.9,91.3 97.7,111.1 C 50.5,130.9 54.2,124.9 31.6,162.7 C 9.0,200.5 15.6,203.7 17.1,246.2 C 18.6,288.7 15.9,280.5 37.0,314.6 C 58.1,348.7 53.3,343.0 92.5,368.0 C 131.7,393.0 121.3,386.0 176.9,403.9 C 232.5,421.8 223.0,420.9 291.0,432.1 C 359.0,443.3 352.9,441.1 419.9,444.0 C 486.9,446.9 479.8,447.4 530.3,442.5 C 580.8,437.6 568.8,440.7 600.2,426.6 C 631.6,412.5 624.1,415.2 642.4,392.2 C 660.7,369.2 658.2,371.5 665.4,344.3 C 672.6,317.1 675.1,322.8 668.0,295.0 C 660.9,267.2 661.8,275.9 640.0,245.0 C 618.2,214.1 624.4,216.4 590.2,184.8 C 556.0,153.2 563.4,160.7 518.0,132.0 C 472.6,103.3 482.0,106.9 428.0,82.3 C 374.0,57.7 381.0,60.9 325.0,44.2 C 269.0,27.5 271.9,31.6 227.9,22.6 C 183.9,13.6 184.8,15.0 168.0,12.0"
-                        stroke="#ff5500"
-                        strokeWidth="2.2"
-                        vectorEffect="non-scaling-stroke"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>{" "}
+                  <span className="font-semibold text-[#b45309]">Sai Balaji Impex</span>{" "}
                   delivers quarry-direct<br className="hidden sm:inline" />
                   natural cleft and calibrated limestone paving, tumbled cobbles, and pool copings to landscape architects and builders across 40+ countries.
                 </p>
