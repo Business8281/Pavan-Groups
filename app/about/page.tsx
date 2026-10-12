@@ -23,6 +23,7 @@ import {
   Pause,
   ShieldCheck,
   CheckCircle2,
+  Award,
 } from "lucide-react";
 
 // Smooth Animated Number Counter Component
@@ -232,7 +233,7 @@ const MANUFACTURING_FACILITIES: ManufacturingFacility[] = [
       "Auto-Gauging Lines",
       "Mesh Panel Pressing Beds",
     ],
-    image: "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/premium_slate_texture.jpg",
     badge: "Markapur Slate Reserves Hub",
   },
   {
@@ -265,7 +266,7 @@ const MANUFACTURING_FACILITIES: ManufacturingFacility[] = [
       "Bullnose Edge Shapers",
       "Laser-Guided Bridge Saws",
     ],
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/calibrated_stone_tiles.jpg",
     badge: "Cuddapah Basin Limestone Hub",
   },
   {
@@ -298,7 +299,7 @@ const MANUFACTURING_FACILITIES: ManufacturingFacility[] = [
       "Epoxy Vacuum Chambers",
       "Overhead 40-Ton Gantry Cranes",
     ],
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/rj-black-galaxy-granite.jpg",
     badge: "Galaxy Granite Mega Plant",
   },
   {
@@ -331,7 +332,7 @@ const MANUFACTURING_FACILITIES: ManufacturingFacility[] = [
       "Bookmatch Optical Scanners",
       "Precision Edge Miterers",
     ],
-    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
+    image: "/images/new-universe-black-granite.jpg",
     badge: "Exotic Stone Atelier",
   },
 ];
@@ -520,51 +521,111 @@ const ACCREDITATION_DOSSIER = [
     id: "ce",
     sigil: "CE",
     code: "EN 12058 · EN 1341",
-    standard: "CE Marking",
-    authority: "European Conformity",
+    standard: "CE European Conformity",
+    authority: "European Construction Products Regulation",
     territory: "European Union & UK",
     highlight: "Certified load-bearing flexural strength & non-slip safety for European civic infrastructure.",
     category: "European Building Code",
+    statPrimaryLabel: "Flexural Benchmark",
+    statPrimaryValue: "EN 12058 · Class A",
+    statSecondaryLabel: "Civic Jurisdiction",
+    statSecondaryValue: "European Union & UK",
+    complianceScore: "100%",
+    progressPercent: 100,
+    activeCheckpoint: "EN 12058 / EN 1341 Structural Safety",
+    nextAudit: "Annual Notified Body Plant Inspection",
+    milestone1: "Quarry Source Traceability",
+    milestone2: "EN Standards Compliance",
+    iconName: "ShieldCheck",
+    images: ["/images/calibrated_stone_tiles.jpg", "/images/stone_flooring_installation.jpg"],
   },
   {
     id: "astm",
     sigil: "ASTM",
     code: "ASTM C170 · C97 · C880",
-    standard: "ASTM International",
-    authority: "Dimension Stone C18",
+    standard: "ASTM International C18",
+    authority: "Dimension Stone Performance Testing",
     territory: "North America & Global",
-    highlight: "Exceeds standard structural compressive (>190 MPa) and tensile ratings for US commercial towers.",
+    highlight: "Exceeds structural compressive (>190 MPa) and tensile ratings for US commercial towers.",
     category: "American Standard",
+    statPrimaryLabel: "Compressive Benchmark",
+    statPrimaryValue: "> 190.4 MPa",
+    statSecondaryLabel: "Structural Tolerance",
+    statSecondaryValue: "ASTM C170 Certified",
+    complianceScore: "99.8%",
+    progressPercent: 99.8,
+    activeCheckpoint: "ASTM C170 Compressive / C97 Absorption",
+    nextAudit: "Batch ASTM Tensile Verification",
+    milestone1: "Direct Quarry Block Crate",
+    milestone2: "ASTM C170 Lab Pass",
+    iconName: "Award",
+    images: ["/images/premium_slate_texture.jpg", "/images/calibrated_stone_tiles.jpg"],
   },
   {
     id: "iso",
     sigil: "ISO",
     code: "ISO 9001:2015",
-    standard: "Certified QMS",
-    authority: "Quality Management",
+    standard: "ISO 9001:2015 QMS",
+    authority: "TÜV Audited Quality Management System",
     territory: "Global Operations",
     highlight: "Full block-to-crate traceability with audited diamond-wire dimensional calibration tolerances.",
-    category: "International Standard",
+    category: "Quality Management",
+    statPrimaryLabel: "Calibration Tolerance",
+    statPrimaryValue: "± 0.5 mm Diamond",
+    statSecondaryLabel: "Quality Assurance",
+    statSecondaryValue: "100% Crate Audited",
+    complianceScore: "100%",
+    progressPercent: 100,
+    activeCheckpoint: "ISO 9001:2015 Audited Processing Line",
+    nextAudit: "Continuous Digital Caliper Verification",
+    milestone1: "Automated Gangsaw Line",
+    milestone2: "Micron Precision Check",
+    iconName: "CheckCircle2",
+    images: ["/images/stone_flooring_installation.jpg", "/images/premium_slate_texture.jpg"],
   },
   {
     id: "ispm",
     sigil: "IPPC",
     code: "ISPM-15 HT 56°C",
-    standard: "Phytosanitary Timber",
-    authority: "Maritime Export",
-    territory: "Global Ocean Freight",
+    standard: "Phytosanitary Timber Maritime",
+    authority: "International Plant Protection Convention",
+    territory: "Global Ocean Freight Ports",
     highlight: "Heat-treated hardwood crating with vapor barriers for fast-track customs clearance across all ports.",
     category: "Export Phytosanitary",
+    statPrimaryLabel: "Thermal Heat Treatment",
+    statPrimaryValue: "HT 56°C Core / 30m",
+    statSecondaryLabel: "Maritime Clearance",
+    statSecondaryValue: "Zero Quarantine Hold",
+    complianceScore: "100%",
+    progressPercent: 100,
+    activeCheckpoint: "IPPC Stamped ISPM-15 Hardwood Packaging",
+    nextAudit: "Port Harbor Phytosanitary Issuance",
+    milestone1: "Vapor Barrier Crated",
+    milestone2: "Customs Green Channel",
+    iconName: "Globe",
+    images: ["/images/calibrated_stone_tiles.jpg", "/images/premium_slate_texture.jpg"],
   },
   {
     id: "leed",
     sigil: "LEED",
     code: "LEED v4.1 & IGBC",
-    standard: "Green Building",
-    authority: "USGBC & IGBC Certified",
-    territory: "Sustainable Projects",
+    standard: "USGBC & IGBC Green Building",
+    authority: "U.S. Green Building Council Eco-Credit",
+    territory: "Sustainable Architecture",
     highlight: "Zero-VOC 100% natural geological stone qualifying for LEED MR and EQ green building credits.",
     category: "Eco Architecture",
+    statPrimaryLabel: "Embodied Carbon / VOC",
+    statPrimaryValue: "0.0 g/L (Zero VOC)",
+    statSecondaryLabel: "Green Building Points",
+    statSecondaryValue: "LEED MR Credits",
+    complianceScore: "100%",
+    progressPercent: 100,
+    activeCheckpoint: "USGBC & IGBC Natural Stone Certification",
+    nextAudit: "Low Carbon Embodied Verification",
+    milestone1: "100% Captive Solar Quarry",
+    milestone2: "Zero Chemical Processing",
+    iconName: "Sparkles",
+    images: ["/images/premium_slate_texture.jpg", "/images/stone_flooring_installation.jpg"],
   },
 ];
 
@@ -817,6 +878,48 @@ export default function AboutPage() {
   const [activeFacilityIdx, setActiveFacilityIdx] = useState(0);
   const [activeProcessStepIdx, setActiveProcessStepIdx] = useState(0);
   const [hoveredGateIdx, setHoveredGateIdx] = useState<number | null>(null);
+  const [activeQualityGateIdx, setActiveQualityGateIdx] = useState(0);
+  const [activeCrestIdx, setActiveCrestIdx] = useState(1); // Default to ASTM
+  const [isCrestPaused, setIsCrestPaused] = useState(false);
+  const facilitySliderRef = useRef<HTMLDivElement>(null);
+
+  // Automatically flow accreditation crests in a continuous loop (pauses on hover)
+  useEffect(() => {
+    if (isCrestPaused) return;
+    const interval = setInterval(() => {
+      setActiveCrestIdx((prev) => (prev + 1) % ACCREDITATION_DOSSIER.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isCrestPaused]);
+
+  const currentQualityStage = QUALITY_STAGES[activeQualityGateIdx];
+
+  const prevCrestIdx = (activeCrestIdx - 1 + ACCREDITATION_DOSSIER.length) % ACCREDITATION_DOSSIER.length;
+  const nextCrestIdx = (activeCrestIdx + 1) % ACCREDITATION_DOSSIER.length;
+  const activeCrest = ACCREDITATION_DOSSIER[activeCrestIdx];
+  const prevCrest = ACCREDITATION_DOSSIER[prevCrestIdx];
+  const nextCrest = ACCREDITATION_DOSSIER[nextCrestIdx];
+
+  const scrollToFacility = (idx: number) => {
+    setActiveFacilityIdx(idx);
+    if (facilitySliderRef.current) {
+      const container = facilitySliderRef.current;
+      const targetChild = container.children[idx] as HTMLElement;
+      if (targetChild) {
+        targetChild.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      }
+    }
+  };
+
+  const handleNextFacility = () => {
+    const nextIdx = (activeFacilityIdx + 1) % MANUFACTURING_FACILITIES.length;
+    scrollToFacility(nextIdx);
+  };
+
+  const handlePrevFacility = () => {
+    const prevIdx = (activeFacilityIdx - 1 + MANUFACTURING_FACILITIES.length) % MANUFACTURING_FACILITIES.length;
+    scrollToFacility(prevIdx);
+  };
 
   const handleContactClick = () => {
     router.push("/#contact");
@@ -892,7 +995,9 @@ export default function AboutPage() {
 
           {/* Lead Narrative Sentence */}
           <p className="text-[14.5px] sm:text-[16px] md:text-[17px] leading-[1.8] text-[#333333] font-light max-w-4xl mx-auto text-center sm:text-justify">
-            <strong className="font-semibold text-[#241919]">Paving the way to the future of natural stone, PAVAN STONES GROUP is a premier natural stone conglomerate in India.</strong> Established since 2000, the company has made its mark both locally and globally for its unique quarry-extracted natural stone products that amalgamate the finest raw material, gangsaw technology, industrial expertise, and master craftsmanship to create natural slates, limestones, and granites that are of the highest architectural quality and authenticity.
+            <strong className="font-semibold text-[#241919]">
+              Paving the way to the future of natural stone, <span className="text-[#003049] font-bold">PAVAN STONES GROUP</span> is a premier natural stone conglomerate in India.
+            </strong> Established since 2000, the company has made its mark both locally and globally for its unique quarry-extracted natural stone products that amalgamate the finest raw material, gangsaw technology, industrial expertise, and master craftsmanship to create natural slates, limestones, and granites that are of the highest architectural quality and authenticity.
           </p>
 
         </div>
@@ -949,250 +1054,198 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── STATE-OF-THE-ART MANUFACTURING FACILITIES SECTION (INTERACTIVE ARCHITECTURAL COMMAND CONSOLE) ── */}
+      {/* ── FOUR SPECIALIZED MANUFACTURING COMPLEXES (INSPIRATIONAL EDITORIAL ATELIER LAYOUT) ── */}
       <section
         id="manufacturing-facilities"
-        className="py-16 sm:py-20 px-4 sm:px-6 md:px-14 lg:px-20 bg-white border-t border-[#747474]/15 relative z-20 scroll-mt-24"
+        className="relative w-full bg-white z-20 py-16 sm:py-20 lg:py-28 px-4 sm:px-6 md:px-10 lg:px-16 overflow-hidden border-t border-[#003049]/10"
       >
-        <div className="max-w-7xl mx-auto space-y-10 lg:space-y-12">
-
-          {/* Section Header */}
-          <div className="max-w-3xl mx-auto text-center space-y-3">
-            <span className="text-[11px] font-mono uppercase tracking-[0.24em] text-[#9a3412] font-semibold block">
-              Industrial Infrastructure &amp; Processing Hubs
-            </span>
-            <h2 className="font-display font-light text-3xl sm:text-4xl md:text-5xl text-[#241919] leading-[1.08] tracking-tight">
-              Four Specialized <span className="font-normal text-[#9a3412]">Manufacturing</span> Divisions
+        <div className="max-w-7xl mx-auto space-y-12 sm:space-y-16">
+          
+          {/* ── SECTION HEADER (CENTERED) ── */}
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-[#003049] leading-[1.12] tracking-tight">
+              Four Specialized <br className="hidden sm:inline" />
+              <span className="italic font-normal">Manufacturing Complexes.</span>
             </h2>
-            <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed max-w-2xl mx-auto">
-              Operating 9 specialized fabrication plants and jumbo gangsaw yards spanning 150,000+ SQM annual capacity across South India&apos;s most mineral-rich geological reserves.
-            </p>
           </div>
 
-          {/* ── 4-HUB QUICK SWITCHER STRIP (SELECTED: ORANGE TEXT, UNSELECTED: ORANGE BORDER ON HOVER) ── */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            {MANUFACTURING_FACILITIES.map((facility, idx) => {
-              const isActive = activeFacilityIdx === idx;
-              return (
-                <button
-                  key={facility.id}
-                  onClick={() => setActiveFacilityIdx(idx)}
-                  className={`flex items-center justify-center text-center p-4 sm:p-5 rounded-[4px] border bg-white transition-all duration-300 relative overflow-hidden group cursor-pointer min-h-[60px] sm:min-h-[68px] ${
-                    isActive ? "shadow-sm" : ""
-                  }`}
-                  style={{
-                    borderColor: facility.homeColor,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.borderColor = "#ff5500";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.borderColor = facility.homeColor;
-                    }
-                  }}
-                >
-                  <h3
-                    className="font-sans font-bold text-sm sm:text-base md:text-lg leading-snug transition-colors duration-200"
-                    style={{
-                      color: isActive ? "#ff5500" : facility.homeColor,
-                    }}
+          {/* ── MAIN 2-COLUMN STAGE: FACILITIES LIST (LEFT) & SHOWCASE IMAGE (RIGHT) ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            
+            {/* ── LEFT COLUMN: INTERACTIVE FACILITIES LIST (~30% WIDTH) ── */}
+            <div className="lg:col-span-4 flex flex-col justify-between space-y-4">
+              
+              {/* Interactive Facilities List with Dividers */}
+              <div className="divide-y divide-[#003049]/10 border-t border-b border-[#003049]/10">
+                {MANUFACTURING_FACILITIES.map((facility, idx) => {
+                  const isActive = activeFacilityIdx === idx;
+                  return (
+                    <button
+                      key={facility.id}
+                      onClick={() => setActiveFacilityIdx(idx)}
+                      className={`w-full text-left py-3.5 sm:py-4 group transition-all duration-300 flex items-center justify-between cursor-pointer relative ${
+                        isActive ? "text-[#ff5500]" : "text-[#003049] hover:text-[#ff5500]"
+                      }`}
+                    >
+                      {/* Left: Title + Thumbnail + Subtitle */}
+                      <div className="space-y-1.5 min-w-0 pr-3">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-base sm:text-lg font-display font-medium transition-colors ${
+                              isActive ? "text-[#ff5500]" : "text-[#003049] group-hover:text-[#ff5500]"
+                            }`}
+                          >
+                            {facility.division}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2.5">
+                          {/* Small Live Stone Thumbnail */}
+                          <div
+                            className={`w-8 h-8 rounded-md overflow-hidden border transition-all flex-shrink-0 ${
+                              isActive
+                                ? "border-[#00e5ff] ring-2 ring-[#00e5ff]/40 shadow-xs"
+                                : "border-[#003049]/15 group-hover:border-[#ff5500]"
+                            }`}
+                          >
+                            <img
+                              src={facility.image}
+                              alt={facility.division}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+
+                          <div className="min-w-0">
+                            <span className="block text-[11px] font-sans text-[#003049]/60 truncate group-hover:text-[#003049]/80">
+                              {facility.tag.split("&")[0].trim()}
+                            </span>
+                            <span className="block text-[10px] font-sans font-semibold text-[#ff5500]">
+                              {facility.annualCapacity.split(" / ")[0]}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: Chevron Arrow (turns Electric Blue on hover/active) */}
+                      <div className="flex items-center justify-center flex-shrink-0">
+                        <ChevronRight
+                          className={`w-4 h-4 transition-all duration-300 ${
+                            isActive
+                              ? "text-[#00e5ff] translate-x-1"
+                              : "text-[#003049]/40 group-hover:text-[#00e5ff] group-hover:translate-x-1"
+                          }`}
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+            </div>
+
+            {/* ── RIGHT COLUMN: SHOWCASE IMAGE (~70% WIDTH) ── */}
+            <div className="lg:col-span-8">
+              {/* Main Showcase Image */}
+              <div className="relative w-full h-[320px] sm:h-[360px] lg:h-[400px] rounded-2xl overflow-hidden border border-[#003049]/10 shadow-xl bg-[#f8fafc] group">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeFacility.id}
+                    initial={{ opacity: 0, scale: 1.03 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative w-full h-full"
                   >
-                    {facility.division}
-                  </h3>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* ── CINEMATIC ACTIVE DIVISION SHOWCASE STAGE (DYNAMIC SIGNATURE PALETTE) ── */}
-          <div className="rounded-2xl border border-[#747474]/15 bg-white p-6 sm:p-8 lg:p-10 shadow-sm relative overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeFacility.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
-              >
-                {/* Visual Column (7 cols) */}
-                <div className="lg:col-span-7 relative">
-                  <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden border border-[#747474]/15 shadow-sm group">
+                    {/* Main Full-Bleed Showcase Image */}
                     <img
                       src={activeFacility.image}
                       alt={activeFacility.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
                     />
-                  </div>
-                </div>
 
-                {/* Narrative & Specification Column (5 cols) */}
-                <div className="lg:col-span-5 space-y-5">
-                  <div className="space-y-2">
-                    <div>
-                      <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#747474] font-semibold">
-                        {activeFacility.tag}
-                      </span>
-                    </div>
+                    {/* Cinematic Vignette */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#003049]/95 via-[#003049]/35 to-transparent" />
 
-                    <h3 className="font-display font-medium text-2xl sm:text-3xl lg:text-4xl text-[#241919] leading-tight">
-                      {activeFacility.division}
-                    </h3>
-                    <p style={{ color: activeFacility.homeColor }} className="text-xs sm:text-sm font-medium">
-                      {activeFacility.title}
-                    </p>
-                  </div>
-
-                  <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed">
-                    {activeFacility.description}
-                  </p>
-
-                  {/* 4 Precision Spec Tiles */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2.5 pt-1">
-                    <div className="p-2.5 rounded-[4px] bg-[#747474]/[0.04] border border-[#747474]/15">
-                      <span className="text-[9px] font-mono uppercase text-[#747474] block">Capacity</span>
-                      <span className="text-xs font-mono font-bold text-[#241919] block mt-0.5">
-                        {activeFacility.annualCapacity.split(" / ")[0]}
-                      </span>
-                    </div>
-                    <div className="p-2.5 rounded-[4px] bg-[#747474]/[0.04] border border-[#747474]/15">
-                      <span className="text-[9px] font-mono uppercase text-[#747474] block">Covered Yard</span>
-                      <span className="text-xs font-mono font-bold text-[#241919] block mt-0.5 truncate">
-                        {activeFacility.area.split(" ")[0]} Sq Ft
-                      </span>
-                    </div>
-                    <div className="p-2.5 rounded-[4px] bg-[#747474]/[0.04] border border-[#747474]/15">
-                      <span className="text-[9px] font-mono uppercase text-[#747474] block">Tolerance</span>
-                      <span className="text-xs font-mono font-bold text-[#241919] block mt-0.5">
-                        {activeFacility.tolerance.split(" ")[0]}
-                      </span>
-                    </div>
-                    <div className="p-2.5 rounded-[4px] bg-[#747474]/[0.04] border border-[#747474]/15">
-                      <span className="text-[9px] font-mono uppercase text-[#747474] block">Logistics</span>
-                      <span className="text-xs font-mono font-bold text-[#241919] block mt-0.5">
-                        ISPM-15 Crates
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Deployed Machinery Asset Chips */}
-                  <div className="space-y-1.5 pt-1">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-semibold block">
-                      Heavy Machinery Assets
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {activeFacility.machinery.map((machine) => (
-                        <span
-                          key={machine}
-                          className="text-[10.5px] font-mono px-2 py-0.5 rounded-[4px] bg-[#747474]/8 text-[#241919] border border-[#747474]/10"
-                        >
-                          ⚙ {machine}
+                    {/* Bottom Dossier Overlay Card */}
+                    <div className="absolute bottom-0 inset-x-0 p-5 sm:p-6 lg:p-7 flex flex-col sm:flex-row sm:items-end justify-between gap-5 text-white">
+                      <div className="space-y-2.5 max-w-xl">
+                        <span className="text-[11px] font-sans uppercase tracking-[0.2em] text-[#ff5500] font-bold block">
+                          {activeFacility.tag}
                         </span>
-                      ))}
+                        <h3 className="font-display text-xl sm:text-2xl lg:text-3xl font-medium tracking-tight leading-tight text-white">
+                          {activeFacility.title}
+                        </h3>
+                        <p className="text-xs sm:text-[13px] font-sans font-light text-white/80 leading-relaxed line-clamp-2">
+                          {activeFacility.description}
+                        </p>
+
+                        {/* Technical Spec Matrix Badges */}
+                        <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 pt-1 text-xs font-sans">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-white/60">Annual Output:</span>
+                            <span className="font-semibold text-white">{activeFacility.annualCapacity.split(" / ")[0]}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-white/60">Tolerance:</span>
+                            <span className="font-semibold text-[#00e5ff]">{activeFacility.tolerance}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-white/60">Enclosed Yard:</span>
+                            <span className="font-semibold text-white">{activeFacility.area}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Direct Division Link Button */}
+                      <div className="flex-shrink-0">
+                        <Link
+                          href={`/companies/${activeFacility.divisionSlug}`}
+                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-[#003049] hover:bg-[#ff5500] hover:text-white transition-all duration-300 shadow-md group/btn"
+                        >
+                          <span className="font-sans text-xs uppercase tracking-[0.16em] font-bold">
+                            Explore Division
+                          </span>
+                          <ArrowUpRight className="w-3.5 h-3.5 text-[#003049] group-hover/btn:text-white group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-all" />
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Direct Division Portal Actions */}
-                  <div className="pt-3 border-t border-[#747474]/15 flex flex-wrap items-center gap-3">
-                    <Link
-                      href={`/companies/${activeFacility.divisionSlug}`}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[4px] text-white text-xs font-mono uppercase tracking-wider font-bold transition-all duration-300 hover:scale-[1.02] shadow-sm cursor-pointer group"
-                      style={{ backgroundColor: activeFacility.homeColor }}
-                    >
-                      <span>Explore {activeFacility.division}</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-white/80 group-hover:text-white transition-colors" />
-                    </Link>
-                    <Link
-                      href="/contact"
-                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[4px] bg-white text-[#241919] text-xs font-mono uppercase tracking-wider font-bold border border-[#747474]/20 transition-all duration-300"
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = activeFacility.homeColor;
-                        e.currentTarget.style.color = activeFacility.homeColor;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = "rgba(116, 116, 116, 0.2)";
-                        e.currentTarget.style.color = "#241919";
-                      }}
-                    >
-                      <span>Schedule Plant Visit</span>
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Stage Bottom Navigation Strip */}
-            <div className="mt-6 pt-5 border-t border-[#747474]/15 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-bold text-[#241919]">
-                  0{activeFacilityIdx + 1}
-                </span>
-                <span className="text-xs font-mono text-[#747474]">/ 04 Specialized Hubs</span>
+                  </motion.div>
+                </AnimatePresence>
               </div>
+            </div>
 
-              {/* Progress Dots */}
-              <div className="hidden sm:flex items-center gap-2">
-                {MANUFACTURING_FACILITIES.map((facility, dotIdx) => (
-                  <button
-                    key={dotIdx}
-                    onClick={() => setActiveFacilityIdx(dotIdx)}
-                    className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                      activeFacilityIdx === dotIdx
-                        ? "w-8"
-                        : "w-2 bg-[#747474]/25 hover:bg-[#747474]/60"
-                    }`}
-                    style={{
-                      backgroundColor: activeFacilityIdx === dotIdx ? facility.homeColor : undefined,
-                    }}
-                    aria-label={`Switch to facility 0${dotIdx + 1}`}
-                  />
-                ))}
-              </div>
+          </div>
 
-              {/* Prev / Next Controls */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() =>
-                    setActiveFacilityIdx((prev) => (prev - 1 + MANUFACTURING_FACILITIES.length) % MANUFACTURING_FACILITIES.length)
-                  }
-                  className="w-8 h-8 rounded-[4px] border border-[#747474]/20 text-[#241919] flex items-center justify-center transition-colors cursor-pointer"
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = activeFacility.homeColor;
-                    e.currentTarget.style.color = activeFacility.homeColor;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(116, 116, 116, 0.2)";
-                    e.currentTarget.style.color = "#241919";
-                  }}
-                  aria-label="Previous facility"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() =>
-                    setActiveFacilityIdx((prev) => (prev + 1) % MANUFACTURING_FACILITIES.length)
-                  }
-                  className="w-8 h-8 rounded-[4px] border border-[#747474]/20 text-[#241919] flex items-center justify-center transition-colors cursor-pointer"
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = activeFacility.homeColor;
-                    e.currentTarget.style.color = activeFacility.homeColor;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(116, 116, 116, 0.2)";
-                    e.currentTarget.style.color = "#241919";
-                  }}
-                  aria-label="Next facility"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
+          {/* ── BOTTOM STATS RIBBON ── */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-[#003049]/10 text-xs font-sans text-[#0077b6]">
+            <div className="flex items-center gap-6">
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#16a34a]" />
+                <strong className="text-[#003049]">150,000 SQM/YR</strong> Combined Group Output
+              </span>
+              <span className="hidden sm:inline-block text-[#003049]/20">|</span>
+              <span className="hidden sm:inline-block">
+                Calibration Standards: <strong className="text-[#ff5500]">±0.5mm Diamond Calibration</strong>
+              </span>
+              <span className="hidden md:inline-block text-[#003049]/20">|</span>
+              <span className="hidden md:inline-block">
+                Extraction Model: <strong className="text-[#003049]">100% Captive Leasehold Reserves</strong>
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs">
+              <span className="text-[#003049]/50">Active Complex:</span>
+              <span className="font-bold text-[#ff5500]">0{activeFacilityIdx + 1} of 04</span>
             </div>
           </div>
 
-          {/* ── 5-STAGE PRECISION MANUFACTURING WORKFLOW (ARCHITECTURAL ALTERNATING TIMELINE) ── */}
+        </div>
+      </section>
+
+      {/* Wrapping the 5-stage timeline in a safe padded container since we removed the section padding */}
+      <section className="py-20 sm:py-28 px-4 sm:px-6 md:px-14 lg:px-20 bg-white relative z-20 border-t border-[#6c757d]/20">
+        <div className="max-w-7xl mx-auto">
+      {/* ── 5-STAGE PRECISION MANUFACTURING WORKFLOW (ARCHITECTURAL ALTERNATING TIMELINE) ── */}
           <div className="space-y-12 pt-8 border-t border-[#6c757d]/20">
             {/* Section Header */}
             <div className="text-center max-w-3xl mx-auto space-y-3">
@@ -1322,13 +1375,13 @@ export default function AboutPage() {
 
                             {/* Specification Cards */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                              {/* Green Benchmark */}
-                              <div className="p-3 rounded-[3px] bg-[#16a34a]/8 border border-[#16a34a]/25 space-y-1">
-                                <span className="text-[9.5px] font-mono uppercase text-[#15803d] tracking-wider block font-semibold">
+                              {/* Electric Blue Benchmark */}
+                              <div className="p-3 rounded-[3px] bg-[#00e5ff]/10 border border-[#00e5ff]/40 space-y-1">
+                                <span className="text-[9.5px] font-mono uppercase text-[#0077b6] tracking-wider block font-semibold">
                                   Precision Benchmark
                                 </span>
-                                <div className="flex items-center gap-2 text-xs font-bold font-mono text-[#15803d] leading-snug">
-                                  <CheckCircle2 className="w-4 h-4 text-[#16a34a] flex-none" />
+                                <div className="flex items-center gap-2 text-xs font-bold font-mono text-[#0077b6] leading-snug">
+                                  <CheckCircle2 className="w-4 h-4 text-[#00b4d8] flex-none" />
                                   <span>{step.highlight}</span>
                                 </div>
                               </div>
@@ -1380,176 +1433,177 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* ── FEATURED FOUNDER SECTION: 3 EQUAL COLUMNS (IMAGE, WHITE SPACE, TEXT) ── */}
-          <div className="w-full">
-            <div className="group grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch md:h-[320px]">
-              {/* Card 1 (1/3 Width): Executive Monogram Placeholder on the left */}
-              <div className="h-[280px] md:h-full w-full relative rounded-2xl overflow-hidden bg-white border border-[#747474]/15 shadow-xs flex flex-col items-center justify-center p-6 text-center group-hover:border-[#ff5500]/30 transition-all duration-300">
-                {FOUNDER_INFO.image ? (
-                  <img
-                    src={FOUNDER_INFO.image}
-                    alt={`${FOUNDER_INFO.name} - Founder`}
-                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500 ease-out"
-                  />
-                ) : (
-                  <div className="relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-white border border-[#747474]/20 shadow-sm flex flex-col items-center justify-center group-hover:scale-105 group-hover:border-[#ff5500] transition-all duration-300">
-                    <span className="font-display font-medium text-3xl sm:text-4xl text-[#241919] tracking-widest group-hover:text-[#ff5500] transition-colors">
-                      {FOUNDER_INFO.initials}
-                    </span>
-                    <span className="text-[8.5px] font-mono uppercase tracking-[0.28em] text-[#ff5500] font-bold -mt-0.5">
-                      PAVAN
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Card 2 (1/3 Width): LOGO Placeholder in the middle */}
-              <div className="flex items-center justify-center p-6 select-none">
-                <span className="font-display font-medium text-3xl sm:text-4xl text-[#747474]/35 tracking-[0.3em] uppercase">
-                  LOGO
+          {/* ── FOUNDER'S VISION & EXECUTIVE PROFILE ── */}
+          <div className="w-full max-w-5xl mx-auto py-8 sm:py-12 border-y border-[#747474]/15">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+              
+              {/* Left Column: Founder Identity (4 cols) */}
+              <div className="lg:col-span-4 space-y-2.5">
+                <span className="text-[11px] font-mono uppercase tracking-[0.24em] text-[#ff5500] font-semibold block">
+                  {FOUNDER_INFO.role}
                 </span>
+
+                <h3 className="font-display font-medium text-3xl sm:text-4xl text-[#241919] tracking-tight leading-none">
+                  {FOUNDER_INFO.name}
+                </h3>
+
+                <p className="text-xs font-mono uppercase tracking-[0.18em] text-[#747474] pt-0.5">
+                  Pavan Stones Group
+                </p>
+
+                <div className="w-10 h-0.5 bg-[#ff5500] mt-3" />
               </div>
 
-              {/* Card 3 (1/3 Width): Text on the right */}
-              <div className="w-full flex flex-col justify-between py-1 space-y-3">
-                <div className="space-y-2">
-                  <span className="text-[10.5px] font-mono uppercase tracking-[0.16em] text-[#747474] block">
-                    Pavan Stones Group
-                  </span>
+              {/* Right Column: Narrative & Key Highlights (8 cols) */}
+              <div className="lg:col-span-8 space-y-6 lg:border-l lg:border-[#747474]/15 lg:pl-10">
+                <p className="text-[14.5px] sm:text-[15.5px] leading-[1.8] text-[#444444] font-light">
+                  “{FOUNDER_INFO.bio}”
+                </p>
 
-                  <div>
-                    <h3 className="font-display font-medium text-2xl sm:text-3xl text-[#241919] tracking-tight leading-tight group-hover:text-[#ff5500] transition-colors">
-                      Pavan
-                    </h3>
-                    <div className="w-10 h-0.5 bg-[#ff5500] mt-1.5 group-hover:w-16 transition-all duration-300" />
-                  </div>
-
-                  <p className="text-[12.5px] sm:text-[13px] leading-[1.65] text-[#555555] font-light pt-1">
-                    {FOUNDER_INFO.bio}
-                  </p>
-                </div>
-
-                {/* Highlights Strip (3 Cards) */}
-                <div className="pt-3 border-t border-[#747474]/15 grid grid-cols-3 gap-2 text-left">
+                {/* Highlights Strip */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-[#747474]/15">
                   {FOUNDER_INFO.highlights.map((item) => (
-                    <div key={item.label} className="bg-white rounded-lg p-2 border border-[#747474]/15 shadow-2xs">
-                      <span className="block text-[7.5px] font-mono uppercase tracking-wider text-[#747474]">
+                    <div key={item.label} className="space-y-1">
+                      <span className="text-[9.5px] font-mono uppercase tracking-[0.18em] text-[#747474] font-medium block">
                         {item.label}
                       </span>
-                      <span className="text-[11px] font-semibold text-[#241919] truncate block mt-0.5">
+                      <span className="text-[13px] font-semibold text-[#241919] block">
                         {item.value}
                       </span>
                     </div>
                   ))}
                 </div>
               </div>
+
             </div>
           </div>
 
-          {/* Section Divider & Subheading for Executive Board */}
-          <div className="text-center pt-2 space-y-2">
-            <span className="text-[11px] font-mono uppercase tracking-[0.24em] font-semibold text-[#747474] block">
-              Executive Board &amp; Management Operations
+          {/* ── SECTION HEADER FOR EXECUTIVE BOARD (MATCHING REFERENCE IMAGE RHYTHM) ── */}
+          <div className="max-w-3xl mx-auto text-center space-y-3 pt-6 pb-2">
+            <h2 className="font-display font-light text-3xl sm:text-4xl md:text-5xl lg:text-[50px] text-[#003049] leading-[1.08] tracking-tight uppercase">
+              Executive Board &amp; <br className="hidden sm:inline" />
+              <span className="italic font-normal">Management Operations</span>
+            </h2>
+
+            <span className="inline-block text-xs font-sans uppercase tracking-[0.24em] font-bold text-[#ff5500] pt-1">
+              Leadership &amp; Corporate Governance
             </span>
-            <div className="h-px w-16 bg-[#747474]/20 mx-auto" />
+
+            <p className="text-xs sm:text-[14px] text-[#003049]/75 font-sans font-light leading-relaxed max-w-2xl mx-auto">
+              Decades of direct captive quarry reserves, precision processing, and client trust—guided by visionary executive leadership across domestic and global natural stone operations.
+            </p>
+
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <div className="h-px w-12 bg-[#ff5500]/30" />
+              <div className="w-1.5 h-1.5 rotate-45 bg-[#ff5500]" />
+              <div className="h-px w-12 bg-[#ff5500]/30" />
+            </div>
           </div>
 
-          {/* Leadership Cards Grid (Single Section: 4 Square Cards Row) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-6 max-w-7xl mx-auto">
-            {LEADERSHIP_TEAM.map((member) => (
-              <div
-                key={member.name}
-                className="group relative bg-white border border-[#747474]/15 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-2xl hover:border-[#ff5500]/50 transition-all duration-400 flex flex-col justify-between overflow-hidden"
-              >
-                <div>
-                  {/* 1:1 PERFECT SQUARE PHOTO / ALT IMAGE CONTAINER */}
-                  <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-white border border-[#747474]/15 shadow-xs mb-4 flex flex-col items-center justify-center p-6 text-center group-hover:border-[#ff5500]/30 transition-all duration-300">
-                    {member.image ? (
-                      <>
-                        <img
-                          src={member.image}
-                          alt={member.name}
-                          className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500 ease-out"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60 pointer-events-none" />
-                      </>
-                    ) : (
-                      <>
-                        {/* Executive Monogram Circle with Initials */}
-                        <div className="relative z-10 w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-white border border-[#747474]/20 shadow-sm flex flex-col items-center justify-center group-hover:scale-105 group-hover:border-[#ff5500] transition-all duration-300">
-                          <span className="font-display font-medium text-2xl sm:text-3xl text-[#241919] tracking-widest group-hover:text-[#ff5500] transition-colors">
+          {/* ── 4 STAGGERED ARCHITECTURAL CARDS (MATCHING REFERENCE IMAGE) ── */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7 max-w-7xl mx-auto pt-4 lg:pb-28">
+            {LEADERSHIP_TEAM.map((member, idx) => {
+              // Undulating vertical offsets matching the exact wave in reference photo
+              const staggerClass =
+                idx === 0
+                  ? "lg:translate-y-8"
+                  : idx === 1
+                  ? "lg:translate-y-24"
+                  : idx === 2
+                  ? "lg:translate-y-14"
+                  : "lg:translate-y-0";
+
+              return (
+                <div
+                  key={member.name}
+                  className={`relative group transition-transform duration-500 ${staggerClass}`}
+                >
+                  {/* Architectural Offset Hairline Orange Wireframe */}
+                  <div className="absolute -top-3.5 -left-3.5 w-full h-[calc(100%-16px)] border border-[#ff5500]/50 pointer-events-none rounded-[4px] group-hover:-top-4.5 group-hover:-left-4.5 group-hover:border-[#ff5500] transition-all duration-300" />
+
+                  {/* Main Card Shell */}
+                  <div className="relative flex flex-col gap-2.5">
+                    {/* Upper Text Box (Replacing Photo with Executive Bio & Dossier Text) */}
+                    <div className="bg-white border border-[#ff5500] rounded-[4px] p-6 shadow-xs group-hover:shadow-md transition-all duration-300 flex flex-col justify-between min-h-[300px]">
+                      <div>
+                        {/* Top Row: Initials Monogram Badge & Label */}
+                        <div className="flex items-center justify-between pb-3.5 border-b border-[#ff5500]/20">
+                          <span className="px-2.5 py-1 rounded-[2px] text-[10px] font-sans font-bold uppercase tracking-wider text-[#003049] border border-[#ff5500]/40 bg-[#ff5500]/5">
                             {member.initials}
                           </span>
-                          <span className="text-[8px] font-mono uppercase tracking-[0.28em] text-[#ff5500] font-bold -mt-0.5">
-                            PAVAN
+                          <span className="text-[10px] font-sans uppercase tracking-[0.18em] text-[#ff5500] font-semibold">
+                            BOARD DOSSIER
                           </span>
                         </div>
-                      </>
-                    )}
-                  </div>
 
-                  {/* Member Meta Info */}
-                  <div className="space-y-2">
-                    <div className="text-[10px] sm:text-[10.5px] font-mono uppercase tracking-[0.2em] text-[#ff5500] font-semibold">
-                      {member.role}
+                        {/* Executive Narrative Quote in #003049 */}
+                        <div className="pt-4 space-y-2">
+                          <span className="text-2xl font-display text-[#ff5500] leading-none block select-none">
+                            “
+                          </span>
+                          <p className="text-xs sm:text-[13px] text-[#003049] font-sans font-light leading-[1.75]">
+                            {member.bio}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Direct Communication Deck */}
+                      <div className="pt-4 mt-4 border-t border-[#ff5500]/20 flex items-center justify-between gap-2">
+                        <a
+                          href={`tel:${member.phoneRaw}`}
+                          className="inline-flex items-center gap-2 group/call text-[11px] font-sans font-bold text-[#003049] hover:text-[#ff5500] transition-colors min-w-0"
+                          title={`Call ${member.name}`}
+                        >
+                          <div className="w-7 h-7 rounded-[4px] bg-white border border-[#ff5500] group-hover/call:bg-[#ff5500] flex items-center justify-center text-[#003049] group-hover/call:text-white transition-colors flex-none">
+                            <Phone className="w-3 h-3" />
+                          </div>
+                          <span className="truncate">{member.contact}</span>
+                        </a>
+
+                        <a
+                          href={member.whatsapp}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[4px] bg-[#25D366]/10 hover:bg-[#25D366] text-[#128C7E] hover:text-white border border-[#25D366]/40 transition-all text-[10.5px] font-sans font-semibold flex-none shadow-2xs"
+                          title={`Chat on WhatsApp with ${member.name}`}
+                        >
+                          <MessageSquare className="w-3 h-3" />
+                          <span>WhatsApp</span>
+                        </a>
+                      </div>
                     </div>
 
-                    <h3 className="font-display font-medium text-lg sm:text-[21px] text-[#241919] leading-snug group-hover:text-[#ff5500] transition-colors">
-                      {member.name}
-                    </h3>
-
-                    <div className="w-8 h-0.5 bg-[#ff5500]/30 mt-1.5 mb-2.5 group-hover:w-14 group-hover:bg-[#ff5500] transition-all duration-300" />
-
-                    {/* Narrative Bio */}
-                    <p className="text-[12px] sm:text-[12.5px] text-[#555555] font-light leading-relaxed">
-                      {member.bio}
-                    </p>
+                    {/* Lower Info Box (Matching Name & Title Frame in Reference Image) */}
+                    <div className="bg-white border border-[#ff5500] rounded-[4px] p-4 shadow-xs group-hover:shadow-md transition-all duration-300">
+                      <h3 className="font-display font-medium text-base sm:text-[17.5px] text-[#003049] uppercase tracking-wide leading-tight group-hover:text-[#ff5500] transition-colors">
+                        {member.name}
+                      </h3>
+                      <p className="text-xs font-sans font-semibold text-[#ff5500] uppercase tracking-wider mt-1 leading-snug">
+                        {member.role}
+                      </p>
+                      <p className="text-[11px] font-sans text-[#003049]/60 font-light mt-1">
+                        Pavan Stones Group
+                      </p>
+                    </div>
                   </div>
                 </div>
-
-                {/* Footer Direct Contact Actions */}
-                <div className="mt-5 pt-3.5 border-t border-[#747474]/15 flex items-center justify-between gap-2">
-                  <a
-                    href={`tel:${member.phoneRaw}`}
-                    className="inline-flex items-center gap-2 group/call py-1 min-w-0"
-                    title={`Call ${member.name}`}
-                  >
-                    <div className="w-7 h-7 rounded-[4px] bg-white border border-[#747474]/20 group-hover/call:border-[#ff5500] flex items-center justify-center text-[#241919] group-hover/call:text-[#ff5500] transition-colors flex-none">
-                      <Phone className="w-3 h-3" />
-                    </div>
-                    <span className="font-mono text-[11.5px] font-bold text-[#241919] group-hover/call:text-[#ff5500] transition-colors truncate">
-                      {member.contact}
-                    </span>
-                  </a>
-
-                  <a
-                    href={member.whatsapp}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[4px] bg-white hover:bg-[#25D366]/10 border border-[#747474]/20 hover:border-[#25D366] text-[#241919] hover:text-[#25D366] text-[10.5px] font-mono font-semibold transition-all shadow-2xs flex-none"
-                    title={`Chat on WhatsApp with ${member.name}`}
-                  >
-                    <MessageSquare className="w-3 h-3 text-[#25D366]" />
-                    <span>WhatsApp</span>
-                  </a>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Bottom Trust & Inquiry Callout */}
-          <div className="mt-12 bg-white border border-[#747474]/20 rounded-2xl p-6 sm:p-8 max-w-4xl mx-auto shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+          <div className="mt-8 bg-white border border-[#ff5500] rounded-[4px] p-6 sm:p-8 max-w-4xl mx-auto shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
             <div className="space-y-1">
-              <h4 className="font-display font-medium text-xl text-[#241919]">
+              <h4 className="font-display font-medium text-xl text-[#003049]">
                 Have a Commercial Project or Custom Sourcing Inquiry?
               </h4>
-              <p className="text-xs sm:text-sm text-[#555555] font-light">
+              <p className="text-xs sm:text-sm text-[#003049]/70 font-sans font-light">
                 Our leadership team provides direct advisory for global architects, distributors, and bulk container procurement.
               </p>
             </div>
             <button
               onClick={handleContactClick}
-              className="flex-none px-6 py-3 bg-[#140d0a] hover:bg-[#ff5500] text-white text-[10.5px] font-mono uppercase tracking-[0.2em] font-medium rounded-lg transition-colors cursor-pointer"
+              className="flex-none px-6 py-3 bg-[#003049] hover:bg-[#ff5500] text-white text-[11px] font-sans uppercase tracking-[0.18em] font-semibold rounded-[4px] transition-colors cursor-pointer"
             >
               Connect With Leadership
             </button>
@@ -1566,279 +1620,218 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto space-y-16 sm:space-y-20">
 
           {/* Section Header */}
-          <div className="max-w-3xl mx-auto text-center space-y-3">
-            <h2 className="font-display font-light text-3xl sm:text-4xl md:text-5xl lg:text-[52px] text-[#252422] leading-[1.08] tracking-tight">
+          <div className="max-w-4xl space-y-3">
+            <span className="text-[10.5px] font-mono uppercase tracking-[0.24em] text-[#ff5500] font-bold block">
+              Multi-Stage Quality Protocol
+            </span>
+            <h2 className="font-display font-light text-3xl sm:text-4xl md:text-5xl text-[#003049] leading-[1.08] tracking-tight">
               Precision Quality &amp; <span className="font-normal text-[#ff5500] italic">Mastercraft</span>
             </h2>
-            <div className="w-20 h-[3px] bg-gradient-to-r from-[#ff5500] to-[#ff5500]/20 rounded-full mx-auto my-3" />
-            <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed max-w-2xl mx-auto">
+            <p className="text-xs sm:text-sm text-[#003049]/70 font-light leading-relaxed max-w-3xl pt-1">
               From captive quarry extraction and Italian gangsaw calibration to 16-head line polishing, 5000K daylight dry-laying, and seaworthy containerization, our multi-stage quality assurance protocol guarantees flawless natural stone engineered for prestigious international landmarks across 40+ countries.
             </p>
           </div>
 
-          {/* ── 4-GATE ARCHITECTURAL QUALITY BLUEPRINT (STANDALONE 2x2 CENTER IMAGE SQUARE + 4 CORNER TEXT BOXES) ── */}
-          <div className="max-w-6xl mx-auto">
-            {/* Desktop & Tablet 3-Column Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-              {/* Left Column: Gate 01 (Top-Left Corner) & Gate 03 (Bottom-Left Corner) */}
-              <div className="lg:col-span-4 flex flex-col justify-between h-full gap-6 lg:gap-8">
-                {/* Gate 01 Text Card (Top-Left Corner) */}
-                <div
-                  onMouseEnter={() => setHoveredGateIdx(0)}
-                  onMouseLeave={() => setHoveredGateIdx(null)}
-                  className={`bg-white border rounded-[4px] p-5 sm:p-6 space-y-3.5 transition-all duration-300 shadow-xs cursor-pointer ${
-                    hoveredGateIdx === 0
-                      ? "border-[#ff5500] shadow-md"
-                      : "border-[#6c757d] hover:border-[#ff5500]"
-                  }`}
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-[4px] bg-[#ff5500] text-white">
-                        GATE 01
-                      </span>
-                      <span className="text-[10.5px] font-mono text-[#495057] font-semibold px-2 py-0.5 rounded-[4px] bg-[#6c757d]/10 border border-[#6c757d]/20">
-                        {QUALITY_STAGES[0].standardCode}
-                      </span>
-                    </div>
+          {/* ── DIAGRAMMATIC INFOGRAPHIC LAYOUT: CIRCULAR SHOWCASE (LEFT) + BRANCHED PROCESS CARDS (RIGHT) ── */}
+          <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            
+            {/* ── LEFT: CIRCULAR FOCUS FRAME WITH SEGMENTED ORBITAL RING ── */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
+              <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 flex items-center justify-center">
+                
+                {/* Segmented Orbital Calibration Ring */}
+                <svg className="absolute inset-0 w-full h-full -rotate-45" viewBox="0 0 200 200">
+                  {/* Segment 1 */}
+                  <circle
+                    cx="100"
+                    cy="100"
+                    r="90"
+                    fill="none"
+                    stroke={activeQualityGateIdx === 0 ? "#ff5500" : "#003049"}
+                    strokeOpacity={activeQualityGateIdx === 0 ? 1 : 0.25}
+                    strokeWidth={activeQualityGateIdx === 0 ? "5" : "3.5"}
+                    strokeDasharray="125 15"
+                    strokeDashoffset="0"
+                    className="transition-all duration-500"
+                  />
+                  {/* Segment 2 */}
+                  <circle
+                    cx="100"
+                    cy="100"
+                    r="90"
+                    fill="none"
+                    stroke={activeQualityGateIdx === 1 ? "#ff5500" : "#003049"}
+                    strokeOpacity={activeQualityGateIdx === 1 ? 1 : 0.25}
+                    strokeWidth={activeQualityGateIdx === 1 ? "5" : "3.5"}
+                    strokeDasharray="125 15"
+                    strokeDashoffset="-140"
+                    className="transition-all duration-500"
+                  />
+                  {/* Segment 3 */}
+                  <circle
+                    cx="100"
+                    cy="100"
+                    r="90"
+                    fill="none"
+                    stroke={activeQualityGateIdx === 2 ? "#ff5500" : "#003049"}
+                    strokeOpacity={activeQualityGateIdx === 2 ? 1 : 0.25}
+                    strokeWidth={activeQualityGateIdx === 2 ? "5" : "3.5"}
+                    strokeDasharray="125 15"
+                    strokeDashoffset="-280"
+                    className="transition-all duration-500"
+                  />
+                  {/* Segment 4 */}
+                  <circle
+                    cx="100"
+                    cy="100"
+                    r="90"
+                    fill="none"
+                    stroke={activeQualityGateIdx === 3 ? "#ff5500" : "#003049"}
+                    strokeOpacity={activeQualityGateIdx === 3 ? 1 : 0.25}
+                    strokeWidth={activeQualityGateIdx === 3 ? "5" : "3.5"}
+                    strokeDasharray="125 15"
+                    strokeDashoffset="-420"
+                    className="transition-all duration-500"
+                  />
+                </svg>
 
-                    <h3
-                      className={`font-display font-medium text-lg sm:text-xl transition-colors leading-snug ${
-                        hoveredGateIdx === 0 ? "text-[#ff5500]" : "text-[#241919]"
-                      }`}
+                {/* Inner Circular Showcase Photo */}
+                <div className="relative w-52 h-52 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-full overflow-hidden border-4 border-white shadow-2xl bg-neutral-100 z-10 group/circle">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentQualityStage.id}
+                      initial={{ opacity: 0, scale: 1.08 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.94 }}
+                      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                      className="relative w-full h-full"
                     >
-                      {QUALITY_STAGES[0].title}
-                    </h3>
-
-                    <p className="text-xs sm:text-[13px] text-[#555555] font-light leading-relaxed">
-                      {QUALITY_STAGES[0].tagline}
-                    </p>
-                  </div>
-
-                  <div className="pt-2.5 border-t border-[#6c757d]/20 flex items-center justify-between text-xs font-mono">
-                    <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-[4px] bg-[#16a34a]/8 border border-[#16a34a]/20 w-full">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16a34a] flex-none" />
-                      <span className="text-xs font-mono font-bold text-[#15803d] truncate">
-                        {QUALITY_STAGES[0].benchmark}
-                      </span>
-                    </div>
-                  </div>
+                      <img
+                        src={currentQualityStage.image}
+                        alt={currentQualityStage.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {/* Vignette */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#003049]/80 via-transparent to-transparent" />
+                      
+                      {/* Floating Badge on Circle */}
+                      <div className="absolute bottom-4 inset-x-0 text-center px-4">
+                        <span className="inline-block px-3 py-1 rounded-full bg-white/95 backdrop-blur-xs text-[#003049] text-[10px] font-mono font-bold uppercase tracking-wider shadow-sm">
+                          {currentQualityStage.phase}
+                        </span>
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
 
-                {/* Gate 03 Text Card (Bottom-Left Corner) */}
-                <div
-                  onMouseEnter={() => setHoveredGateIdx(2)}
-                  onMouseLeave={() => setHoveredGateIdx(null)}
-                  className={`bg-white border rounded-[4px] p-5 sm:p-6 space-y-3.5 transition-all duration-300 shadow-xs cursor-pointer ${
-                    hoveredGateIdx === 2
-                      ? "border-[#ff5500] shadow-md"
-                      : "border-[#6c757d] hover:border-[#ff5500]"
-                  }`}
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-[4px] bg-[#ff5500] text-white">
-                        GATE 03
-                      </span>
-                      <span className="text-[10.5px] font-mono text-[#495057] font-semibold px-2 py-0.5 rounded-[4px] bg-[#6c757d]/10 border border-[#6c757d]/20">
-                        {QUALITY_STAGES[2].standardCode}
-                      </span>
-                    </div>
-
-                    <h3
-                      className={`font-display font-medium text-lg sm:text-xl transition-colors leading-snug ${
-                        hoveredGateIdx === 2 ? "text-[#ff5500]" : "text-[#241919]"
-                      }`}
-                    >
-                      {QUALITY_STAGES[2].title}
-                    </h3>
-
-                    <p className="text-xs sm:text-[13px] text-[#555555] font-light leading-relaxed">
-                      {QUALITY_STAGES[2].tagline}
-                    </p>
-                  </div>
-
-                  <div className="pt-2.5 border-t border-[#6c757d]/20 flex items-center justify-between text-xs font-mono">
-                    <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-[4px] bg-[#16a34a]/8 border border-[#16a34a]/20 w-full">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16a34a] flex-none" />
-                      <span className="text-xs font-mono font-bold text-[#15803d] truncate">
-                        {QUALITY_STAGES[2].benchmark}
-                      </span>
-                    </div>
-                  </div>
-                </div>
               </div>
 
-              {/* Center Column: Standalone 2x2 Square of 4 Images (Out of Box) */}
-              <div className="lg:col-span-4 flex items-center justify-center my-2 lg:my-0">
-                <div className="grid grid-cols-2 gap-2.5 w-full max-w-[340px] aspect-square">
-                  {/* Image 01 (Top-Left of 2x2 Square) */}
-                  <div
-                    onMouseEnter={() => setHoveredGateIdx(0)}
-                    onMouseLeave={() => setHoveredGateIdx(null)}
-                    className={`relative aspect-square rounded-[4px] overflow-hidden border transition-all duration-300 cursor-pointer bg-neutral-100 ${
-                      hoveredGateIdx === 0
-                        ? "border-[#ff5500] ring-3 ring-[#ff5500]/40 scale-[1.04] shadow-lg z-10"
-                        : "border-[#6c757d] hover:border-[#ff5500]"
-                    }`}
-                  >
-                    <img
-                      src={QUALITY_STAGES[0].image}
-                      alt={QUALITY_STAGES[0].title}
-                      className={`w-full h-full object-cover transition-transform duration-500 ease-out ${
-                        hoveredGateIdx === 0 ? "scale-110" : "scale-100"
-                      }`}
-                    />
-                  </div>
-
-                  {/* Image 02 (Top-Right of 2x2 Square) */}
-                  <div
-                    onMouseEnter={() => setHoveredGateIdx(1)}
-                    onMouseLeave={() => setHoveredGateIdx(null)}
-                    className={`relative aspect-square rounded-[4px] overflow-hidden border transition-all duration-300 cursor-pointer bg-neutral-100 ${
-                      hoveredGateIdx === 1
-                        ? "border-[#ff5500] ring-3 ring-[#ff5500]/40 scale-[1.04] shadow-lg z-10"
-                        : "border-[#6c757d] hover:border-[#ff5500]"
-                    }`}
-                  >
-                    <img
-                      src={QUALITY_STAGES[1].image}
-                      alt={QUALITY_STAGES[1].title}
-                      className={`w-full h-full object-cover transition-transform duration-500 ease-out ${
-                        hoveredGateIdx === 1 ? "scale-110" : "scale-100"
-                      }`}
-                    />
-                  </div>
-
-                  {/* Image 03 (Bottom-Left of 2x2 Square) */}
-                  <div
-                    onMouseEnter={() => setHoveredGateIdx(2)}
-                    onMouseLeave={() => setHoveredGateIdx(null)}
-                    className={`relative aspect-square rounded-[4px] overflow-hidden border transition-all duration-300 cursor-pointer bg-neutral-100 ${
-                      hoveredGateIdx === 2
-                        ? "border-[#ff5500] ring-3 ring-[#ff5500]/40 scale-[1.04] shadow-lg z-10"
-                        : "border-[#6c757d] hover:border-[#ff5500]"
-                    }`}
-                  >
-                    <img
-                      src={QUALITY_STAGES[2].image}
-                      alt={QUALITY_STAGES[2].title}
-                      className={`w-full h-full object-cover transition-transform duration-500 ease-out ${
-                        hoveredGateIdx === 2 ? "scale-110" : "scale-100"
-                      }`}
-                    />
-                  </div>
-
-                  {/* Image 04 (Bottom-Right of 2x2 Square) */}
-                  <div
-                    onMouseEnter={() => setHoveredGateIdx(3)}
-                    onMouseLeave={() => setHoveredGateIdx(null)}
-                    className={`relative aspect-square rounded-[4px] overflow-hidden border transition-all duration-300 cursor-pointer bg-neutral-100 ${
-                      hoveredGateIdx === 3
-                        ? "border-[#ff5500] ring-3 ring-[#ff5500]/40 scale-[1.04] shadow-lg z-10"
-                        : "border-[#6c757d] hover:border-[#ff5500]"
-                    }`}
-                  >
-                    <img
-                      src={QUALITY_STAGES[3].image}
-                      alt={QUALITY_STAGES[3].title}
-                      className={`w-full h-full object-cover transition-transform duration-500 ease-out ${
-                        hoveredGateIdx === 3 ? "scale-110" : "scale-100"
-                      }`}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column: Gate 02 (Top-Right Corner) & Gate 04 (Bottom-Right Corner) */}
-              <div className="lg:col-span-4 flex flex-col justify-between h-full gap-6 lg:gap-8">
-                {/* Gate 02 Text Card (Top-Right Corner) */}
-                <div
-                  onMouseEnter={() => setHoveredGateIdx(1)}
-                  onMouseLeave={() => setHoveredGateIdx(null)}
-                  className={`bg-white border rounded-[4px] p-5 sm:p-6 space-y-3.5 transition-all duration-300 shadow-xs cursor-pointer ${
-                    hoveredGateIdx === 1
-                      ? "border-[#ff5500] shadow-md"
-                      : "border-[#6c757d] hover:border-[#ff5500]"
-                  }`}
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-[4px] bg-[#ff5500] text-white">
-                        GATE 02
-                      </span>
-                      <span className="text-[10.5px] font-mono text-[#495057] font-semibold px-2 py-0.5 rounded-[4px] bg-[#6c757d]/10 border border-[#6c757d]/20">
-                        {QUALITY_STAGES[1].standardCode}
-                      </span>
-                    </div>
-
-                    <h3
-                      className={`font-display font-medium text-lg sm:text-xl transition-colors leading-snug ${
-                        hoveredGateIdx === 1 ? "text-[#ff5500]" : "text-[#241919]"
-                      }`}
-                    >
-                      {QUALITY_STAGES[1].title}
-                    </h3>
-
-                    <p className="text-xs sm:text-[13px] text-[#555555] font-light leading-relaxed">
-                      {QUALITY_STAGES[1].tagline}
-                    </p>
-                  </div>
-
-                  <div className="pt-2.5 border-t border-[#6c757d]/20 flex items-center justify-between text-xs font-mono">
-                    <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-[4px] bg-[#16a34a]/8 border border-[#16a34a]/20 w-full">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16a34a] flex-none" />
-                      <span className="text-xs font-mono font-bold text-[#15803d] truncate">
-                        {QUALITY_STAGES[1].benchmark}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Gate 04 Text Card (Bottom-Right Corner) */}
-                <div
-                  onMouseEnter={() => setHoveredGateIdx(3)}
-                  onMouseLeave={() => setHoveredGateIdx(null)}
-                  className={`bg-white border rounded-[4px] p-5 sm:p-6 space-y-3.5 transition-all duration-300 shadow-xs cursor-pointer ${
-                    hoveredGateIdx === 3
-                      ? "border-[#ff5500] shadow-md"
-                      : "border-[#6c757d] hover:border-[#ff5500]"
-                  }`}
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-[4px] bg-[#ff5500] text-white">
-                        GATE 04
-                      </span>
-                      <span className="text-[10.5px] font-mono text-[#495057] font-semibold px-2 py-0.5 rounded-[4px] bg-[#6c757d]/10 border border-[#6c757d]/20">
-                        {QUALITY_STAGES[3].standardCode}
-                      </span>
-                    </div>
-
-                    <h3
-                      className={`font-display font-medium text-lg sm:text-xl transition-colors leading-snug ${
-                        hoveredGateIdx === 3 ? "text-[#ff5500]" : "text-[#241919]"
-                      }`}
-                    >
-                      {QUALITY_STAGES[3].title}
-                    </h3>
-
-                    <p className="text-xs sm:text-[13px] text-[#555555] font-light leading-relaxed">
-                      {QUALITY_STAGES[3].tagline}
-                    </p>
-                  </div>
-
-                  <div className="pt-2.5 border-t border-[#6c757d]/20 flex items-center justify-between text-xs font-mono">
-                    <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-[4px] bg-[#16a34a]/8 border border-[#16a34a]/20 w-full">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16a34a] flex-none" />
-                      <span className="text-xs font-mono font-bold text-[#15803d] truncate">
-                        {QUALITY_STAGES[3].benchmark}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+              {/* Sub-label under circle */}
+              <div className="text-center mt-3 space-y-1">
+                <span className="text-xs font-mono font-bold text-[#ff5500]">
+                  GATE {currentQualityStage.step} · {currentQualityStage.standardCode}
+                </span>
+                <p className="text-[11px] font-sans text-[#003049]/60 max-w-[240px]">
+                  {currentQualityStage.benchmark}
+                </p>
               </div>
             </div>
+
+            {/* ── RIGHT: STACKED PROCESS CARDS WITH BRANCH CONNECTORS ── */}
+            <div className="lg:col-span-7 space-y-4 sm:space-y-5 relative">
+              
+              {QUALITY_STAGES.map((stage, idx) => {
+                const isActive = activeQualityGateIdx === idx;
+                return (
+                  <motion.div
+                    key={stage.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: false, amount: 0.15 }}
+                    transition={{ duration: 0.4, delay: idx * 0.08 }}
+                    onClick={() => setActiveQualityGateIdx(idx)}
+                    onMouseEnter={() => {
+                      setActiveQualityGateIdx(idx);
+                      setHoveredGateIdx(idx);
+                    }}
+                    onMouseLeave={() => setHoveredGateIdx(null)}
+                    className="relative flex items-center gap-3 sm:gap-4 group cursor-pointer"
+                  >
+                    {/* Step Number Badge (01, 02, etc.) */}
+                    <div
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-md flex items-center justify-center font-mono font-bold text-xs sm:text-sm text-white shrink-0 transition-all duration-300 shadow-2xs ${
+                        isActive
+                          ? "bg-[#ff5500] shadow-sm scale-105"
+                          : "bg-[#003049] group-hover:bg-[#ff5500]"
+                      }`}
+                    >
+                      {stage.step}
+                    </div>
+
+                    {/* Card Content Container */}
+                    <div
+                      className={`flex-1 bg-white border rounded-xl p-4 sm:p-5 transition-all duration-300 ${
+                        isActive
+                          ? "border-[#ff5500] shadow-md ring-1 ring-[#ff5500]/20 bg-gradient-to-r from-white to-[#ff5500]/[0.02]"
+                          : "border-[#003049]/15 hover:border-[#ff5500]/60 hover:shadow-xs"
+                      }`}
+                    >
+                      {/* Top Row: Title + Code Chip */}
+                      <div className="flex items-center justify-between gap-3 pb-2 border-b border-[#003049]/10">
+                        <div className="min-w-0">
+                          <h4
+                            className={`font-display font-medium text-base sm:text-lg leading-tight transition-colors truncate ${
+                              isActive ? "text-[#ff5500]" : "text-[#003049] group-hover:text-[#ff5500]"
+                            }`}
+                          >
+                            {stage.title}
+                          </h4>
+                          <span className="text-[10px] font-mono text-[#003049]/70 block uppercase tracking-wider font-semibold">
+                            {stage.phase}
+                          </span>
+                        </div>
+
+                        <span
+                          className={`px-2.5 py-0.5 rounded text-[10.5px] font-mono font-bold shrink-0 transition-colors ${
+                            isActive
+                              ? "bg-[#ff5500] text-white"
+                              : "bg-[#003049]/5 text-[#003049] group-hover:bg-[#ff5500]/10 group-hover:text-[#ff5500] border border-[#003049]/10"
+                          }`}
+                        >
+                          {stage.standardCode}
+                        </span>
+                      </div>
+
+                      {/* 2-Column Specifications (High-contrast dark text, no starting dots) */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-1.5 pt-3 text-xs font-sans">
+                        {/* Col 1 */}
+                        <div className="space-y-1">
+                          <div className="text-[#003049] font-medium leading-snug line-clamp-1">
+                            {stage.tagline}
+                          </div>
+                          <div className="text-[11.5px] font-mono text-[#003049] truncate font-medium">
+                            Standard: {stage.standardCode} Verified
+                          </div>
+                        </div>
+
+                        {/* Col 2 */}
+                        <div className="space-y-1">
+                          <div className="font-semibold text-[#003049] leading-snug truncate">
+                            {stage.benchmark}
+                          </div>
+                          <div className="text-[11.5px] font-mono text-[#003049] truncate font-medium">
+                            System: {stage.equipment}
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </motion.div>
+                );
+              })}
+
+            </div>
+
           </div>
 
           {/* Bottom Compliance & Technical Dossier Action Bar */}
@@ -1878,9 +1871,13 @@ export default function AboutPage() {
 
             {/* 6 Minimal Architectural Capability Tiles */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-              {QUALITY_METRICS.map((metric) => (
-                <div
+              {QUALITY_METRICS.map((metric, idx) => (
+                <motion.div
                   key={metric.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false, amount: 0.15 }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
                   className="group relative p-5 sm:p-6 rounded-[4px] bg-white border border-[#747474]/15 hover:border-[#9a3412] transition-all duration-300 flex flex-col justify-between space-y-4"
                 >
                   {/* Top Row: Standard Code + Verified Tag */}
@@ -1907,78 +1904,253 @@ export default function AboutPage() {
                   <div className="pt-3 border-t border-[#747474]/10 text-[11.5px] font-mono text-[#747474]">
                     <span>{metric.application}</span>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
 
-          {/* ── GLOBAL STATUTORY COMPLIANCE & ACCREDITATION SEALS ── */}
-          <div className="space-y-8 pt-8 border-t border-[#747474]/15">
+          {/* ── GLOBAL STATUTORY COMPLIANCE & ACCREDITATION SEALS (COMPACT COCKPIT DECK SECTION) ── */}
+          <div className="space-y-6 pt-6 sm:pt-8 border-t border-[#003049]/15">
             {/* Header */}
-            <div className="space-y-2 max-w-3xl">
-              <span className="text-[10.5px] font-mono uppercase tracking-[0.24em] text-[#ff5500] font-bold block">
+            <div className="space-y-1.5 max-w-2xl text-center mx-auto">
+              <span className="text-[10px] font-mono uppercase tracking-[0.22em] text-[#ff5500] font-bold block">
                 Statutory Compliance &amp; Global Accreditations
               </span>
-              <h3 className="font-display font-light text-2xl sm:text-3xl text-[#241919]">
+              <h3 className="font-display font-light text-xl sm:text-2xl md:text-3xl text-[#003049]">
                 Official Architectural <span className="font-normal text-[#ff5500]">Trust Crests &amp; Seals</span>
               </h3>
-              <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed">
-                All quarry consignments and fabricated architectural stone strictly comply with international building codes, load-bearing engineering benchmarks, and eco-certified green building standards.
+              <p className="text-xs text-[#003049]/70 font-light leading-relaxed max-w-xl mx-auto">
+                All quarry consignments strictly comply with international building codes, load-bearing engineering benchmarks, and eco-certified green standards.
               </p>
             </div>
 
-            {/* 5 Architectural Trust Crest & Seal Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-5">
-              {ACCREDITATION_DOSSIER.map((item) => (
-                <div
-                  key={item.id}
-                  className="group relative bg-white border border-[#747474]/20 hover:border-[#ff5500] rounded-[4px] p-5 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-default"
-                >
-                  <div className="space-y-4">
-                    {/* Top Row: Insignia Crest + Category Tag */}
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="w-12 h-12 rounded-[4px] flex items-center justify-center border border-[#747474]/25 group-hover:border-[#ff5500] bg-white transition-all duration-300">
-                        <span className="font-mono font-black text-sm text-[#241919] group-hover:text-[#ff5500] tracking-tight transition-colors">
-                          {item.sigil}
+            {/* ── 3-TIER COCKPIT DECK (COMPACT SECTION PROFILE - AUTO FLOWING IN LOOP) ── */}
+            <div
+              onMouseEnter={() => setIsCrestPaused(true)}
+              onMouseLeave={() => setIsCrestPaused(false)}
+              className="max-w-3xl mx-auto space-y-2.5"
+            >
+              
+              {/* 1. TOP CAPSULE (PREVIOUS ACCREDITATION) */}
+              <motion.button
+                onClick={() => setActiveCrestIdx(prevCrestIdx)}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                className="w-full max-w-md sm:max-w-lg mx-auto h-9 sm:h-10 px-4 sm:px-5 rounded-[5px] bg-white border border-[#003049]/15 hover:border-[#ff5500] shadow-xs hover:shadow-sm transition-all duration-300 flex items-center justify-between group cursor-pointer"
+              >
+                <div className="min-w-0">
+                  <span className="text-[11px] sm:text-xs font-sans font-medium text-[#003049] group-hover:text-[#ff5500] truncate transition-colors">
+                    {prevCrest.standard}
+                  </span>
+                </div>
+                <div className="text-[11px] font-mono text-[#003049]/50 group-hover:text-[#003049]/80 shrink-0 ml-2">
+                  {prevCrest.statPrimaryValue}
+                </div>
+              </motion.button>
+
+              {/* 2. MAIN CENTER COCKPIT CARD (ACTIVE ACCREDITATION - 5PX RADIUS) */}
+              <div className="relative w-full rounded-[5px] bg-white border border-[#003049]/15 shadow-md p-4 sm:p-5 lg:p-6 overflow-hidden">
+                {/* Auto-Flow Loop Progress Bar */}
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#003049]/5 overflow-hidden z-20">
+                  <motion.div
+                    key={`${activeCrest.id}-${isCrestPaused}`}
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    transition={{
+                      duration: isCrestPaused ? 0 : 4,
+                      ease: "linear",
+                    }}
+                    className="h-full bg-gradient-to-r from-[#00e5ff] via-[#ff5500] to-[#00e5ff]"
+                  />
+                </div>
+
+                {/* Ambient Subtle Architectural Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white via-[#f8fafc]/70 to-[#003049]/[0.02] pointer-events-none" />
+
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeCrest.id}
+                    initial={{ opacity: 0, y: 8, scale: 0.99 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.99 }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative z-10 space-y-3.5 sm:space-y-4"
+                  >
+                    {/* Top Row: Title (Left) | Next Step Button (Right) — Audit pass gauge removed as requested */}
+                    <div className="flex items-center justify-between gap-3 pb-3 border-b border-[#003049]/10">
+                      
+                      {/* Left: Standard Title */}
+                      <div className="min-w-0">
+                        <h4 className="font-display font-medium text-base sm:text-lg text-[#003049] tracking-tight leading-snug truncate">
+                          {activeCrest.standard}
+                        </h4>
+                        <span className="text-[10px] font-mono text-[#003049]/60 block truncate">
+                          {activeCrest.category} · {activeCrest.code}
                         </span>
                       </div>
-                      <span className="px-2 py-0.5 rounded-[4px] text-[9.5px] font-mono uppercase tracking-wider text-[#747474] group-hover:text-[#ff5500] border border-[#747474]/20 group-hover:border-[#ff5500]/40 font-semibold transition-colors bg-white">
-                        {item.category}
-                      </span>
+
+                      {/* Right: Next Step Button (Border removed as requested) */}
+                      <button
+                        onClick={() => setActiveCrestIdx(nextCrestIdx)}
+                        className="inline-flex items-center gap-1.5 px-2 py-1 hover:text-[#ff5500] text-[10.5px] font-sans uppercase font-bold tracking-wider text-[#003049] transition-colors duration-300 group cursor-pointer shrink-0"
+                      >
+                        <span>Next Step</span>
+                        <Play className="w-2.5 h-2.5 fill-current text-[#003049] group-hover:text-[#ff5500] transition-colors" />
+                      </button>
                     </div>
 
-                    {/* Standard Title & Authority */}
-                    <div className="space-y-1">
-                      <h4 className="font-sans font-bold text-base text-[#241919] group-hover:text-[#ff5500] transition-colors leading-tight">
-                        {item.standard}
-                      </h4>
-                      <p className="text-[11px] font-mono text-[#747474] leading-snug">
-                        {item.authority}
-                      </p>
+                    {/* Stats Row: Distance / Time Equivalent (Split Major Metrics) */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 sm:gap-4 pt-1">
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-[#003049]/60 font-semibold block">
+                          {activeCrest.statPrimaryLabel}
+                        </span>
+                        <div className="font-display font-light text-2xl sm:text-3xl text-[#003049] tracking-tight leading-none">
+                          {activeCrest.statPrimaryValue}
+                        </div>
+                      </div>
+
+                      <div className="space-y-0.5 sm:text-right">
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-[#003049]/60 font-semibold block">
+                          {activeCrest.statSecondaryLabel}
+                        </span>
+                        <div className="font-display font-light text-lg sm:text-xl text-[#003049] tracking-tight leading-none">
+                          {activeCrest.statSecondaryValue}
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Standard Code Chip */}
-                    <div>
-                      <span className="inline-block px-2.5 py-1 rounded-[4px] text-[10px] font-mono font-bold text-[#241919] group-hover:text-[#ff5500] border border-[#747474]/20 group-hover:border-[#ff5500]/40 bg-white transition-colors">
-                        {item.code}
-                      </span>
+                    {/* Mid Perspective Runway & Landmark Badges (Low-Profile, 5px radius) */}
+                    <div className="relative py-1 sm:py-1.5">
+                      {/* Flanking Signpost Badges */}
+                      <div className="flex items-center justify-between text-xs font-mono text-[#003049]/70 mb-1.5 px-1">
+                        {/* Left Signpost */}
+                        <div className="flex items-center gap-1.5 bg-[#f8fafc] border border-[#003049]/10 rounded-[5px] px-2.5 py-1 shadow-2xs">
+                          <span className="w-4 h-4 rounded-[3px] bg-[#003049]/5 flex items-center justify-center font-bold text-[#ff5500] text-[10px]">
+                            ⑂
+                          </span>
+                          <span className="text-[10.5px] truncate max-w-[140px] sm:max-w-none">
+                            {activeCrest.milestone1}
+                          </span>
+                        </div>
+
+                        {/* Center Path Label */}
+                        <div className="text-[9.5px] font-mono uppercase tracking-widest text-[#003049]/40 hidden sm:block">
+                          Direct Quarry-To-Crate Highway
+                        </div>
+
+                        {/* Right Speed/Code Badge */}
+                        <div className="flex items-center gap-1.5 bg-[#f8fafc] border border-[#003049]/10 rounded-[5px] px-2.5 py-1 shadow-2xs">
+                          <span className="w-5 h-4 rounded-[3px] bg-[#00e5ff]/15 border border-[#00e5ff]/30 text-[#003049] font-bold text-[9px] flex items-center justify-center">
+                            {activeCrest.sigil}
+                          </span>
+                          <span className="text-[10.5px] truncate max-w-[140px] sm:max-w-none font-semibold text-[#003049]">
+                            {activeCrest.milestone2}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Perspective Center Track Road (Height compressed from h-24 to h-11) */}
+                      <div className="relative w-40 sm:w-52 h-10 sm:h-11 mx-auto flex items-center justify-center">
+                        {/* Road Trapezoid (Perspective Surface) */}
+                        <div
+                          className="absolute inset-0 bg-gradient-to-t from-[#003049]/10 via-[#003049]/5 to-transparent border-x border-[#003049]/20 shadow-inner"
+                          style={{
+                            clipPath: "polygon(22% 0%, 78% 0%, 100% 100%, 0% 100%)",
+                          }}
+                        />
+
+                        {/* Road Center Dashed Line */}
+                        <div className="absolute top-0 bottom-0 w-0.5 border-r border-dashed border-[#003049]/25 z-0" />
+
+                        {/* Animated Directional Beacon */}
+                        <motion.div
+                          animate={{ y: [2, -2, 2] }}
+                          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                          className="relative z-10 w-7 h-7 rounded-[5px] bg-gradient-to-tr from-[#ff5500] to-[#ff7700] text-white flex items-center justify-center shadow-md shadow-[#ff5500]/25"
+                        >
+                          <ArrowRight className="w-4 h-4 -rotate-90 fill-current" />
+                        </motion.div>
+                      </div>
                     </div>
 
-                    {/* Punchy 1-Line Highlight */}
-                    <p className="text-xs text-[#555555] group-hover:text-[#241919] font-normal leading-relaxed pt-2 border-t border-[#747474]/10 transition-colors">
-                      {item.highlight}
-                    </p>
-                  </div>
+                    {/* Bottom Row: Accent Indicator Milestones */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2.5 border-t border-[#003049]/10">
+                      
+                      {/* Left: Milestones with Accent Vertical Line */}
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-1 h-4 rounded-full bg-[#ff5500] shrink-0" />
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-sans">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-[#003049]/50 font-mono text-[10px] uppercase tracking-wider shrink-0">
+                              Active Standard:
+                            </span>
+                            <span className="font-semibold text-[#003049] text-[11px] sm:text-xs">
+                              {activeCrest.activeCheckpoint}
+                            </span>
+                          </div>
+                          <span className="text-[#003049]/25 hidden sm:inline">•</span>
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-[#003049]/50 font-mono text-[10px] uppercase tracking-wider shrink-0">
+                              Next Audit:
+                            </span>
+                            <span className="text-[#003049]/70 font-mono text-[10.5px]">
+                              {activeCrest.nextAudit}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
 
-                  {/* Bottom Verification Seal & Territory */}
-                  <div className="pt-3 mt-3 border-t border-[#747474]/15 flex items-center justify-between text-[10px] font-mono">
-                    <span className="text-[#747474] truncate">{item.territory}</span>
-                    <span className="text-[#241919] group-hover:text-[#ff5500] font-bold transition-colors flex-none ml-1">
-                      ✓ Active
-                    </span>
-                  </div>
+                      {/* Right: Live Verification Badge (Dot removed as requested) */}
+                      <div className="text-[10px] font-mono text-[#003049]/50 shrink-0 self-end sm:self-center">
+                        <span>Factory Calibrated</span>
+                      </div>
+
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* 3. BOTTOM CAPSULE (NEXT ACCREDITATION - 5PX RADIUS) */}
+              <motion.button
+                onClick={() => setActiveCrestIdx(nextCrestIdx)}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                className="w-full max-w-md sm:max-w-lg mx-auto h-9 sm:h-10 px-4 sm:px-5 rounded-[5px] bg-white border border-[#003049]/15 hover:border-[#ff5500] shadow-xs hover:shadow-sm transition-all duration-300 flex items-center justify-between group cursor-pointer"
+              >
+                <div className="min-w-0">
+                  <span className="text-[11px] sm:text-xs font-sans font-medium text-[#003049] group-hover:text-[#ff5500] truncate transition-colors">
+                    {nextCrest.standard}
+                  </span>
                 </div>
-              ))}
+                <div className="text-[11px] font-mono text-[#003049]/50 group-hover:text-[#003049]/80 shrink-0 ml-2">
+                  {nextCrest.statPrimaryValue}
+                </div>
+              </motion.button>
+
+              {/* 4. FAST JUMP SELECTOR BAR (5 STANDARDS QUICK ACCESS - 5PX RADIUS) */}
+              <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
+                {ACCREDITATION_DOSSIER.map((item, idx) => {
+                  const isActive = activeCrestIdx === idx;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveCrestIdx(idx)}
+                      className={`px-3 py-1 rounded-[5px] text-[11px] font-mono transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                        isActive
+                          ? "bg-[#003049] text-white shadow-xs font-bold"
+                          : "bg-white border border-[#003049]/15 text-[#003049]/70 hover:border-[#ff5500] hover:text-[#ff5500]"
+                      }`}
+                    >
+                      <span className={isActive ? "text-[#00e5ff]" : "text-[#003049]/40"}>
+                        0{idx + 1}
+                      </span>
+                      <span>{item.sigil}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
             </div>
 
             {/* ── ARCHITECTURAL PROJECT SUBMITTAL & MATERIAL TEST REPORTS HUB ── */}

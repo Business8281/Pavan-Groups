@@ -12,7 +12,11 @@ import {
   ArrowRight,
   Clock,
   CheckCircle2,
+  ExternalLink,
+  Navigation,
+  Compass,
 } from "lucide-react";
+import { COMPANY_LOCATIONS } from "@/lib/companyLocations";
 
 // Crisp brand SVGs for social platforms
 const InstagramIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
@@ -116,6 +120,7 @@ export default function Footer() {
   const [subscribed, setSubscribed] = useState(false);
   const [istTime, setIstTime] = useState("");
   const [aestTime, setAestTime] = useState("");
+  const [activeLocationSlug, setActiveLocationSlug] = useState<string>("pavan-impex");
 
   // Scroll-linked parallax reveal under the FAQ section
   const quoteBannerRef = useRef<HTMLDivElement>(null);
@@ -208,8 +213,9 @@ export default function Footer() {
 
       {/* ── TOP BANNER: FLOATING ELEVATED LUXURY CARD REVEALING UNDER FAQ ── */}
       <div
+        id="get-quote"
         ref={quoteBannerRef}
-        className="relative z-10 w-full overflow-hidden bg-white py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-12 lg:px-16 border-b border-[#252422]/10"
+        className="relative z-10 w-full overflow-hidden bg-white py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-12 lg:px-16 border-b border-[#252422]/10 scroll-mt-20"
       >
         {/* Subtle Ambient Radial Flame Glow Layer */}
         <motion.div
@@ -235,14 +241,14 @@ export default function Footer() {
               {/* Left Column: Heading & Narrative */}
               <div className="max-w-2xl space-y-3.5">
                 <h3
-                  className="font-display font-light text-[#252422] leading-tight"
+                  className="font-display font-light text-[#003049] leading-tight"
                   style={{ fontSize: "clamp(26px, 3.8vw, 42px)" }}
                 >
                   Get Your Stone Quote{" "}
                   <span className="italic text-[#ff5500] font-normal">Within 24 Hours.</span>
                 </h3>
 
-                <p className="text-[13.5px] sm:text-[14.5px] text-[#555555] font-light leading-relaxed">
+                <p className="text-[13.5px] sm:text-[14.5px] text-[#252422] font-normal leading-relaxed opacity-90">
                   Submit your technical project requirements today. Our export logistics desk delivers complete FOB/CIF freight matrices, ASTM test certificates, and container loading schedules.
                 </p>
               </div>
@@ -253,10 +259,10 @@ export default function Footer() {
                   <span className="text-[10.5px] font-mono uppercase tracking-[0.2em] text-[#ff5500] font-bold">
                     PRIORITY SPEC DESK
                   </span>
-                  <span className="text-[10px] font-mono text-[#747474]">Response &lt; 24h</span>
+                  <span className="text-[10px] font-mono text-[#333333] font-semibold">Response &lt; 24h</span>
                 </div>
 
-                <p className="text-[12px] text-[#444444] font-normal leading-relaxed">
+                <p className="text-[12.5px] text-[#252422] font-medium leading-relaxed">
                   Enter your email to receive direct catalog specs and container pricing:
                 </p>
 
@@ -273,7 +279,7 @@ export default function Footer() {
                       placeholder="architect@company.com"
                       value={emailInput}
                       onChange={(e) => setEmailInput(e.target.value)}
-                      className="flex-1 px-4 py-3 bg-white border border-[#252422]/20 text-xs font-mono text-[#252422] placeholder:text-[#888888] font-medium focus:outline-none focus:border-[#ff5500] rounded-[4px] shadow-2xs transition-colors"
+                      className="flex-1 px-4 py-3 bg-white border border-[#252422]/25 text-xs font-mono text-[#140d0a] placeholder:text-[#555555] font-medium focus:outline-none focus:border-[#ff5500] rounded-[4px] shadow-2xs transition-colors"
                     />
                     <button
                       type="submit"
@@ -290,6 +296,182 @@ export default function Footer() {
         </motion.div>
       </div>
 
+      {/* ── 4 COMPANY FACTORY & QUARRY LOCATIONS: INTERACTIVE SPLIT MAP HUB ── */}
+      <div className="relative z-10 w-full bg-white border-b border-[#252422]/15 py-10 sm:py-12 px-4 sm:px-6 md:px-12 lg:px-16">
+        <div className="max-w-7xl mx-auto space-y-6">
+          
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[#252422]/15">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#ff5500]" />
+                <span className="text-[10px] font-mono uppercase tracking-[0.22em] text-[#ff5500] font-bold">
+                  Quarry &amp; Processing Network • 4 Operating Divisions
+                </span>
+              </div>
+              <h3 className="font-display font-light text-2xl sm:text-3xl lg:text-[32px] text-[#003049] tracking-tight leading-tight">
+                Our Processing Plants &amp; <span className="italic font-normal text-[#ff5500]">Regional Facilities</span>
+              </h3>
+            </div>
+          </div>
+
+          {/* Interactive Split View: Compact Directory on Left + Streamlined Map on Right */}
+          {(() => {
+            const activeLocation = COMPANY_LOCATIONS[activeLocationSlug] || COMPANY_LOCATIONS["pavan-impex"];
+            const encodedMapQuery = encodeURIComponent(
+              activeLocation.embedQuery ||
+              `${activeLocation.name}, ${activeLocation.address}, ${activeLocation.city}, ${activeLocation.state} ${activeLocation.pincode}`
+            );
+            const mapEmbedUrl = `https://maps.google.com/maps?q=${encodedMapQuery}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+
+            return (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+                
+                {/* Left Column (5 Cols): Compact 4 Divisions Directory Tabs */}
+                <div className="lg:col-span-5 flex flex-col justify-between space-y-2">
+                  {Object.values(COMPANY_LOCATIONS).map((loc, idx) => {
+                    const isSelected = loc.slug === activeLocationSlug;
+
+                    return (
+                      <div
+                        key={loc.slug}
+                        onClick={() => setActiveLocationSlug(loc.slug)}
+                        className={`group cursor-pointer rounded-xl p-3.5 border transition-all duration-200 text-left relative overflow-hidden ${
+                          isSelected
+                            ? "bg-white border-[#252422] shadow-[0_6px_20px_-6px_rgba(0,0,0,0.08)] ring-1 ring-[#252422]"
+                            : "bg-white hover:bg-[#faf9f8] border-[#252422]/15 hover:border-[#252422]/35 shadow-2xs"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="space-y-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className={`font-mono text-[11px] font-bold tracking-wider ${
+                                isSelected ? "text-[#ff5500]" : "text-[#747474]"
+                              }`}>
+                                0{idx + 1}
+                              </span>
+                              <span className={`text-[9.5px] font-mono uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full ${
+                                isSelected
+                                  ? "bg-[#252422] text-white"
+                                  : "bg-[#252422]/5 text-[#555555]"
+                              }`}>
+                                {loc.city}
+                              </span>
+                            </div>
+
+                            <h4 className={`font-display text-[17px] truncate leading-tight ${
+                              isSelected ? "text-[#252422] font-semibold" : "text-[#333333] group-hover:text-[#252422] font-medium"
+                            }`}>
+                              {loc.name}
+                            </h4>
+
+                            <p className="text-[11px] font-mono text-[#666666] truncate">
+                              {loc.speciality}
+                            </p>
+                          </div>
+
+                          <div className={`w-7 h-7 rounded-full border flex items-center justify-center flex-none transition-all ${
+                            isSelected
+                              ? "bg-[#252422] border-[#252422] text-white shadow-xs"
+                              : "bg-white border-[#252422]/15 text-[#747474] group-hover:border-[#252422] group-hover:text-[#252422]"
+                          }`}>
+                            <Navigation className="w-3 h-3" />
+                          </div>
+                        </div>
+
+                        {/* Refined active detail drawer */}
+                        {isSelected && (
+                          <div className="mt-3 pt-3 border-t border-[#252422]/10 space-y-1.5 text-xs">
+                            <div className="flex items-start gap-1.5 text-[#333333] text-[11.5px]">
+                              <MapPin className="w-3.5 h-3.5 text-[#ff5500] flex-none mt-0.5" />
+                              <span className="leading-snug font-sans">{loc.address}, {loc.city} – {loc.pincode}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-[11px] font-mono text-[#666666] pt-1">
+                              <span>Port: <strong className="text-[#252422]">{loc.port}</strong></span>
+                              <Link
+                                href={`/companies/${loc.slug}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="text-[#252422] hover:text-[#ff5500] font-bold flex items-center gap-1 transition-colors"
+                              >
+                                <span>Division</span>
+                                <ArrowRight className="w-3 h-3 text-[#ff5500]" />
+                              </Link>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Right Column (7 Cols): Streamlined Live Map Stage */}
+                <div className="lg:col-span-7 flex flex-col rounded-xl overflow-hidden border border-[#252422]/15 bg-[#fbf9f6] shadow-sm relative min-h-[300px] lg:min-h-[330px]">
+                  
+                  {/* Compact Map Header */}
+                  <div className="px-4 py-2.5 bg-white border-b border-[#252422]/10 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-[#ff5500] animate-pulse" />
+                      <div>
+                        <span className="font-display text-[13px] font-semibold text-[#252422] inline-block mr-2">
+                          {activeLocation.name}
+                        </span>
+                        <span className="text-[10px] font-mono text-[#747474]">
+                          {activeLocation.city}, {activeLocation.state}
+                        </span>
+                      </div>
+                    </div>
+
+                    <a
+                      href={activeLocation.googleMapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#252422] hover:bg-[#ff5500] text-white text-[10px] font-mono uppercase tracking-wider font-bold transition-all duration-200 shadow-2xs cursor-pointer"
+                    >
+                      <Navigation className="w-2.5 h-2.5" />
+                      <span>Open Maps</span>
+                      <ExternalLink className="w-2.5 h-2.5 opacity-80" />
+                    </a>
+                  </div>
+
+                  {/* Compact Map iframe */}
+                  <div className="relative flex-1 w-full min-h-[250px] lg:min-h-[280px]">
+                    <iframe
+                      key={activeLocation.slug}
+                      src={mapEmbedUrl}
+                      title={`${activeLocation.name} Facility Location Map`}
+                      className="w-full h-full min-h-[250px] lg:min-h-[280px] border-0"
+                      loading="lazy"
+                      allowFullScreen
+                    />
+
+                    {/* Streamlined Floating Overlay */}
+                    <div className="absolute bottom-2.5 left-2.5 right-2.5 pointer-events-none">
+                      <div className="bg-white/95 backdrop-blur-md border border-[#252422]/15 rounded-lg px-3 py-2 shadow-sm flex items-center justify-between gap-2 pointer-events-auto">
+                        <div className="flex items-center gap-2 text-xs font-mono">
+                          <span className="text-[10px] uppercase text-[#747474]">Desk:</span>
+                          <span className="font-bold text-[#252422]">{activeLocation.phoneDisplay}</span>
+                        </div>
+
+                        <Link
+                          href={`/companies/${activeLocation.slug}`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-[#ff5500]/10 hover:bg-[#ff5500] text-[#ff5500] hover:text-white transition-colors text-[10.5px] font-mono font-bold"
+                        >
+                          <span>Specs</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            );
+          })()}
+
+        </div>
+      </div>
+
       {/* ── MAIN NAVIGATION & BRAND SECTION ── */}
       <div className="px-5 sm:px-10 lg:px-16 py-14 sm:py-16 relative z-10 bg-white">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
@@ -298,7 +480,7 @@ export default function Footer() {
           <div className="lg:col-span-5 space-y-5">
             <div>
               <Link href="/" className="inline-block group">
-                <span className="font-display text-2xl sm:text-[26px] tracking-[0.14em] uppercase text-[#252422] font-semibold block">
+                <span className="font-display text-2xl sm:text-[26px] tracking-[0.14em] uppercase text-[#003049] font-semibold block">
                   PAVAN STONES GROUP
                 </span>
                 <span className="text-[11px] font-mono text-[#ff5500] uppercase tracking-[0.2em] font-bold block mt-1">
@@ -352,7 +534,7 @@ export default function Footer() {
               <div key={col.title} className="space-y-3">
                 
                 {/* Clean Column Header */}
-                <h4 className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#252422] font-bold pb-2.5 border-b border-gray-200">
+                <h4 className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#003049] font-bold pb-2.5 border-b border-gray-200">
                   {col.title}
                 </h4>
 

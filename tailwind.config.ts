@@ -26,8 +26,8 @@ const config: Config = {
         "orange-2": "#ff8958",
         lime:    "rgb(108,194,0)",
         ink: {
-          DEFAULT: "#241919",
-          dark:    "#241919",
+          DEFAULT: "#003049",
+          dark:    "#003049",
           earth:   "#3e352a",
           olive:   "#514a38",
           body:    "#454545",

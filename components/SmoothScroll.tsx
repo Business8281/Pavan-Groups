@@ -40,18 +40,25 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   const pathname = usePathname();
   const retryTimeoutRef = useRef<number | null>(null);
 
-  // ---- Boot Lenis + global anchor interception ----
+  // ---- Boot Lenis + GSAP ScrollTrigger synchronization + global anchor interception ----
   useEffect(() => {
-    let lenis: any = null;
-    let raf = 0;
+    let lenisInstance: any = null;
+    let tickerFn: ((time: number) => void) | null = null;
     let alive = true;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (!reduced) {
-      import("lenis").then(({ default: Lenis }) => {
+      Promise.all([
+        import("lenis"),
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+      ]).then(([{ default: Lenis }, { gsap }, { ScrollTrigger }]) => {
         if (!alive) return;
-        lenis = new (Lenis as any)({
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        lenisInstance = new (Lenis as any)({
           duration: 1.2,
           easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
           orientation: "vertical",
@@ -59,13 +66,17 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
           wheelMultiplier: 1,
           touchMultiplier: 1.7,
         });
-        window.__lenis = lenis;
+        window.__lenis = lenisInstance;
 
-        const animate = (time: number) => {
-          lenis?.raf(time);
-          raf = requestAnimationFrame(animate);
+        // Synchronize Lenis scroll events with GSAP ScrollTrigger
+        lenisInstance.on("scroll", ScrollTrigger.update);
+
+        // Drive Lenis from GSAP's central high-performance ticker
+        tickerFn = (time: number) => {
+          lenisInstance?.raf(time * 1000);
         };
-        raf = requestAnimationFrame(animate);
+        gsap.ticker.add(tickerFn);
+        gsap.ticker.lagSmoothing(0);
       });
     }
 
@@ -113,8 +124,12 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       alive = false;
       document.removeEventListener("click", onClick);
       window.removeEventListener("hashchange", onHashChange);
-      cancelAnimationFrame(raf);
-      lenis?.destroy();
+      if (tickerFn) {
+        import("gsap").then(({ gsap }) => {
+          if (tickerFn) gsap.ticker.remove(tickerFn);
+        });
+      }
+      lenisInstance?.destroy();
       window.__lenis = undefined;
     };
   }, [pathname]);

@@ -9,6 +9,8 @@ import DimensionalMatrix from "@/components/DimensionalMatrix";
 import CompanyEditorialShowcase from "@/components/CompanyEditorialShowcase";
 import { PAVAN_STONES_WORLD_EDITORIAL_DATA } from "@/lib/companyEditorialData";
 import { scrollToHash } from "@/components/SmoothScroll";
+import CompanyLocationSection from "@/components/CompanyLocationSection";
+import { COMPANY_LOCATIONS } from "@/lib/companyLocations";
 
 interface ProductDetail {
   id: string;
@@ -806,6 +808,12 @@ export default function CompanyDedicatedPage() {
         companyName={company.name}
         specifications={company.specifications}
         packaging={company.packaging}
+      />
+
+      {/* ── FACILITY & FACTORY LOCATION SECTION ── */}
+      <CompanyLocationSection
+        location={COMPANY_LOCATIONS["pavan-stones-world"]}
+        brandColor={company.accentColor || "#722424"}
       />
 
       {/* ── SISTER COMPANIES DEDICATED PROFILES ── */}

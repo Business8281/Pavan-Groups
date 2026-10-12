@@ -22,9 +22,7 @@ export default function Hero() {
       const playPromise = video.play();
       if (playPromise !== undefined) {
         playPromise.catch((error) => {
-          if (error.name !== "AbortError" && error.name !== "NotAllowedError") {
-            console.warn("Hero background video autoplay catch:", error);
-          }
+          console.warn("Hero background video autoplay catch:", error);
         });
       }
     }

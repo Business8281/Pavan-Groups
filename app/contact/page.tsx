@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, CheckCircle2, ChevronDown } from "lucide-react";
+import { Mascot } from "page-mascot";
+import { getAssetPath } from "@/lib/basePath";
 
 export default function ContactPage() {
   const [formState, setFormState] = useState({
@@ -37,32 +39,51 @@ export default function ContactPage() {
       <main className="flex-grow w-full relative">
         <div className="px-4 sm:px-6 md:px-14 lg:px-20 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-start">
           
-          {/* Left Side: Abstract Architectural Visual Block */}
-          <div className="relative w-full h-[320px] sm:h-[450px] lg:h-[650px] flex justify-center items-center lg:items-start lg:justify-start order-2 lg:order-1">
-             {/* Wide Background Image */}
-             <motion.div 
-               initial={{ opacity: 0, x: -20 }}
-               animate={{ opacity: 1, x: 0 }}
-               transition={{ duration: 0.8, delay: 0.2 }}
-               className="absolute top-6 sm:top-10 left-0 lg:left-8 w-[68%] lg:w-[340px] h-[75%] lg:h-[480px] overflow-hidden rounded-lg shadow-lg border border-[#747474]/15"
-             >
+          {/* Left Side: Interactive Mascot (Above) & Abstract Architectural Visual Block (Below) */}
+          <div className="w-full flex flex-col justify-start space-y-6 sm:space-y-8 order-2 lg:order-1">
+            {/* Interactive Mascot (Above) */}
+            <div className="flex flex-col items-center justify-center pt-2 sm:pt-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="flex flex-col items-center"
+              >
+                <Mascot
+                  directions={getAssetPath("/mascots/fox-riso-directions.webp")}
+                  reactions={getAssetPath("/mascots/fox-riso-reactions.webp")}
+                  size={150}
+                />
+              </motion.div>
+            </div>
+
+            {/* Architectural Visual Block (Below) */}
+            <div className="relative w-full h-[320px] sm:h-[450px] lg:h-[650px] flex justify-center items-center lg:items-start lg:justify-start">
+              {/* Wide Background Image */}
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="absolute top-6 sm:top-10 left-0 lg:left-8 w-[68%] lg:w-[340px] h-[75%] lg:h-[480px] overflow-hidden rounded-lg shadow-lg border border-[#747474]/15"
+              >
                 <img 
                   src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=800&q=80"
                   alt="Marble Texture Background"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/10" />
-             </motion.div>
-             
-             {/* Main Image */}
-             <motion.img 
-               initial={{ opacity: 0, x: 20 }}
-               animate={{ opacity: 1, x: 0 }}
-               transition={{ duration: 0.8 }}
-               src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80" 
-               alt="Pavan Stones Group Extraction" 
-               className="relative z-10 top-4 sm:top-12 lg:top-16 right-0 lg:-right-16 w-[75%] lg:w-[380px] h-[80%] lg:h-[520px] object-cover rounded-lg shadow-2xl grayscale-[15%]"
-             />
+              </motion.div>
+              
+              {/* Main Image */}
+              <motion.img 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80" 
+                alt="Pavan Stones Group Extraction" 
+                className="relative z-10 top-4 sm:top-12 lg:top-16 right-0 lg:-right-16 w-[75%] lg:w-[380px] h-[80%] lg:h-[520px] object-cover rounded-lg shadow-2xl grayscale-[15%]"
+              />
+            </div>
           </div>
 
           {/* Right Side: Form */}
@@ -137,11 +158,29 @@ export default function ContactPage() {
                          onChange={handleInputChange}
                          className="w-full bg-transparent border-b border-[#747474]/30 pb-2.5 text-[#241919] focus:outline-none focus:border-[#ff5500] text-sm appearance-none cursor-pointer transition-colors"
                        >
-                         <option value="Natural Slate">Natural Slate & 3D Wall Cladding</option>
-                         <option value="Premium Granite">Black Galaxy & Gangsaw Granite Slabs</option>
-                         <option value="Limestone">Calcareous Limestone & Tumbled Pavers</option>
-                         <option value="Custom Project">Custom Architectural / CNC Project</option>
-                         <option value="Distributorship">Container Import / Distributorship</option>
+                         <optgroup label="── Natural Slate & Cladding ──">
+                           <option value="Natural Slate">Natural Slate (Markapur Black, California Gold, Multi Slate)</option>
+                           <option value="3D Wall Cladding">3D Wall Cladding & Stacked Ledger Panels</option>
+                         </optgroup>
+                         <optgroup label="── Granite Collections ──">
+                           <option value="South Indian Granite">South Indian Granite (Black Galaxy, Absolute Black, Steel Grey)</option>
+                           <option value="North Indian Granite">North Indian Granite (Rajasthan Slabs, Desert Gold, Flamed)</option>
+                           <option value="Gangsaw Granite Slabs">Monolithic Gangsaw Granite Slabs & Polished Cutters</option>
+                         </optgroup>
+                         <optgroup label="── Limestone & Hardscapes ──">
+                           <option value="Limestone">Calcareous Limestone (Cuddapah Black, Lime Yellow & Blue)</option>
+                           <option value="Pavers & Cobbles">Architectural Pavers, Cobblestones & Flagstones</option>
+                           <option value="Crazy Pattern & Chipouts">Crazy Pattern Paving & Decorative Stone Chipouts</option>
+                         </optgroup>
+                         <optgroup label="── Artisanal & Architectural ──">
+                           <option value="CNC Murals & Carvings">CNC 3D Murals & Architectural Stone Carvings</option>
+                           <option value="Natural Stone Mosaics">Natural Stone Mosaics & Mesh-Mounted Patterns</option>
+                           <option value="River Pebbles">Natural River Pebbles & Polished Agate Stones</option>
+                         </optgroup>
+                         <optgroup label="── Commercial & Trade ──">
+                           <option value="Custom Architectural Project">Bespoke Architectural / Cut-to-Size Project</option>
+                           <option value="Container Import / FCL">Full Container Load (FCL) Import / Distributorship</option>
+                         </optgroup>
                        </select>
                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pb-2 text-[#747474]">
                          <ChevronDown size={16} />

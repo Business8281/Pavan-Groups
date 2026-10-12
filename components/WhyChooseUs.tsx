@@ -169,7 +169,7 @@ export default function WhyChooseUs() {
               className="font-display font-light leading-[1.02] tracking-[-0.015em]"
               style={{ fontSize: "clamp(34px, 4.2vw, 54px)" }}
             >
-              <span className="text-[#252422]">Why Buy From</span>{" "}
+              <span className="text-[#003049]">Why Buy From</span>{" "}
               <span className="text-[#ff5500] italic font-normal">Pavan Stones Group?</span>
             </h2>
 
@@ -269,7 +269,7 @@ export default function WhyChooseUs() {
                         }`}>
                           {faq.topic}
                         </span>
-                        <h3 className="font-sans font-bold text-[14.5px] sm:text-[16px] text-[#252422] leading-snug">
+                        <h3 className="font-sans font-bold text-[14.5px] sm:text-[16px] text-[#003049] leading-snug">
                           {faq.question}
                         </h3>
                       </div>

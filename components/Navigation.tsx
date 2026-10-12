@@ -186,14 +186,21 @@ export default function Navigation() {
   };
 
   const handleContactClick = (e: React.MouseEvent) => {
-    if (pathname === "/") {
-      e.preventDefault();
-      setOpen(false);
-      scrollToHash("#contact", 1.6);
-      window.history.replaceState(null, "", "#contact");
-    } else {
-      setOpen(false);
-      router.push("/#contact");
+    setOpen(false);
+    router.push("/contact");
+  };
+
+  const handleQuoteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setOpen(false);
+    const scrolled = scrollToHash("#get-quote", 1.4);
+    if (!scrolled) {
+      const el = document.getElementById("get-quote");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        router.push("/contact");
+      }
     }
   };
 
@@ -204,27 +211,22 @@ export default function Navigation() {
         className="fixed top-0 left-0 w-full h-[72px] z-[80] flex items-center px-4 sm:px-6 md:px-10 lg:px-12 xl:px-16 gap-3 lg:gap-6 xl:gap-8 transition-all duration-400"
         style={{ willChange: "transform" }}
       >
-        {/* Dynamic Frosted Backdrop */}
+        {/* Solid White Backdrop */}
         <div
-          className="absolute inset-0 transition-all duration-400 pointer-events-none"
+          className="absolute inset-0 transition-all duration-400 pointer-events-none bg-white"
           style={{
-            background: stuck
-              ? "rgba(255, 255, 255, 0.96)"
-              : "rgba(255, 255, 255, 0.8)",
             borderBottom: stuck
               ? "1px solid rgba(20, 13, 10, 0.08)"
               : "1px solid rgba(20, 13, 10, 0.04)",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
           }}
         />
 
         {/* Brand */}
         <Link href="/" className="flex flex-col gap-[2px] flex-none relative z-10 group">
-          <span className="font-display font-medium text-[15px] tracking-[0.28em] uppercase text-[#140d0a] transition-colors duration-300 group-hover:text-[#ff5500]">
+          <span className="font-display font-semibold text-[15.5px] tracking-[0.26em] uppercase text-[#003049] transition-colors duration-300 group-hover:text-[#ff5500]">
             Pavan Stones Group
           </span>
-          <span className="text-[7.5px] tracking-[0.42em] uppercase text-[#140d0a]/60 transition-colors duration-300">
+          <span className="text-[8px] font-medium tracking-[0.40em] uppercase text-[#003049]/80 transition-colors duration-300">
             Natural Stone Excellence
           </span>
         </Link>
@@ -345,7 +347,7 @@ export default function Navigation() {
             {links.map((l) => {
               const active = isActive(l.href);
               const isHighlighted = hoveredPath !== null ? hoveredPath === l.href : active;
-              const linkColor = isHighlighted ? "#ff5500" : "rgba(20, 13, 10, 0.75)";
+              const linkColor = isHighlighted ? "#ff5500" : "#003049";
 
               if (l.isContact) {
                 return (
@@ -354,14 +356,14 @@ export default function Navigation() {
                       onClick={handleContactClick}
                       onMouseEnter={() => setHoveredPath(l.href)}
                       onFocus={() => setHoveredPath(l.href)}
-                      className="relative text-[10px] font-bold tracking-[0.24em] uppercase transition-colors duration-300 py-2 cursor-pointer bg-transparent border-none p-0 focus:outline-none"
+                      className="relative text-[11.5px] xl:text-[12px] font-extrabold tracking-[0.18em] uppercase transition-colors duration-300 py-2 cursor-pointer bg-transparent border-none p-0 focus:outline-none"
                       style={{ color: linkColor }}
                     >
                       <span>{l.label}</span>
                       {isHighlighted && (
                         <motion.span
                           layoutId="navbar-flow-underline"
-                          className="absolute -bottom-0.5 left-0 right-0 h-[2px] rounded-full pointer-events-none"
+                          className="absolute -bottom-0.5 left-0 right-0 h-[2.5px] rounded-full pointer-events-none"
                           style={{
                             background: "linear-gradient(90deg, #ff5500 0%, #ff7733 50%, #ff5500 100%)",
                             boxShadow: "0 2px 10px rgba(255, 85, 0, 0.45)",
@@ -385,14 +387,14 @@ export default function Navigation() {
                     href={l.href}
                     onMouseEnter={() => setHoveredPath(l.href)}
                     onFocus={() => setHoveredPath(l.href)}
-                    className="relative text-[10px] font-bold tracking-[0.24em] uppercase transition-colors duration-300 py-2 inline-block focus:outline-none"
+                    className="relative text-[11.5px] xl:text-[12px] font-extrabold tracking-[0.18em] uppercase transition-colors duration-300 py-2 inline-block focus:outline-none"
                     style={{ color: linkColor }}
                   >
                     <span>{l.label}</span>
                     {isHighlighted && (
                       <motion.span
                         layoutId="navbar-flow-underline"
-                        className="absolute -bottom-0.5 left-0 right-0 h-[2px] rounded-full pointer-events-none"
+                        className="absolute -bottom-0.5 left-0 right-0 h-[2.5px] rounded-full pointer-events-none"
                         style={{
                           background: "linear-gradient(90deg, #ff5500 0%, #ff7733 50%, #ff5500 100%)",
                           boxShadow: "0 2px 10px rgba(255, 85, 0, 0.45)",
@@ -417,7 +419,7 @@ export default function Navigation() {
           type="button"
           onClick={openWishlistDrawer}
           onMouseEnter={preloadCatalog}
-          className="relative z-10 p-2.5 rounded-full text-[#140d0a] hover:text-[#ef4444] hover:bg-[#ef4444]/10 transition-all duration-300 cursor-pointer flex items-center justify-center focus:outline-none ml-auto lg:ml-0"
+          className="relative z-10 p-2.5 rounded-full text-[#003049] hover:text-[#ef4444] hover:bg-[#ef4444]/10 transition-all duration-300 cursor-pointer flex items-center justify-center focus:outline-none ml-auto lg:ml-0"
           aria-label={`View Shortlisted Stones (${wishlistCount} items)`}
           title="View Shortlisted Stones"
         >
@@ -436,7 +438,7 @@ export default function Navigation() {
 
         {/* CTA (Get Quote) */}
         <button
-          onClick={handleContactClick}
+          onClick={handleQuoteClick}
           className="hidden md:inline-flex items-center gap-2.5 relative z-10 px-5 py-2.5 text-[10px] font-medium tracking-[0.22em] uppercase transition-all duration-300 cursor-pointer bg-transparent border border-[#ff5500] text-[#ff5500] hover:bg-[#ff5500] hover:text-white shadow-sm focus:outline-none"
         >
           <span>Get Quote</span>
@@ -451,21 +453,21 @@ export default function Navigation() {
           aria-expanded={open}
         >
           <span
-            className="block h-[1.5px] bg-[#140d0a] transition-all duration-400 origin-center"
+            className="block h-[1.5px] bg-[#003049] transition-all duration-400 origin-center"
             style={{
               transform: open ? "translateY(7.5px) rotate(45deg)" : "none",
               width: "24px",
             }}
           />
           <span
-            className="block h-[1.5px] bg-[#140d0a] transition-all duration-300"
+            className="block h-[1.5px] bg-[#003049] transition-all duration-300"
             style={{
               width: open ? "0px" : "18px",
               opacity: open ? 0 : 1,
             }}
           />
           <span
-            className="block h-[1.5px] bg-[#140d0a] transition-all duration-400 origin-center"
+            className="block h-[1.5px] bg-[#003049] transition-all duration-400 origin-center"
             style={{
               transform: open ? "translateY(-7.5px) rotate(-45deg)" : "none",
               width: "24px",
@@ -518,7 +520,7 @@ export default function Navigation() {
               {l.isContact ? (
                 <button
                   onClick={handleContactClick}
-                  className="font-display text-2xl sm:text-3xl font-light transition-colors duration-300 bg-transparent border-none cursor-pointer text-[#140d0a] hover:text-[#ff5500] py-1 touch-manipulation"
+                  className="font-display text-2xl sm:text-3xl font-semibold transition-colors duration-300 bg-transparent border-none cursor-pointer text-[#003049] hover:text-[#ff5500] py-1 touch-manipulation"
                 >
                   {l.label}
                 </button>
@@ -526,9 +528,9 @@ export default function Navigation() {
                 <Link
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="font-display text-2xl sm:text-3xl font-light transition-colors duration-300 block py-1 touch-manipulation"
+                  className="font-display text-2xl sm:text-3xl font-semibold transition-colors duration-300 block py-1 touch-manipulation"
                   style={{
-                    color: isActive(l.href) ? "#ff5500" : "#140d0a",
+                    color: isActive(l.href) ? "#ff5500" : "#003049",
                   }}
                 >
                   {l.label}
@@ -549,7 +551,7 @@ export default function Navigation() {
           </button>
 
           <button
-            onClick={handleContactClick}
+            onClick={handleQuoteClick}
             className="mt-1 w-full max-w-xs py-3.5 bg-[#ff5500] hover:bg-[#e04b00] active:scale-[0.98] text-white text-[10.5px] tracking-[0.24em] uppercase font-semibold border-none cursor-pointer transition-all shadow-md touch-manipulation"
           >
             Request Quotation

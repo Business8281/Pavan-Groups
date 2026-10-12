@@ -9,6 +9,8 @@ import DimensionalMatrix from "@/components/DimensionalMatrix";
 import CompanyEditorialShowcase from "@/components/CompanyEditorialShowcase";
 import { PAVAN_GRANITE_EDITORIAL_DATA } from "@/lib/companyEditorialData";
 import { scrollToHash } from "@/components/SmoothScroll";
+import CompanyLocationSection from "@/components/CompanyLocationSection";
+import { COMPANY_LOCATIONS } from "@/lib/companyLocations";
 
 interface ProductDetail {
   id: string;
@@ -749,7 +751,11 @@ export default function CompanyDedicatedPage() {
         packaging={company.packaging}
       />
 
-
+      {/* ── FACILITY & FACTORY LOCATION SECTION ── */}
+      <CompanyLocationSection
+        location={COMPANY_LOCATIONS["pavan-granite"]}
+        brandColor={company.accentColor || "#0f766e"}
+      />
 
       {/* ── SISTER COMPANIES DEDICATED PROFILES ── */}
       <section className="py-16 px-4 sm:px-6 md:px-12 lg:px-16 bg-[#f8fafc] border-t border-[#747474]/15">

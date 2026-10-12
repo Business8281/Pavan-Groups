@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { motion, useInView, useTransform, useSpring, useMotionValue } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { scrollToHash } from "@/components/SmoothScroll";
 
@@ -219,192 +219,6 @@ function StaggeredText({
 
 export default function Products() {
   const sectionRef = useRef<HTMLElement>(null);
-  const stickyContainerRef = useRef<HTMLDivElement>(null);
-  const imageContainerRef = useRef<HTMLDivElement>(null);
-  const card0Ref = useRef<HTMLDivElement>(null);
-  const card1Ref = useRef<HTMLDivElement>(null);
-  const card2Ref = useRef<HTMLDivElement>(null);
-  const card0ImgRef = useRef<HTMLDivElement>(null);
-  const card1ImgRef = useRef<HTMLDivElement>(null);
-
-  // Raw dynamic physics targets
-  const targetX = useMotionValue(516);
-  const targetY = useMotionValue(285);
-  const targetRotate = useMotionValue(0);
-  const targetScale = useMotionValue(1);
-  const stageMotion = useMotionValue(0);
-
-  // Inertial springs critically overdamped for rock-solid lock-in with zero bounce
-  const springX = useSpring(targetX, { stiffness: 280, damping: 60, mass: 0.15 });
-  const springY = useSpring(targetY, { stiffness: 280, damping: 60, mass: 0.15 });
-  const springRotate = useSpring(targetRotate, { stiffness: 55, damping: 30, mass: 0.6 });
-  const springScale = useSpring(targetScale, { stiffness: 55, damping: 30, mass: 0.6 });
-
-  // Dynamic division-themed ring stroke color that shifts with each company stage
-  const ringColor = useTransform(
-    stageMotion,
-    [0, 1, 2, 3],
-    ["#ff5500", "#ff5500", "#ff5500", "#ff5500"]
-  );
-
-  // Dynamic luxury glow aura
-  const glowShadow = useTransform(
-    stageMotion,
-    [0, 1, 2, 3],
-    [
-      "0 10px 30px rgba(15, 23, 42, 0.14)",
-      "0 14px 38px rgba(200, 100, 50, 0.28)",
-      "0 14px 38px rgba(156, 104, 0, 0.28)",
-      "0 16px 44px rgba(114, 36, 36, 0.35)",
-    ]
-  );
-
-  // Dynamic stage indicator pill
-  const stageLabel = useTransform(stageMotion, (s: number): string => {
-    if (s < 0.4) return "Heritage • Est. 2000";
-    if (s < 1.4) return "Pavan Impex • Natural Slate";
-    if (s < 2.4) return "Sai Balaji Impex • Calcareous Stone";
-    return "Pavan Granite & Stones World";
-  });
-
-  useEffect(() => {
-    let rafId: number;
-
-    const updatePhysics = () => {
-      if (
-        !stickyContainerRef.current ||
-        !imageContainerRef.current ||
-        !card0Ref.current ||
-        !card1Ref.current ||
-        !card2Ref.current
-      ) {
-        return;
-      }
-
-      const isDesktop = window.innerWidth >= 1024;
-      const isMobile = window.innerWidth < 640;
-      const cRect = stickyContainerRef.current.getBoundingClientRect();
-      const imgRect = imageContainerRef.current.getBoundingClientRect();
-      const card0 = card0Ref.current.getBoundingClientRect();
-      const card1 = card1Ref.current.getBoundingClientRect();
-      const card2 = card2Ref.current.getBoundingClientRect();
-
-      // ── Station 1: About facility image — right-center vertical seam ──
-      const startX = isMobile ? imgRect.right - cRect.left - 20 : imgRect.right - cRect.left;
-      const startY = imgRect.top - cRect.top + imageContainerRef.current.offsetHeight / 2;
-
-      // ── Station 2: Pavan Impex card image — RIGHT TOP CORNER (badge centered on the corner) ──
-      const card0Img = card0ImgRef.current ? card0ImgRef.current.getBoundingClientRect() : card0;
-      const pavanX = isMobile ? card0Img.right - cRect.left - 24 : card0Img.right - cRect.left;
-      const pavanY = card0Img.top - cRect.top;
-
-      // ── Station 3: Sai Balaji Impex card image — LEFT TOP CORNER ──
-      const card1Img = card1ImgRef.current ? card1ImgRef.current.getBoundingClientRect() : card1;
-      const balajiX = isMobile ? card1Img.left - cRect.left + 24 : card1Img.left - cRect.left;
-      // Use docked Y when card1 is stuck, live Y when still sliding up
-      const balajiY = card1.top <= 104
-        ? (card1.top - cRect.top)
-        : (card1Img.top - cRect.top);
-
-      // ── Station 4: EXACT CENTER MIDDLE between Pavan Granite & Pavan Stones World ──
-      const dualCenterX = (card2.left - cRect.left) + card2.width / 2;
-      const dualCenterY = card2.top <= 122
-        ? (card2.top - cRect.top) + card2.height / 2
-        : (card2.top - cRect.top) + card2.height / 2;
-
-      // ── Progress: About image → Pavan Impex top-right ──
-      const enterProgress = (window.innerHeight - card0.top) / (window.innerHeight - 84);
-      const t0 = Math.max(0, Math.min(1, enterProgress));
-      const prog0 = t0 < 0.2 ? 0 : Math.min(1, (t0 - 0.2) / 0.8);
-      // smooth ease-in-out cubic
-      const easeProg0 = prog0 < 0.5 ? 4 * prog0 * prog0 * prog0 : 1 - Math.pow(-2 * prog0 + 2, 3) / 2;
-
-      const card0Docked = card0.top <= 86;
-      const card1Docked = card1.top <= 104;
-      const card2Docked = card2.top <= 122;
-
-      // ── Progress: Pavan Impex → Sai Balaji (straight diagonal cross-down) ──
-      const p1Start = Math.min(window.innerHeight * 0.9, card0.bottom + 300);
-      const p1End = 104;
-      const p1 = p1Start > p1End
-        ? Math.max(0, Math.min(1, (p1Start - card1.top) / (p1Start - p1End)))
-        : 0;
-      // Smooth ease — NO sine arc. Pure linear interpolation between corners.
-      const easeP1 = 0.5 - 0.5 * Math.cos(p1 * Math.PI);
-
-      // ── Progress: Sai Balaji → Pavan Granite+Stones World center ──
-      const p2Start = Math.min(window.innerHeight * 0.9, card1.bottom + 300);
-      const p2End = 122;
-      const p2 = p2Start > p2End
-        ? Math.max(0, Math.min(1, (p2Start - card2.top) / (p2Start - p2End)))
-        : 0;
-      const easeP2 = 0.5 - 0.5 * Math.cos(p2 * Math.PI);
-
-      let nextX: number;
-      let nextY: number;
-      let stageVal = 0;
-      let nextScale = 1.0;
-
-      if (card2Docked || (card1Docked && p2 >= 1)) {
-        // Station 4: Hard-set directly — no spring bounce at final resting position
-        nextX = dualCenterX;
-        nextY = dualCenterY;
-        stageVal = 3;
-        nextScale = isDesktop ? 0.80 : isMobile ? 0.65 : 0.75;
-      } else if (card1Docked && p2 > 0) {
-        // Station 3 → Station 4: Straight glide from Balaji top-left into center
-        nextX = balajiX + (dualCenterX - balajiX) * easeP2;
-        nextY = balajiY + (dualCenterY - balajiY) * easeP2;
-        stageVal = 2 + p2;
-        nextScale = 1.0 - (isDesktop ? 0.20 : isMobile ? 0.35 : 0.25) * easeP2;
-      } else if (p1 > 0) {
-        // Station 2 → Station 3: STRAIGHT DIAGONAL cross-down (Pavan Impex right-top → Sai Balaji left-top)
-        // Pure lerp — no sine arc dip
-        nextX = pavanX + (balajiX - pavanX) * easeP1;
-        nextY = pavanY + (balajiY - pavanY) * easeP1;
-        stageVal = 1 + p1;
-        nextScale = isMobile ? 0.75 : 1.0;
-      } else if (prog0 > 0) {
-        // Station 1 → Station 2: Glide from About image seam to Pavan Impex right-top corner
-        nextX = startX + (pavanX - startX) * easeProg0;
-        nextY = startY + (pavanY - startY) * easeProg0;
-        stageVal = easeProg0;
-        nextScale = isMobile ? 0.75 : 1.0;
-      } else {
-        // Station 1: Heritage / About facility image seam (initial position)
-        nextX = startX;
-        nextY = startY;
-        stageVal = 0;
-        nextScale = isMobile ? 0.75 : 1.0;
-      }
-
-      targetX.set(nextX);
-      targetY.set(nextY);
-      targetRotate.set(0);
-      targetScale.set(nextScale);
-      stageMotion.set(stageVal);
-    };
-
-    const onScroll = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(updatePhysics);
-    };
-
-    updatePhysics();
-    const initTimer1 = setTimeout(updatePhysics, 100);
-    const initTimer2 = setTimeout(updatePhysics, 300);
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      clearTimeout(initTimer1);
-      clearTimeout(initTimer2);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [targetX, targetY, targetRotate, targetScale, stageMotion]);
 
   return (
     <section
@@ -412,99 +226,6 @@ export default function Products() {
       id="products"
       className="relative z-10 py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-16 bg-[#ffffff] text-[#241919] shadow-[0_-25px_50px_-12px_rgba(0,0,0,0.25)] transition-shadow duration-300"
     >
-      {/* ── TRAVELLING ORBITAL STAMP BADGE (SMOOTH CONTINUOUS SCROLL TRANSIT) ── */}
-      <div className="sticky top-0 left-0 w-full h-0 z-40 pointer-events-none overflow-visible">
-        <div ref={stickyContainerRef} className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-16 relative h-0">
-          <motion.div
-            style={{
-              position: "absolute",
-              left: springX,
-              top: springY,
-              rotate: springRotate,
-              scale: springScale,
-              x: "-50%",
-              y: "-50%",
-            }}
-            className="pointer-events-none select-none will-change-transform"
-          >
-            <div className="relative w-32 h-32 xs:w-36 xs:h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 flex items-center justify-center">
-
-              {/* Outer 360° Continuous Rotating SVG Text Ring */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ repeat: Infinity, duration: 22, ease: "linear" }}
-                className="absolute inset-0 w-full h-full pointer-events-none"
-              >
-                <motion.svg viewBox="0 0 200 200" className="w-full h-full overflow-visible" style={{ color: ringColor }}>
-                  <defs>
-                    <path
-                      id="travellingBadgeCirclePath"
-                      d="M 100, 100 m -74, 0 a 74,74 0 1,1 148,0 a 74,74 0 1,1 -148,0"
-                    />
-                  </defs>
-
-                  {/* Concentric hairline circles */}
-                  <circle
-                    cx="100"
-                    cy="100"
-                    r="64"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.2"
-                    strokeOpacity="0.4"
-                  />
-                  <circle
-                    cx="100"
-                    cy="100"
-                    r="84"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1"
-                    strokeOpacity="0.28"
-                  />
-
-                  <text fill="currentColor" fontSize="10.5" fontWeight="bold" letterSpacing="0.14em">
-                    <textPath href="#travellingBadgeCirclePath" startOffset="0%">
-                      • PAVAN STONES GROUP • STONE EXCELLENCE • EST. 2000 • PAVAN STONES GROUP • STONE EXCELLENCE • EST. 2000
-                    </textPath>
-                  </text>
-                </motion.svg>
-              </motion.div>
-
-              {/* Counter-Rotating Dashed Accent Ring */}
-              <motion.div
-                animate={{ rotate: -360 }}
-                transition={{ repeat: Infinity, duration: 32, ease: "linear" }}
-                style={{ borderColor: ringColor }}
-                className="absolute inset-2.5 sm:inset-3.5 rounded-full border-2 border-dashed opacity-35 pointer-events-none"
-              />
-
-              {/* Luxury Center Seal Core Disc with Glassmorphic Shimmer & Shadow */}
-              <motion.div
-                style={{
-                  boxShadow: glowShadow,
-                  borderColor: ringColor,
-                }}
-                className="relative w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-white/95 backdrop-blur-md border flex flex-col items-center justify-center text-center px-1.5 sm:px-2 z-10 transition-colors duration-500 shadow-xl"
-              >
-                {/* Subtle Ambient Radial Shimmer */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-black/[0.04] via-transparent to-white/60 pointer-events-none" />
-
-                <span className="font-sans font-extrabold text-lg xs:text-xl sm:text-2xl md:text-3xl text-[#252422] leading-[1] tracking-tight relative z-10">
-                  26+
-                </span>
-                <span className="font-mono font-bold text-[7px] xs:text-[8px] sm:text-[9px] md:text-[10px] text-[#ff5500] tracking-widest uppercase leading-none relative z-10">
-                  YEARS
-                </span>
-
-              </motion.div>
-
-
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto space-y-10 md:space-y-16">
 
         {/* ── ABOUT PAVAN STONES GROUP SPLIT HERO SECTION (IMAGE 1 LAYOUT) ── */}
@@ -515,10 +236,10 @@ export default function Products() {
           transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
           className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center bg-white relative"
         >
-          {/* ── LEFT COLUMN: ARCHITECTURAL FACILITY IMAGE + OVERLAPPING CIRCULAR BADGE ── */}
+          {/* ── LEFT COLUMN: ARCHITECTURAL FACILITY IMAGE + STATIC OVERLAPPING CIRCULAR BADGE ── */}
           <div className="lg:col-span-6 relative pr-0 sm:pr-8 md:pr-12">
             {/* Main Architectural Image Container */}
-            <div ref={imageContainerRef} className="relative aspect-[16/10] sm:aspect-[4/3] w-full rounded-xl overflow-hidden border border-[#252422]/15 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.08)] bg-white">
+            <div className="relative aspect-[16/10] sm:aspect-[4/3] w-full rounded-xl overflow-hidden border border-[#252422]/15 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.08)] bg-white">
               {/* Inner clip wrapper for the image only */}
               <div className="absolute inset-0 overflow-hidden">
                 <img
@@ -529,6 +250,80 @@ export default function Products() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
               </div>
             </div>
+
+            {/* Static Orbit Badge - fixed at the first position on the facility image seam */}
+            <div className="absolute right-0 sm:-right-4 md:-right-8 top-1/2 -translate-y-1/2 translate-x-1/4 sm:translate-x-0 z-20 pointer-events-none select-none">
+              <div className="relative w-28 h-28 xs:w-32 xs:h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 flex items-center justify-center">
+
+                {/* Outer 360° Continuous Rotating SVG Text Ring */}
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 22, ease: "linear" }}
+                  className="absolute inset-0 w-full h-full pointer-events-none"
+                >
+                  <svg viewBox="0 0 200 200" className="w-full h-full overflow-visible text-[#ff5500]">
+                    <defs>
+                      <path
+                        id="staticBadgeCirclePath"
+                        d="M 100, 100 m -74, 0 a 74,74 0 1,1 148,0 a 74,74 0 1,1 -148,0"
+                      />
+                    </defs>
+
+                    {/* Concentric hairline circles */}
+                    <circle
+                      cx="100"
+                      cy="100"
+                      r="64"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.2"
+                      strokeOpacity="0.4"
+                    />
+                    <circle
+                      cx="100"
+                      cy="100"
+                      r="84"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1"
+                      strokeOpacity="0.28"
+                    />
+
+                    <text fill="currentColor" fontSize="10.5" fontWeight="bold" letterSpacing="0.14em">
+                      <textPath href="#staticBadgeCirclePath" startOffset="0%">
+                        • PAVAN STONES GROUP • STONE EXCELLENCE • EST. 2000 • PAVAN STONES GROUP • STONE EXCELLENCE • EST. 2000
+                      </textPath>
+                    </text>
+                  </svg>
+                </motion.div>
+
+                {/* Counter-Rotating Dashed Accent Ring */}
+                <motion.div
+                  animate={{ rotate: -360 }}
+                  transition={{ repeat: Infinity, duration: 32, ease: "linear" }}
+                  className="absolute inset-2.5 sm:inset-3.5 rounded-full border-2 border-dashed border-[#ff5500] opacity-35 pointer-events-none"
+                />
+
+                {/* Luxury Center Seal Core Disc */}
+                <div
+                  style={{
+                    boxShadow: "0 14px 38px rgba(255, 85, 0, 0.22)",
+                    borderColor: "#ff5500",
+                  }}
+                  className="relative w-14 h-14 xs:w-16 xs:h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-white/95 backdrop-blur-md border flex flex-col items-center justify-center text-center px-1.5 sm:px-2 z-10 shadow-xl"
+                >
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-black/[0.04] via-transparent to-white/60 pointer-events-none" />
+
+                  <span className="font-sans font-extrabold text-base xs:text-lg sm:text-2xl md:text-3xl text-[#252422] leading-[1] tracking-tight relative z-10">
+                    26+
+                  </span>
+                  <span className="font-mono font-bold text-[6px] xs:text-[7px] sm:text-[9px] md:text-[10px] text-[#ff5500] tracking-widest uppercase leading-none relative z-10">
+                    YEARS
+                  </span>
+                </div>
+
+              </div>
+            </div>
           </div>
 
           {/* ── RIGHT COLUMN: EDITORIAL NARRATIVE + COLOR COMBO & STATS + KNOW MORE BUTTON ── */}
@@ -536,11 +331,15 @@ export default function Products() {
 
             {/* Rich Two-Tone Display Title */}
             <div>
-              <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-light text-[#252422] leading-[1.08] tracking-tight">
+              <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-light text-[#003049] leading-[1.08] tracking-tight">
                 Pavan Stones{" "}
                 <span className="italic font-normal text-[#ff5500]">Group</span>
               </h2>
               <div className="w-20 h-[3px] bg-gradient-to-r from-[#ff5500] to-[#ff5500]/20 rounded-full mt-3.5" />
+              <div className="mt-3.5 inline-flex items-center gap-2 px-3 py-1.5 rounded bg-[#faf8f5] border border-[#252422]/10 text-xs sm:text-[13px] font-mono tracking-wider text-[#252422]">
+                <span className="text-[#ff5500] font-semibold">IEC number :</span>
+                <span className="font-bold tracking-widest text-[#252422]">0909020744</span>
+              </div>
             </div>
 
             {/* Narrative with Context Highlights */}
@@ -570,7 +369,6 @@ export default function Products() {
           {/* ── CARD 0: PAVAN IMPEX (WITH IMAGE) ── */}
           <motion.div
             key={COLLECTIONS[0].slug}
-            ref={card0Ref}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.12 }}
@@ -619,7 +417,6 @@ export default function Products() {
               </div>
 
               <div
-                ref={card0ImgRef}
                 className="md:col-span-6 lg:col-span-7 relative min-h-[220px] sm:min-h-[280px] md:min-h-full overflow-hidden group order-1 md:order-2"
               >
                 <img
@@ -649,7 +446,6 @@ export default function Products() {
           {/* ── CARD 1: SAI BALAJI IMPEX (WITH IMAGE, REVERSED) ── */}
           <motion.div
             key={COLLECTIONS[1].slug}
-            ref={card1Ref}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.12 }}
@@ -663,7 +459,6 @@ export default function Products() {
           >
             <div className="grid grid-cols-1 md:grid-cols-12 items-stretch min-h-[360px] lg:min-h-[440px] relative z-10">
               <div
-                ref={card1ImgRef}
                 className="md:col-span-6 lg:col-span-7 relative min-h-[220px] sm:min-h-[280px] md:min-h-full overflow-hidden group order-1 md:order-1"
               >
                 <img
@@ -727,7 +522,6 @@ export default function Products() {
 
           {/* ── CARD 2: PAVAN GRANITE & PAVAN STONES WORLD (SIDE BY SIDE, NO IMAGES) ── */}
           <motion.div
-            ref={card2Ref}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.12 }}

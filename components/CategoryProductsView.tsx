@@ -110,20 +110,20 @@ export const CATEGORIES_CONFIG: Record<string, CategoryConfig> = {
     badge: "NORTH INDIAN PLUTONIC IGNEOUS",
   },
   granite: {
-    key: "south-indian-granite",
+    key: "granite",
     slug: "granites",
     title: "Granites",
     headline: "PREMIUM GRANITE COLLECTION",
-    description: "World-renowned Chimakurthy Black Galaxy with golden bronzite stars and monolithic Steel Grey architectural granite.",
+    description: "Quarry-direct South Indian and North Indian architectural granites including Black Galaxy, Steel Grey, Black Marinace, and crystalline blocks.",
     image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=80",
     badge: "PLUTONIC IGNEOUS",
   },
   granites: {
-    key: "south-indian-granite",
+    key: "granite",
     slug: "granites",
     title: "Granites",
     headline: "PREMIUM GRANITE COLLECTION",
-    description: "World-renowned Chimakurthy Black Galaxy with golden bronzite stars and monolithic Steel Grey architectural granite.",
+    description: "Quarry-direct South Indian and North Indian architectural granites including Black Galaxy, Steel Grey, Black Marinace, and crystalline blocks.",
     image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=80",
     badge: "PLUTONIC IGNEOUS",
   },
@@ -226,10 +226,29 @@ export const CATEGORIES_CONFIG: Record<string, CategoryConfig> = {
     image: "/images/pavan-impex/pavan-impex-001.jpg",
     badge: "NATURAL STONE MOSAICS",
   },
+  chipouts: {
+    key: "chipouts",
+    slug: "chipouts",
+    title: "Linear Stone Chipouts",
+    headline: "ARCHITECTURAL LINEAR CHIPOUTS & CLADDING",
+    description: "Hand-tooled horizontal linear chiseled grooves across authentic Indian sandstone, marble, and granite planks.",
+    image: "/images/teakwood-chipout.jpg",
+    badge: "LINEAR CHISELED RELIEF",
+  },
+  chipout: {
+    key: "chipouts",
+    slug: "chipouts",
+    title: "Linear Stone Chipouts",
+    headline: "ARCHITECTURAL LINEAR CHIPOUTS & CLADDING",
+    description: "Hand-tooled horizontal linear chiseled grooves across authentic Indian sandstone, marble, and granite planks.",
+    image: "/images/teakwood-chipout.jpg",
+    badge: "LINEAR CHISELED RELIEF",
+  },
 };
 
 const CATEGORY_TABS = [
   { slug: "all", label: "All Products", href: "/products" },
+  { slug: "chipouts", label: "Chipouts", href: "/products/chipouts" },
   { slug: "mosaic", label: "Mosaics", href: "/products/mosaic" },
   { slug: "cnc", label: "CNC Designs", href: "/products/cnc" },
   { slug: "pebbles", label: "Pebbles", href: "/products/pebbles" },
@@ -271,8 +290,11 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
       if (currentConfig.key === "pebbles" || currentConfig.key === "pebble") {
         return p.category === "pebbles";
       }
+      if (currentConfig.key === "chipouts" || currentConfig.key === "chipout") {
+        return p.category === "chipouts" || (p.category as any) === "chipout";
+      }
       if (currentConfig.key === "mosaic" || currentConfig.key === "mosaics") {
-        return p.category === "mosaic" || (p.company === "Pavan Impex" && p.category !== "pebbles");
+        return p.category === "mosaic";
       }
       return p.category === currentConfig.key;
     });
@@ -459,7 +481,9 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
   }, [categoryFacets]);
 
   const availableCompanies = useMemo(() => {
-    const compNames = Array.from(new Set(baseCategoryProducts.map((p) => p.company)));
+    const compNames = Array.from(new Set(baseCategoryProducts.map((p) => p.company))).filter(
+      (name) => name !== "PSG Stones"
+    );
     return compNames.map((name) => ({
       id: name,
       label: name,

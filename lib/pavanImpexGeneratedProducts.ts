@@ -10289,11 +10289,11 @@ export const PAVAN_IMPEX_CATALOG_PRODUCTS: ProductStone[] = [
   },
   {
     "id": "pavan-impex-140-chipout",
-    "name": "140 – Chipout Mosaic",
+    "name": "140 – Chipout",
     "tagline": "Authentic Indian natural stone specimen fabricated from Markapur slate reserves.",
-    "company": "Pavan Impex",
-    "companySlug": "pavan-impex",
-    "category": "mosaic",
+    "company": "Pavan Stones Group",
+    "companySlug": "pavan-stones-group",
+    "category": "chipouts",
     "area": [
       "elevation",
       "flooring"
@@ -10363,11 +10363,11 @@ export const PAVAN_IMPEX_CATALOG_PRODUCTS: ProductStone[] = [
   },
   {
     "id": "pavan-impex-141-chipout",
-    "name": "141 – Chipout Mosaic",
+    "name": "141 – Chipout",
     "tagline": "Authentic Indian natural stone specimen fabricated from Markapur slate reserves.",
-    "company": "Pavan Impex",
-    "companySlug": "pavan-impex",
-    "category": "mosaic",
+    "company": "Pavan Stones Group",
+    "companySlug": "pavan-stones-group",
+    "category": "chipouts",
     "area": [
       "elevation",
       "flooring"
