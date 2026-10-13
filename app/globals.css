@@ -7,7 +7,7 @@
 
 /* ─── Design tokens (Luminous Stone Palette) ─────────────────────── */
 :root {
-  --white: #f8fafc;
+  --white: #ffffff;
   --white-pure: #ffffff;
   --sand: #f2ece2;
   --sand-dark: #e8dfd3;
@@ -15,10 +15,10 @@
   --wine: #431616;
   --wine-deep: #190806;
   --wine-mid: #2d0e0e;
-  --ink: #241919;
+  --ink: #003049;
   --ink-secondary: #454545;
   --ink-muted: #747474;
-  --stone-dark: #241919;
+  --stone-dark: #003049;
   --stone-earth: #3e352a;
   --stone-olive: #514a38;
   --stone-body: #454545;
@@ -27,8 +27,8 @@
   --coral-hover: #a84a27;
   --coral-soft: rgba(255, 68, 58, 0.08);
   --coral-border: rgba(255, 68, 58, 0.25);
-  --border-light: rgba(20, 13, 10, 0.08);
-  --border-mid: rgba(20, 13, 10, 0.15);
+  --border-light: rgba(0, 48, 73, 0.08);
+  --border-mid: rgba(0, 48, 73, 0.15);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -41,16 +41,28 @@ html {
 
 body {
   background-color: var(--white);
-  color: var(--ink);
+  color: #241919;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
   font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
 }
 
+/* Headings default to #003049 unless specifically styled */
+h1, h2, h3, h4, h5, h6 {
+  color: #003049;
+}
+
+*::selection,
 ::selection {
-  background: var(--coral);
-  color: #ffffff;
+  background-color: #ff5500 !important;
+  color: #ffffff !important;
+}
+
+*::-moz-selection,
+::-moz-selection {
+  background-color: #ff5500 !important;
+  color: #ffffff !important;
 }
 
 /* Lenis smooth scroll */
@@ -224,4 +236,12 @@ html.lenis body {
 
 .num-counter {
   font-variant-numeric: tabular-nums;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

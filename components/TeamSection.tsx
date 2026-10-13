@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { User } from "@animateicons/react/lucide";
+import { User } from "lucide-react";
 
 export default function TeamSection() {
   const teamMembers = [

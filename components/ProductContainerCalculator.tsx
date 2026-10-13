@@ -11,7 +11,7 @@ import {
   Package,
   Globe,
   TriangleAlert,
-} from "@animateicons/react/lucide";
+} from "lucide-react";
 import { ProductStone } from "@/lib/productsData";
 
 interface ProductContainerCalculatorProps {

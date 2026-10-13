@@ -1,37 +1,25 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
-  MapPin,
-  Phone,
-  MessageSquare,
-  Package,
-  Layers,
-  ShieldCheck,
-  FileText,
-  Heart,
   ChevronRight,
-  Send,
-  Compass,
-  ArrowRight,
-  Truck,
-  Download,
-  Sparkles,
+  ChevronLeft,
+  Play,
   Check,
-  ExternalLink,
-  Info,
-  ChevronDown,
-  Share,
+  Share2,
+  Heart,
   Eye,
-  CircleCheck as CheckCircle2,
-} from "@animateicons/react/lucide";
+  ShieldCheck,
+  Send,
+  X,
+  Sparkles,
+  ArrowRight,
+} from "lucide-react";
 import { ProductStone } from "@/lib/productsData";
-import ProductSceneVisualizer from "./ProductSceneVisualizer";
-import ProductContainerCalculator from "./ProductContainerCalculator";
-import StoneTextureRotator from "./StoneTextureRotator";
+import { useWishlist } from "@/context/WishlistContext";
 
 interface ProductDetailViewProps {
   product: ProductStone;
@@ -42,65 +30,53 @@ export default function ProductDetailView({
   product,
   relatedProducts,
 }: ProductDetailViewProps) {
-  const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedFinish, setSelectedFinish] = useState(0);
-  const [isWishlisted, setIsWishlisted] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [isZoomed, setIsZoomed] = useState(false);
-  const [activeTab, setActiveTab] = useState<"engineering" | "provenance" | "packaging" | "installation">("engineering");
+  const { isWishlisted, toggleWishlist } = useWishlist();
+  const isItemWishlisted = isWishlisted(product.id);
 
-  // Sticky Glass Dock state
-  const [showStickyDock, setShowStickyDock] = useState(false);
-  const [isHeroHovered, setIsHeroHovered] = useState(false);
+  // Gallery state
+  const galleryImages = [
+    product.image,
+    ...(product.gallery && product.gallery.length > 0 ? product.gallery : []),
+    "/images/calibrated_stone_tiles.jpg",
+    "/images/premium_slate_texture.jpg",
+    "/images/stone_flooring_installation.jpg",
+  ].filter((v, i, a) => v && a.indexOf(v) === i).slice(0, 5);
 
-  // 3D Mouse Tilt Motion Values for Hero Image
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [12, -12]), { stiffness: 300, damping: 30 });
-  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-12, 12]), { stiffness: 300, damping: 30 });
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const currentHeroImage = galleryImages[selectedImageIndex] || product.image;
 
-  const handleMouseMoveHero = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    x.set(mouseX / width - 0.5);
-    y.set(mouseY / height - 0.5);
-  };
+  // Finishes state (instead of colors)
+  const defaultFinishes = [
+    { id: "polished", label: "Polished", desc: "Mirror 95° Gloss" },
+    { id: "honed", label: "Honed", desc: "Satin Smooth Matte" },
+    { id: "flamed", label: "Flamed", desc: "Thermal Anti-Skid" },
+    { id: "leathered", label: "Leathered", desc: "Brushed Tactile Relief" },
+  ];
 
-  const handleMouseLeaveHero = () => {
-    x.set(0);
-    y.set(0);
-  };
+  const productFinishes =
+    product.availableFinishes && product.availableFinishes.length > 0
+      ? product.availableFinishes.map((f) => {
+          const matched = defaultFinishes.find((d) => d.label.toLowerCase() === f.toLowerCase());
+          return matched || { id: f.toLowerCase().replace(/\s+/g, "-"), label: f, desc: "Architectural Grade" };
+        })
+      : defaultFinishes;
 
-  // Quote Form State & Refs
-  const quoteFormRef = useRef<HTMLDivElement>(null);
-  const calculatorRef = useRef<HTMLDivElement>(null);
-  const rotatorRef = useRef<HTMLDivElement>(null);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    country: "",
-    quantity: "",
-    projectType: "Commercial Facade / Rainscreen",
-    notes: "",
-  });
+  const [selectedFinishIndex, setSelectedFinishIndex] = useState(0);
 
-  // Scroll position tracking for Sticky Glass Dock
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 600) {
-        setShowStickyDock(true);
-      } else {
-        setShowStickyDock(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // Thickness options
+  const thicknessOptions = ["18mm Gangsaw", "20mm Calibrated", "30mm Heavy-Duty"];
+  const [selectedThickness, setSelectedThickness] = useState(thicknessOptions[1]);
+
+  // Quantity container selector
+  const [containersCount, setContainersCount] = useState(1);
+
+  // Inquiry Modal State
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+  const [quoteSubmitted, setQuoteSubmitted] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  // Gallery slider scroll ref
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -111,1106 +87,538 @@ export default function ProductDetailView({
           url: window.location.href,
         });
       } catch (err) {
-        // User cancelled
+        // user cancelled
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
     }
   };
 
-  const handleScrollToQuote = () => {
-    if (quoteFormRef.current) {
-      quoteFormRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  const handleScrollSliderNext = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({ left: 320, behavior: "smooth" });
     }
   };
 
-  const handleScrollToCalculator = () => {
-    if (calculatorRef.current) {
-      calculatorRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  const handleScrollSliderPrev = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({ left: -320, behavior: "smooth" });
     }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormSubmitted(true);
-  };
-
-  const currentGalleryImage = product.gallery[selectedImage] || product.image;
-  const activeFinishDetail = product.finishesDetail[selectedFinish] || product.finishesDetail[0];
-
-  const whatsappMessage = encodeURIComponent(
-    `Hello Pavan Stones Group team, I am interested in specifying "${product.name}" (${product.id}) for an upcoming project. Could you please share export pricing, availability, and container loading details?`
-  );
-  const whatsappUrl = `https://wa.me/919440271259?text=${whatsappMessage}`;
-
-  // Parse numeric values for visual strength indicators
-  const parseNum = (str: string) => {
-    const cleaned = str.replace(/[^0-9.]/g, "");
-    return parseFloat(cleaned) || 0;
-  };
-
-  const compressiveVal = parseNum(product.compressive);
+  const selectedFinish = productFinishes[selectedFinishIndex] || productFinishes[0];
 
   return (
-    <div className="bg-[#faf8f5] text-[#241919] min-h-screen pt-24 sm:pt-28 pb-24 relative overflow-hidden">
+    <div className="bg-white text-[#003049] min-h-screen pt-24 sm:pt-28 pb-20 selection:bg-[#ff5500]/15 selection:text-[#003049]">
       
-      {/* ── BREADCRUMB & UTILITY HEADER ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-8">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#747474]/15 pb-4 text-xs font-mono">
-          
-          <nav className="flex items-center gap-2 text-[#747474] flex-wrap">
-            <Link href="/" className="hover:text-[#c85a32] transition-colors">
+      {/* ── TOP UTILITY & BREADCRUMB BAR ── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 mb-6 sm:mb-8">
+        <div className="flex items-center justify-between text-xs font-sans pb-3 border-b border-[#003049]/10">
+          <nav className="flex items-center gap-2 text-[#003049]/60 truncate">
+            <Link href="/" className="hover:text-[#ff5500] transition-colors">
               Home
             </Link>
             <span>/</span>
-            <Link href="/products" className="hover:text-[#c85a32] transition-colors">
-              Catalog
+            <Link href="/products" className="hover:text-[#ff5500] transition-colors">
+              Stone Catalog
             </Link>
             <span>/</span>
             <Link
               href={`/companies/${product.companySlug}`}
-              className="text-[#c85a32] font-medium hover:underline"
+              className="hover:text-[#ff5500] transition-colors font-medium text-[#003049]"
             >
               {product.company}
             </Link>
             <span>/</span>
-            <span className="text-[#241919] font-bold truncate max-w-[180px] sm:max-w-none">
+            <span className="text-[#003049] font-semibold truncate max-w-[160px] sm:max-w-none">
               {product.name}
             </span>
           </nav>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-3 shrink-0">
             <button
-              type="button"
               onClick={handleShare}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-[#747474]/20 hover:border-[#c85a32] bg-white text-[#241919] hover:text-[#c85a32] transition-all cursor-pointer text-xs font-medium shadow-3xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#003049]/20 hover:border-[#ff5500] text-[#003049] hover:text-[#ff5500] transition-colors cursor-pointer text-xs"
               title="Share Stone Dossier"
             >
-              <Share size={14} />
-              <span>{copied ? "Link Copied!" : "Share Dossier"}</span>
+              <Share2 size={13} />
+              <span>{copiedLink ? "Copied!" : "Share"}</span>
             </button>
 
             <button
-              type="button"
-              onClick={() => setIsWishlisted(!isWishlisted)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-[#747474]/20 hover:border-[#c85a32] bg-white text-[#241919] transition-all cursor-pointer text-xs font-medium shadow-3xs"
-              title="Save to Project Shortlist"
+              onClick={() => toggleWishlist(product.id)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#003049]/20 hover:border-red-500 text-[#003049] hover:text-red-500 transition-colors cursor-pointer text-xs"
+              title="Add to Shortlist"
             >
               <Heart
-                className={`w-3.5 h-3.5 ${
-                  isWishlisted ? "fill-[#d94e34] text-[#d94e34]" : "text-[#747474]"
-                }`}
+                size={13}
+                className={isItemWishlisted ? "fill-red-500 text-red-500" : ""}
               />
-              <span>{isWishlisted ? "Shortlisted" : "Shortlist"}</span>
+              <span>{isItemWishlisted ? "Saved" : "Save"}</span>
             </button>
-
-            <Link
-              href="/products"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[#747474] hover:text-[#241919] transition-colors text-xs font-medium"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back</span>
-            </Link>
           </div>
-
         </div>
       </div>
 
-      {/* ── HERO SECTION: 3D PERSPECTIVE HERO VIEWER & SPEC DOSSIER ── */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-24"
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+      {/* ══════════════════════════════════════════════════════════════
+          MAIN PRODUCT SECTION (EXACT MATCH REFERENCE 2-COLUMN LAYOUT)
+      ══════════════════════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 mb-16 sm:mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
           
-          {/* LEFT: 3D TILT GALLERY VIEWER (6 COLS) */}
-          <div className="lg:col-span-6 space-y-4 lg:sticky lg:top-28 self-start">
-            
-            {/* 3D Motion Perspective Card */}
-            <motion.div
-              onMouseMove={(e) => {
-                handleMouseMoveHero(e);
-                setIsHeroHovered(true);
-              }}
-              onMouseEnter={() => setIsHeroHovered(true)}
-              onMouseLeave={() => {
-                handleMouseLeaveHero();
-                setIsHeroHovered(false);
-              }}
-              style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-              className="relative aspect-[4/3] w-full rounded-3xl overflow-hidden bg-[#18191c] border border-[#747474]/20 shadow-xl group cursor-pointer"
-            >
-              {product.gallery && product.gallery.length === 2 ? (
-                <div className="relative w-full h-full flex items-center justify-center">
-                  <img
-                    src={product.gallery[0]}
-                    alt={`${product.name} - Primary View`}
-                    className={`absolute inset-0 w-full h-full object-contain p-2 transition-all duration-700 ease-in-out ${
-                      isHeroHovered ? "opacity-0 scale-95 pointer-events-none" : "opacity-100 scale-100"
-                    }`}
-                  />
-                  <img
-                    src={product.gallery[1]}
-                    alt={`${product.name} - Hover Alternate View`}
-                    className={`absolute inset-0 w-full h-full object-contain p-2 transition-all duration-700 ease-in-out ${
-                      isHeroHovered ? "opacity-100 scale-100" : "opacity-0 scale-105 pointer-events-none"
-                    }`}
-                  />
-                </div>
-              ) : (
-                <img
-                  src={currentGalleryImage}
+          {/* ── LEFT COLUMN: LARGE HERO PRODUCT IMAGE ── */}
+          <div className="lg:col-span-6">
+            <div className="relative aspect-[4/4] sm:aspect-[4/4.2] w-full rounded-2xl overflow-hidden bg-[#f8fafc] border border-[#003049]/10 shadow-lg group">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={currentHeroImage}
+                  src={currentHeroImage}
                   alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.01 }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
-              )}
+              </AnimatePresence>
 
-              {/* Dual-Hover Flip Indicator Badge */}
-              {product.gallery && product.gallery.length === 2 && (
-                <div className="absolute top-4 right-16 z-10 px-3 py-1.5 rounded-xl bg-black/75 backdrop-blur-md border border-white/20 text-white text-[11px] font-mono flex items-center gap-2 shadow-lg">
-                  <span className={`w-2 h-2 rounded-full ${isHeroHovered ? "bg-emerald-400" : "bg-amber-400"} animate-pulse`} />
-                  <span className="font-semibold">{isHeroHovered ? "Hover View: Seated Ganesha" : "Hover to Flip View"}</span>
-                </div>
-              )}
-
-              {/* Cursor Specular Beam Effect */}
-              <div
-                className="absolute inset-0 pointer-events-none opacity-25 mix-blend-overlay transition-opacity duration-300 group-hover:opacity-40"
-                style={{ background: product.gradient }}
-              />
-
-              {/* Provenance Badge */}
+              {/* Top Provenance Floating Tag */}
               <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-                <span className="px-3 py-1.5 rounded-xl bg-black/70 backdrop-blur-md border border-white/20 text-white text-[11px] font-mono tracking-wider shadow-lg">
+                <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-[#003049] text-xs font-sans font-semibold border border-white/60 shadow-xs">
                   {product.origin.split(",")[0]}
                 </span>
-                <span className="px-2.5 py-1.5 rounded-xl bg-[#c85a32]/90 backdrop-blur-md text-white text-[10px] font-mono uppercase font-bold tracking-wider shadow-lg">
-                  {product.company}
+                <span className="px-3 py-1 rounded-full bg-[#003049] text-white text-xs font-sans font-medium shadow-xs">
+                  {product.category.toUpperCase()}
                 </span>
               </div>
-
-              {/* Fullscreen Lightbox Trigger */}
-              <button
-                type="button"
-                onClick={() => setIsZoomed(true)}
-                className="absolute bottom-4 right-4 z-10 w-10 h-10 rounded-xl bg-black/70 hover:bg-black/90 backdrop-blur-md text-white flex items-center justify-center transition-all cursor-pointer border border-white/20 shadow-xl hover:scale-110"
-                title="Enlarge Texture View"
-              >
-                <Eye size={16} />
-              </button>
-
-              {/* 3D Tilt Visual Indicator */}
-              <div className="absolute bottom-4 left-4 z-10 text-[10px] font-mono text-white/70 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                Move cursor to tilt 3D depth
-              </div>
-            </motion.div>
-
-            {/* Micro Thumbnail Navigation Bar */}
-            <div className="grid grid-cols-4 gap-3">
-              {product.gallery.map((imgUrl, idx) => (
-                <motion.button
-                  key={idx}
-                  type="button"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setSelectedImage(idx)}
-                  className={`relative aspect-[4/3] rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
-                    selectedImage === idx
-                      ? "border-[#c85a32] shadow-md ring-2 ring-[#c85a32]/30"
-                      : "border-[#747474]/20 opacity-70 hover:opacity-100 hover:border-[#747474]/40"
-                  }`}
-                >
-                  <img
-                    src={imgUrl}
-                    alt={`${product.name} specimen ${idx + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/10" />
-                </motion.button>
-              ))}
             </div>
-
-            {/* Direct Quarry Certification Banner */}
-            <div className="p-4 bg-white border border-[#747474]/20 rounded-2xl flex items-center justify-between gap-4 flex-wrap shadow-3xs">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#c85a32]/10 border border-[#c85a32]/20 flex items-center justify-center text-[#c85a32] flex-none">
-                  <ShieldCheck className="w-5 h-5 animate-pulse" />
-                </div>
-                <div>
-                  <h4 className="font-sans font-bold text-xs sm:text-sm text-[#241919]">
-                    100% Direct Quarry Reserve
-                  </h4>
-                  <p className="text-[11px] text-[#747474] font-light">
-                    Direct block selection, multi-blade gangsaw processing, zero third-party markups.
-                  </p>
-                </div>
-              </div>
-              <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-[#c85a32] bg-[#faf8f5] px-2.5 py-1 rounded-lg border border-[#747474]/15">
-                ISPM-15 Certified
-              </span>
-            </div>
-
           </div>
 
-          {/* RIGHT: SPECIFICATION DOSSIER & ACTIONS (6 COLS) */}
+          {/* ── RIGHT COLUMN: PRODUCT DETAILS & SPECIFICATIONS ── */}
           <div className="lg:col-span-6 space-y-6">
             
-            {/* Header Title & Provenance */}
-            <div className="space-y-3 border-b border-[#747474]/15 pb-6">
-              <div className="flex items-center justify-between gap-2 flex-wrap">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#c85a32] animate-ping" />
-                  <Link
-                    href={`/companies/${product.companySlug}`}
-                    className="text-xs font-mono uppercase tracking-[0.22em] text-[#c85a32] font-bold hover:underline"
-                  >
-                    {product.company}
-                  </Link>
-                  <span className="text-[#747474]/40">·</span>
-                  <span className="text-xs font-mono uppercase tracking-wider text-[#747474]">
-                    {product.category}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1.5 text-xs font-mono text-[#747474]">
-                  <MapPin className="w-3.5 h-3.5 text-[#c85a32]" />
-                  <span>{product.origin}</span>
-                </div>
-              </div>
-
-              <h1 className="font-display font-light text-3xl sm:text-4xl lg:text-[44px] text-[#241919] leading-[1.1] tracking-tight">
+            {/* Title Deck */}
+            <div className="space-y-2">
+              <span className="text-xs font-sans uppercase tracking-[0.2em] text-[#ff5500] font-bold block">
+                {product.company} · Direct Quarry Reserve
+              </span>
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-normal text-[#003049] tracking-tight leading-[1.12]">
                 {product.name}
               </h1>
-
-              <p className="font-serif italic text-base sm:text-lg text-[#555555] leading-relaxed">
-                &ldquo;{product.tagline}&rdquo;
-              </p>
-
-              <p className="text-xs sm:text-[13.5px] text-[#747474] font-light leading-relaxed pt-1">
-                {product.description}
-              </p>
             </div>
 
-            {/* Specification Dossier Card */}
-            <div className="bg-white border border-[#747474]/20 rounded-3xl p-6 space-y-5 shadow-xs">
-              
-              <div className="flex items-center justify-between border-b border-[#747474]/15 pb-3">
-                <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-[#c85a32]" />
-                  <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#241919] font-bold">
-                    Architectural Specification Dossier
-                  </span>
-                </div>
-                <span className="text-[10px] font-mono text-[#747474] uppercase tracking-wider bg-[#faf8f5] px-2 py-0.5 rounded border border-[#747474]/15">
-                  ASTM / EN Certified
+            {/* Thin Horizontal Divider Line (Matching Reference) */}
+            <div className="w-full h-[1px] bg-[#003049]/15" />
+
+            {/* Short Refined Description (Matching Reference) */}
+            <p className="text-xs sm:text-[13.5px] font-sans font-light text-[#003049]/80 leading-relaxed">
+              {product.tagline} {product.description.slice(0, 190)}...
+            </p>
+
+            {/* ── INSTEAD OF "COLOR": SURFACE FINISHES & TEXTURES SELECTOR ── */}
+            <div className="space-y-2.5 pt-1">
+              <div className="flex items-center justify-between text-xs font-sans">
+                <span className="text-[#003049] font-semibold uppercase tracking-wider text-[11px]">
+                  Surface Finish &amp; Texture
+                </span>
+                <span className="text-[#ff5500] font-medium text-xs">
+                  {selectedFinish.label} ({selectedFinish.desc})
                 </span>
               </div>
 
-              {/* Formats */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10.5px] font-mono uppercase tracking-wider text-[#747474] font-bold flex items-center gap-1.5">
-                    <Layers className="w-3.5 h-3.5 text-[#c85a32]" />
-                    Available Formats &amp; Dimensions
-                  </span>
-                  <span className="text-[10.5px] font-mono text-[#c85a32] font-semibold">
-                    Calibrated ±1mm
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {product.availableSizes.map((sz) => (
-                    <span
-                      key={sz}
-                      className="px-3 py-1.5 bg-[#faf8f5] border border-[#747474]/20 rounded-xl text-xs font-mono font-medium text-[#241919] shadow-3xs hover:border-[#c85a32] transition-colors"
-                    >
-                      {sz}
-                    </span>
-                  ))}
-                  <span className="px-3 py-1.5 bg-white border border-dashed border-[#747474]/30 rounded-xl text-xs font-mono text-[#747474]">
-                    + Bespoke CAD Cut-to-Size
-                  </span>
-                </div>
-              </div>
-
-              {/* Interactive Finishes Inspector Selector */}
-              <div className="space-y-3 pt-3 border-t border-[#747474]/15">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10.5px] font-mono uppercase tracking-wider text-[#747474] font-bold flex items-center gap-1.5">
-                    <Sparkles size={14} className="text-[#c85a32]" />
-                    Surface Textures &amp; Finishes Inspector
-                  </span>
-                  <span className="text-[10px] font-mono text-[#747474]">
-                    Select finish to preview
-                  </span>
-                </div>
-                
-                <div className="flex flex-wrap gap-2">
-                  {product.finishesDetail.map((fn, idx) => (
+              {/* Finish Selector Chips */}
+              <div className="flex flex-wrap items-center gap-2.5">
+                {productFinishes.map((f, idx) => {
+                  const isSelected = selectedFinishIndex === idx;
+                  return (
                     <button
-                      key={fn.name}
+                      key={f.id}
                       type="button"
-                      onClick={() => setSelectedFinish(idx)}
-                      className={`px-3.5 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all cursor-pointer ${
-                        selectedFinish === idx
-                          ? "bg-[#241919] text-white font-bold shadow-sm border border-[#241919]"
-                          : "bg-[#faf8f5] text-[#241919] border border-[#747474]/20 hover:border-[#c85a32]"
+                      onClick={() => setSelectedFinishIndex(idx)}
+                      className={`px-4 py-2 rounded-lg text-xs font-sans font-medium transition-all duration-200 cursor-pointer flex items-center gap-2 border ${
+                        isSelected
+                          ? "bg-[#003049] text-white border-[#003049] shadow-sm ring-2 ring-[#00e5ff]/50"
+                          : "bg-white text-[#003049] border-[#003049]/20 hover:border-[#ff5500] hover:text-[#ff5500]"
                       }`}
                     >
-                      {fn.name}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Active Finish Description Card */}
-                <motion.div
-                  key={activeFinishDetail.name}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-4 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-2"
-                >
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="font-bold text-[#c85a32]">{activeFinishDetail.name}</span>
-                    <span className="text-[#747474] bg-white px-2 py-0.5 rounded border border-[#747474]/15">{activeFinishDetail.texture}</span>
-                  </div>
-                  <p className="text-[12px] text-[#555555] font-light leading-relaxed">
-                    {activeFinishDetail.description}
-                  </p>
-                  <div className="text-[11px] font-mono text-[#747474] pt-1 border-t border-[#747474]/10">
-                    Recommended for: <span className="font-semibold text-[#241919]">{activeFinishDetail.recommendedFor}</span>
-                  </div>
-                </motion.div>
-              </div>
-
-            </div>
-
-            {/* Primary Action Buttons */}
-            <div className="space-y-3 pt-1">
-              <div className="flex items-center gap-3">
-                <Link
-                  href={`/request-sample?stone=${product.id}`}
-                  className="flex-1 py-4 px-5 bg-[#c85a32] hover:bg-[#b04a25] text-white rounded-2xl text-xs font-sans font-semibold uppercase tracking-wider text-center transition-all shadow-sm hover:shadow-md cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <Package className="w-4 h-4" />
-                  <span>Request Physical Sample Box</span>
-                </Link>
-
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="py-4 px-5 bg-[#25D366] hover:bg-[#20ba59] text-white rounded-2xl transition-all shadow-sm hover:shadow-md cursor-pointer flex items-center justify-center gap-2"
-                  title="Direct WhatsApp with Stone Specialist"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  <span className="text-xs font-sans font-semibold uppercase tracking-wider hidden sm:inline">WhatsApp Specifier</span>
-                </a>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={handleScrollToQuote}
-                  className="py-3.5 px-4 bg-[#241919] hover:bg-[#3e352a] text-white rounded-2xl text-xs font-sans font-semibold uppercase tracking-wider text-center transition-all cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <span>Inquire Container Quote</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleScrollToCalculator}
-                  className="py-3.5 px-4 bg-white border border-[#747474]/25 hover:border-[#c85a32] text-[#241919] hover:text-[#c85a32] rounded-2xl text-xs font-sans font-semibold uppercase tracking-wider text-center transition-all cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <Package size={14} className="text-[#c85a32]" />
-                  <span>Container Estimator</span>
-                </button>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </motion.section>
-
-      {/* ── 360° SOLAR LIGHTING & TEXTURE INSPECTOR ── */}
-      <motion.section
-        ref={rotatorRef}
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-24"
-      >
-        <StoneTextureRotator product={product} />
-      </motion.section>
-
-      {/* ── IN-SITU ARCHITECTURAL SCENE SIMULATOR ── */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-24"
-      >
-        <ProductSceneVisualizer product={product} />
-      </motion.section>
-
-      {/* ── LIVE CONTAINER & FREIGHT CALCULATOR ── */}
-      <motion.section
-        ref={calculatorRef}
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-24"
-      >
-        <ProductContainerCalculator
-          product={product}
-          onQuoteRequested={(areaM2, containerCount) => {
-            setFormData((prev) => ({
-              ...prev,
-              quantity: `${areaM2.toFixed(0)} m² (~${containerCount} 20ft container${containerCount > 1 ? "s" : ""})`,
-            }));
-            handleScrollToQuote();
-          }}
-        />
-      </motion.section>
-
-      {/* ── TABBED ARCHITECTURAL TECHNICAL DOSSIER WITH MORPHING TABS ── */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-24"
-      >
-        <div className="bg-white border border-[#747474]/20 rounded-3xl p-6 sm:p-10 shadow-sm space-y-8">
-          
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#747474]/15 pb-6">
-            <div className="space-y-1">
-              <span className="text-[10.5px] font-mono uppercase tracking-[0.24em] text-[#c85a32] font-semibold">
-                Technical Data Sheet
-              </span>
-              <h2 className="font-display font-light text-2xl sm:text-3xl text-[#241919]">
-                Geotechnical &amp; Architectural Dossier
-              </h2>
-            </div>
-
-            {/* Framer Motion LayoutId Morphing Tabs */}
-            <div className="flex items-center bg-[#faf8f5] p-1.5 rounded-2xl border border-[#747474]/20 flex-wrap gap-1 relative">
-              {[
-                { id: "engineering", label: "Lab & ASTM Specs" },
-                { id: "provenance", label: "Quarry Provenance" },
-                { id: "packaging", label: "Export Packaging" },
-                { id: "installation", label: "Installation Guide" },
-              ].map((tab) => {
-                const isActive = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => setActiveTab(tab.id as any)}
-                    className={`relative px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer z-10 ${
-                      isActive ? "text-white font-bold" : "text-[#747474] hover:text-[#241919]"
-                    }`}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeTabPill"
-                        className="absolute inset-0 bg-[#241919] rounded-xl z-[-1] shadow-xs"
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      <span
+                        className={`w-2 h-2 rounded-full ${
+                          isSelected ? "bg-[#00e5ff] shadow-[0_0_6px_#00e5ff]" : "bg-[#003049]/30"
+                        }`}
                       />
-                    )}
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
+                      <span>{f.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-          {/* TAB 1: GEOTECHNICAL LAB SPECS WITH ANIMATED PROGRESS METERS */}
-          {activeTab === "engineering" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="space-y-8"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Density */}
-                <div className="p-5 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-[#747474] uppercase font-bold">Volumetric Density</span>
-                    <span className="text-[#c85a32] font-bold">ASTM C97</span>
-                  </div>
-                  <span className="font-mono font-bold text-2xl text-[#241919] block">
-                    {product.density}
-                  </span>
-                  <p className="text-[11px] text-[#747474] font-light">
-                    High micro-crystalline mass providing structural longevity.
-                  </p>
-                </div>
-
-                {/* Compressive Strength with Animated Fill Meter */}
-                <div className="p-5 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-[#747474] uppercase font-bold">Compressive Strength</span>
-                    <span className="text-[#c85a32] font-bold">ASTM C170</span>
-                  </div>
-                  <span className="font-mono font-bold text-2xl text-[#241919] block">
-                    {product.compressive}
-                  </span>
-                  <div className="w-full h-2.5 bg-[#747474]/20 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${Math.min(100, (compressiveVal / 220) * 100)}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1, ease: "easeOut" }}
-                      className="h-full bg-[#c85a32] rounded-full"
-                    />
-                  </div>
-                </div>
-
-                {/* Water Absorption */}
-                <div className="p-5 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-[#747474] uppercase font-bold">Water Absorption</span>
-                    <span className="text-[#c85a32] font-bold">ASTM C97</span>
-                  </div>
-                  <span className="font-mono font-bold text-2xl text-[#241919] block">
-                    {product.waterAbs}
-                  </span>
-                  <p className="text-[11px] text-[#747474] font-light">
-                    Ultra-low porosity, resisting acid rain and freeze-thaw cycles.
-                  </p>
-                </div>
-
-                {/* Slip Rating */}
-                <div className="p-5 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-[#747474] uppercase font-bold">Slip Resistance</span>
-                    <span className="text-[#c85a32] font-bold">DIN 51130</span>
-                  </div>
-                  <span className="font-mono font-bold text-2xl text-[#241919] block">
-                    {product.slipResistance}
-                  </span>
-                  <p className="text-[11px] text-[#747474] font-light">
-                    Certified anti-skid traction for wet decks and public plazas.
-                  </p>
-                </div>
-
-                {/* Mohs Hardness */}
-                <div className="p-5 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-[#747474] uppercase font-bold">Mohs Hardness Scale</span>
-                    <span className="text-[#c85a32] font-bold">EN 101</span>
-                  </div>
-                  <span className="font-mono font-bold text-2xl text-[#241919] block">
-                    {product.mohsHardness}
-                  </span>
-                  <p className="text-[11px] text-[#747474] font-light">
-                    Scratch resistant against heavy footwear and commercial footfall.
-                  </p>
-                </div>
-
-                {/* Flexural Strength */}
-                <div className="p-5 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-[#747474] uppercase font-bold">Flexural Rupture</span>
-                    <span className="text-[#c85a32] font-bold">ASTM C880</span>
-                  </div>
-                  <span className="font-mono font-bold text-2xl text-[#241919] block">
-                    {product.flexuralStrength}
-                  </span>
-                  <p className="text-[11px] text-[#747474] font-light">
-                    High bending resistance under mechanical load.
-                  </p>
-                </div>
+            {/* ── CALIBRATED THICKNESS SELECTOR ── */}
+            <div className="space-y-2 pt-1">
+              <span className="text-[#003049] font-semibold uppercase tracking-wider text-[11px] block">
+                Calibrated Thickness
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                {thicknessOptions.map((th) => {
+                  const isSelected = selectedThickness === th;
+                  return (
+                    <button
+                      key={th}
+                      type="button"
+                      onClick={() => setSelectedThickness(th)}
+                      className={`px-3 py-1.5 rounded-md text-xs font-sans transition-all cursor-pointer border ${
+                        isSelected
+                          ? "border-[#ff5500] bg-[#ff5500]/10 text-[#ff5500] font-semibold"
+                          : "border-[#003049]/15 text-[#003049]/70 hover:border-[#003049]/40"
+                      }`}
+                    >
+                      {th}
+                    </button>
+                  );
+                })}
               </div>
-            </motion.div>
-          )}
-
-          {/* TAB 2: QUARRY PROVENANCE */}
-          {activeTab === "provenance" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
-            >
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#c85a32]/10 border border-[#c85a32]/20 text-[#c85a32] text-xs font-mono rounded-lg">
-                  <MapPin className="w-3.5 h-3.5" />
-                  <span>Geological Provenance</span>
-                </div>
-                <h3 className="font-display font-light text-2xl sm:text-3xl text-[#241919]">
-                  Extracted Directly From {product.origin}
-                </h3>
-                <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed">
-                  Pavan Stones Group holds direct open-cast quarry reserves in {product.origin}. Our stone blocks are selectively harvested using non-explosive wire-saw technology to eliminate internal stress fractures.
-                </p>
-                <div className="space-y-2 pt-2 text-xs font-mono">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[#c85a32]" />
-                    <span>Quarry Type: {product.quarryType}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[#c85a32]" />
-                    <span>Guaranteed Lot-to-Lot Color Uniformity</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[#c85a32]" />
-                    <span>Zero Third-Party Brokerage Markup</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative aspect-[16/10] rounded-3xl overflow-hidden border border-[#747474]/20 shadow-md">
-                <img
-                  src={product.image}
-                  alt={`${product.name} Quarry`}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
-                  <div className="text-white space-y-1">
-                    <span className="text-xs font-mono text-[#c85a32] uppercase font-bold">Quarry Reserve</span>
-                    <h4 className="font-display text-xl">{product.name} Block Harvesting</h4>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* TAB 3: EXPORT PACKAGING */}
-          {activeTab === "packaging" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="space-y-6"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
-                <div className="p-4 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-1">
-                  <span className="text-[10px] uppercase text-[#747474] font-bold">Crate Standard</span>
-                  <span className="font-bold text-sm text-[#241919] block">{product.exportPackaging.crateType}</span>
-                </div>
-                <div className="p-4 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-1">
-                  <span className="text-[10px] uppercase text-[#747474] font-bold">Crate Capacity</span>
-                  <span className="font-bold text-sm text-[#241919] block">{product.exportPackaging.palletCapacity}</span>
-                </div>
-                <div className="p-4 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-1">
-                  <span className="text-[10px] uppercase text-[#747474] font-bold">20ft FCL Payload</span>
-                  <span className="font-bold text-sm text-[#241919] block">{product.exportPackaging.containerCapacity}</span>
-                </div>
-                <div className="p-4 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-1">
-                  <span className="text-[10px] uppercase text-[#747474] font-bold">Fumigation</span>
-                  <span className="font-bold text-sm text-[#241919] block">{product.exportPackaging.fumigation}</span>
-                </div>
-              </div>
-
-              <div className="p-4 bg-white border border-[#747474]/20 rounded-2xl flex items-center justify-between gap-4 flex-wrap">
-                <div className="space-y-1">
-                  <h4 className="font-sans font-bold text-xs sm:text-sm text-[#241919]">
-                    Export Sea Freight Ports
-                  </h4>
-                  <p className="text-xs text-[#747474] font-light">
-                    Direct shipping from <span className="font-bold text-[#241919]">{product.exportPackaging.portOfLoading}</span> with full phyto-sanitary inspection certificates.
-                  </p>
-                </div>
-                <span className="text-xs font-mono uppercase tracking-wider text-[#c85a32] bg-[#faf8f5] px-3 py-1.5 rounded-xl border border-[#747474]/15 font-semibold">
-                  FOB / CIF Export Contract
-                </span>
-              </div>
-            </motion.div>
-          )}
-
-          {/* TAB 4: INSTALLATION GUIDE */}
-          {activeTab === "installation" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="space-y-6 text-xs sm:text-sm"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-5 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-2">
-                  <h4 className="font-sans font-bold text-sm text-[#241919] flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[#c85a32]" />
-                    <span>Adhesive &amp; Substrate Preparation</span>
-                  </h4>
-                  <p className="text-xs text-[#555555] font-light leading-relaxed">
-                    Use high-polymer modified thin-set adhesives (ANSI A118.4 / EN 12004 C2TE standard). Ensure substrate is structurally sound, cured 28 days, and free of dust or oil.
-                  </p>
-                </div>
-
-                <div className="p-5 bg-[#faf8f5] rounded-2xl border border-[#747474]/15 space-y-2">
-                  <h4 className="font-sans font-bold text-sm text-[#241919] flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[#c85a32]" />
-                    <span>Sealer &amp; Impregnator Recommendations</span>
-                  </h4>
-                  <p className="text-xs text-[#555555] font-light leading-relaxed">
-                    For exterior facades and wet pool decks, apply a penetrating fluoropolymer stone sealer to maintain oil and water stain protection while preserving natural stone breathability.
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-        </div>
-      </motion.section>
-
-      {/* ── REDESIGNED CAD / BIM ASSET HUB (LIGHT THEME CARD WITH DARK CTA) ── */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-24"
-      >
-        <div className="bg-white text-[#241919] rounded-3xl p-6 sm:p-10 border border-[#747474]/20 shadow-sm flex flex-wrap items-center justify-between gap-8 relative overflow-hidden group">
-          
-          <div className="space-y-2 max-w-xl relative z-10">
-            <span className="text-[10.5px] font-mono uppercase tracking-[0.24em] text-[#c85a32] font-semibold flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: "8s" }} />
-              Architectural Asset Hub
-            </span>
-            <h2 className="font-display font-light text-2xl sm:text-3xl text-[#241919]">
-              Download CAD / BIM 4K Texture Maps
-            </h2>
-            <p className="text-xs sm:text-sm text-[#747474] font-light leading-relaxed">
-              Equip your 3D rendering pipeline with high-resolution, seamlessly tileable texture maps (Diffuse, Normal, Roughness) and technical PDF specifications for {product.name}.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3 relative z-10">
-            <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              type="button"
-              onClick={() => {
-                alert(`Downloading CAD 4K Texture Pack for ${product.name}...`);
-              }}
-              className="px-6 py-3.5 bg-[#241919] hover:bg-[#c85a32] text-white rounded-2xl text-xs font-sans font-semibold uppercase tracking-wider transition-all shadow-sm cursor-pointer flex items-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              <span>Download 4K Texture Pack</span>
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              type="button"
-              onClick={() => {
-                alert(`Downloading Architectural Specification PDF for ${product.name}...`);
-              }}
-              className="px-6 py-3.5 bg-[#faf8f5] hover:bg-[#f4efe6] text-[#241919] border border-[#747474]/20 rounded-2xl text-xs font-sans font-semibold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2"
-            >
-              <FileText className="w-4 h-4" />
-              <span>PDF Tech Spec Sheet</span>
-            </motion.button>
-          </div>
-        </div>
-      </motion.section>
-
-      {/* ── INLINE PROJECT QUOTE / INQUIRY FORM ── */}
-      <motion.section
-        ref={quoteFormRef}
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-24"
-      >
-        <div className="bg-white border border-[#747474]/20 rounded-3xl p-6 sm:p-10 shadow-sm space-y-6">
-          
-          <div className="text-center space-y-2 max-w-xl mx-auto">
-            <span className="text-[10.5px] font-mono uppercase tracking-[0.24em] text-[#c85a32] font-semibold">
-              Quarry Direct Export Pricing
-            </span>
-            <h2 className="font-display font-light text-2xl sm:text-3xl md:text-4xl text-[#241919]">
-              Inquire Quotation for {product.name}
-            </h2>
-            <p className="text-xs sm:text-sm text-[#747474] font-light">
-              Connect directly with our quarry engineers for custom cutting, bulk container logistics, or technical test sheets.
-            </p>
-          </div>
-
-          {formSubmitted ? (
-            <div className="p-8 bg-[#faf8f5] border border-[#c85a32]/30 rounded-2xl text-center space-y-3">
-              <CheckCircle2 className="w-12 h-12 text-[#c85a32] mx-auto animate-bounce" />
-              <h3 className="font-display font-medium text-2xl text-[#241919]">
-                Quotation Specification Received
-              </h3>
-              <p className="text-xs text-[#747474] max-w-md mx-auto leading-relaxed">
-                Thank you! Our technical sales director will review your project specification for{" "}
-                <span className="font-semibold text-[#241919]">{product.name}</span> and contact you within 12 business hours.
-              </p>
             </div>
-          ) : (
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[11px] font-mono uppercase tracking-wider text-[#747474] mb-1 font-bold">
-                    Your Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Architect Sarah Lin / Studio Design"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-[#747474]/25 focus:border-[#c85a32] focus:outline-none text-xs text-[#241919] bg-[#faf8f5]"
-                  />
-                </div>
 
-                <div>
-                  <label className="block text-[11px] font-mono uppercase tracking-wider text-[#747474] mb-1 font-bold">
-                    Corporate Email *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="sarah@studioarchitecture.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-[#747474]/25 focus:border-[#c85a32] focus:outline-none text-xs text-[#241919] bg-[#faf8f5]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-mono uppercase tracking-wider text-[#747474] mb-1 font-bold">
-                    Phone / WhatsApp *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="+1 (555) 000-0000"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-[#747474]/25 focus:border-[#c85a32] focus:outline-none text-xs text-[#241919] bg-[#faf8f5]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-mono uppercase tracking-wider text-[#747474] mb-1 font-bold">
-                    Delivery Port / Country Destination *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Sydney Port, Australia / Dubai Port, UAE"
-                    value={formData.country}
-                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-[#747474]/25 focus:border-[#c85a32] focus:outline-none text-xs text-[#241919] bg-[#faf8f5]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-mono uppercase tracking-wider text-[#747474] mb-1 font-bold">
-                    Estimated Quantity &amp; Container Target
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 500 m² or 1x 20ft Container"
-                    value={formData.quantity}
-                    onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-[#747474]/25 focus:border-[#c85a32] focus:outline-none text-xs text-[#241919] bg-[#faf8f5]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-mono uppercase tracking-wider text-[#747474] mb-1 font-bold">
-                    Project Typology
-                  </label>
-                  <select
-                    value={formData.projectType}
-                    onChange={(e) => setFormData({ ...formData, projectType: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-[#747474]/25 focus:border-[#c85a32] focus:outline-none text-xs text-[#241919] bg-[#faf8f5] cursor-pointer"
-                  >
-                    <option>Commercial Facade / Rainscreen</option>
-                    <option>Hotel &amp; Resort Development</option>
-                    <option>Luxury Residential Villa</option>
-                    <option>Civic / Plaza Paving</option>
-                    <option>Stone Wholesale / Distribution</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-[#747474] mb-1 font-bold">
-                  Specific Dimensions, Finishes or Edge Profiles
-                </label>
-                <textarea
-                  rows={3}
-                  placeholder="Mention desired thicknesses, delivery deadlines, edge profiles, or CAD drawing attachments..."
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-[#747474]/25 focus:border-[#c85a32] focus:outline-none text-xs text-[#241919] bg-[#faf8f5]"
-                />
-              </div>
-
-              <div className="pt-2 flex items-center justify-between gap-4 flex-wrap">
-                <span className="text-[10px] text-[#747474] font-mono">
-                  Direct quarry export contracts guaranteed.
+            {/* ── QUANTITY SELECTOR (MATCHING REFERENCE: - 01 +) ── */}
+            <div className="flex items-center gap-4 pt-2">
+              <span className="text-xs font-sans text-[#003049]/80 font-medium">Quantity:</span>
+              <div className="flex items-center border border-[#003049]/20 rounded-md bg-white">
+                <button
+                  type="button"
+                  onClick={() => setContainersCount(Math.max(1, containersCount - 1))}
+                  className="w-8 h-8 flex items-center justify-center text-sm font-sans font-bold text-[#003049] hover:bg-[#003049]/5 transition-colors cursor-pointer"
+                >
+                  -
+                </button>
+                <span className="w-10 text-center font-sans font-semibold text-sm text-[#003049]">
+                  {containersCount < 10 ? `0${containersCount}` : containersCount}
                 </span>
                 <button
-                  type="submit"
-                  className="px-6 py-3.5 bg-[#c85a32] hover:bg-[#b04a25] text-white rounded-2xl text-xs font-sans font-semibold uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-2 shadow-sm"
+                  type="button"
+                  onClick={() => setContainersCount(containersCount + 1)}
+                  className="w-8 h-8 flex items-center justify-center text-sm font-sans font-bold text-[#003049] hover:bg-[#003049]/5 transition-colors cursor-pointer"
                 >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>Submit Specification Request</span>
+                  +
                 </button>
               </div>
-            </form>
-          )}
-
-        </div>
-      </motion.section>
-
-      {/* ── RELATED & COMPLEMENTARY STONES ── */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-      >
-        <div className="space-y-6">
-          
-          <div className="flex items-center justify-between border-b border-[#747474]/15 pb-4">
-            <div>
-              <span className="text-[10.5px] font-mono uppercase tracking-[0.24em] text-[#c85a32] font-semibold">
-                Curated Natural Palette
+              <span className="text-xs font-sans text-[#003049]/60">
+                Full 20ft Container (~{containersCount * 450} SQM / {containersCount * 28} MT)
               </span>
-              <h2 className="font-display font-light text-2xl sm:text-3xl text-[#241919] mt-1">
-                Complementary Natural Stones
+            </div>
+
+            {/* ── PRIMARY ACTION BUTTON (MATCHING REFERENCE PILL BUTTON) ── */}
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => setIsQuoteModalOpen(true)}
+                className="w-full py-4 px-8 rounded-full bg-[#003049] text-white hover:bg-[#ff5500] font-sans font-semibold text-xs sm:text-sm uppercase tracking-[0.16em] transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-3 cursor-pointer group"
+              >
+                <span>Request Export Quotation</span>
+                <span className="text-white/40">•</span>
+                <span className="text-[#00e5ff] group-hover:text-white transition-colors">Direct Quarry Pricing</span>
+                <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+
+            {/* ── BULLET SPECIFICATIONS LIST (MATCHING REFERENCE BULLET POINTS) ── */}
+            <div className="pt-4 border-t border-[#003049]/10">
+              <ul className="space-y-1.5 text-xs sm:text-[13px] font-sans font-light text-[#003049]/80 leading-relaxed">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#ff5500] font-bold">•</span>
+                  <span>Geological Classification: <strong className="text-[#003049] font-medium">{product.category.toUpperCase()}</strong></span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#ff5500] font-bold">•</span>
+                  <span>Quarry Provenance: <strong className="text-[#003049] font-medium">{product.origin}</strong></span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#ff5500] font-bold">•</span>
+                  <span>Surface Calibration: <strong className="text-[#003049] font-medium">±0.5mm Diamond Sawn Precision</strong></span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#ff5500] font-bold">•</span>
+                  <span>Compressive Strength: <strong className="text-[#003049] font-medium">{product.compressive || "180+ MPa ASTM C170 Certified"}</strong></span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#ff5500] font-bold">•</span>
+                  <span>Water Absorption: <strong className="text-[#003049] font-medium">{product.waterAbs || "< 0.12% (Zero Efflorescence)"}</strong></span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#ff5500] font-bold">•</span>
+                  <span>Export Packing: <strong className="text-[#003049] font-medium">ISPM-15 Heat-Treated Hardwood Wooden Crates</strong></span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#ff5500] font-bold">•</span>
+                  <span>Ocean Transit SLA: <strong className="text-[#003049] font-medium">30–50 Days via Chennai Ocean Terminal (INMAA)</strong></span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════
+          BOTTOM GALLERY SECTION (MATCHING REFERENCE BOTTOM ROW)
+          Multi-image row with preview badge + navigation arrow
+      ══════════════════════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 mb-20 sm:mb-24">
+        <div className="flex items-center justify-between pb-4">
+          <span className="text-xs font-sans uppercase tracking-[0.2em] text-[#ff5500] font-bold block">
+            Detail Views &amp; Surface Inspections
+          </span>
+
+          {/* Navigation Arrows for Slider */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleScrollSliderPrev}
+              className="w-8 h-8 rounded-full border border-[#003049]/20 flex items-center justify-center text-[#003049] hover:border-[#ff5500] hover:text-[#ff5500] transition-colors cursor-pointer"
+              title="Previous Photo"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <button
+              onClick={handleScrollSliderNext}
+              className="w-8 h-8 rounded-full border border-[#003049]/20 flex items-center justify-center text-[#003049] hover:border-[#ff5500] hover:text-[#ff5500] transition-colors cursor-pointer"
+              title="Next Photo"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Horizontal Gallery Cards Row */}
+        <div
+          ref={sliderRef}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto scrollbar-none scroll-smooth"
+        >
+          {galleryImages.slice(0, 4).map((imgUrl, idx) => {
+            const isSelected = selectedImageIndex === idx;
+            return (
+              <div
+                key={idx}
+                onClick={() => setSelectedImageIndex(idx)}
+                className={`relative aspect-[3/4] sm:aspect-[4/5] rounded-xl overflow-hidden border cursor-pointer group transition-all duration-300 ${
+                  isSelected
+                    ? "border-[#ff5500] ring-2 ring-[#ff5500]/40 shadow-md"
+                    : "border-[#003049]/15 hover:border-[#003049]/40 opacity-85 hover:opacity-100"
+                }`}
+              >
+                <img
+                  src={imgUrl}
+                  alt={`${product.name} detail view ${idx + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+
+                {/* Circular Play / 360 Indicator Icon on the First Item (Matching Reference) */}
+                {idx === 0 && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/15 group-hover:bg-black/25 transition-colors">
+                    <div className="w-12 h-12 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <Play className="w-5 h-5 text-[#003049] fill-[#003049] ml-0.5" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Sub-label overlay */}
+                <div className="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/75 to-transparent text-white text-[11px] font-sans">
+                  <span>
+                    {idx === 0
+                      ? "360° Living Space"
+                      : idx === 1
+                      ? "Texture Micro-Audit"
+                      : idx === 2
+                      ? "Calibrated Dry-Lay"
+                      : "Export Hardwood Crating"}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════
+          RELATED QUARRY SPECIMENS (CLEAN 3-CARD ROW)
+      ══════════════════════════════════════════════════════════════ */}
+      {relatedProducts && relatedProducts.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 pt-10 border-t border-[#003049]/10">
+          <div className="flex items-center justify-between pb-8">
+            <div>
+              <span className="text-xs font-sans uppercase tracking-[0.2em] text-[#ff5500] font-bold block">
+                Recommended Quarry Portfolios
+              </span>
+              <h2 className="font-display text-2xl sm:text-3xl text-[#003049] font-normal mt-1">
+                Complementary Stone Selections
               </h2>
             </div>
             <Link
               href="/products"
-              className="text-xs font-mono uppercase tracking-wider text-[#c85a32] font-semibold hover:underline"
+              className="text-xs font-sans uppercase tracking-wider font-semibold text-[#ff5500] hover:text-[#003049] transition-colors"
             >
-              View Full Catalog →
+              Browse All →
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {relatedProducts.map((rel) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {relatedProducts.slice(0, 3).map((item) => (
               <Link
-                key={rel.id}
-                href={`/products/${rel.id}`}
-                className="group border border-[#747474]/20 rounded-2xl overflow-hidden bg-white shadow-3xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                key={item.id}
+                href={`/products/${item.id}`}
+                className="group block rounded-xl overflow-hidden border border-[#003049]/10 bg-[#f8fafc] hover:border-[#ff5500] transition-all shadow-xs"
               >
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#18191c]">
+                <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
                   <img
-                    src={rel.image}
-                    alt={rel.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md text-white text-[10px] font-mono px-2.5 py-1 rounded-lg">
-                    {rel.company}
+                  <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-md text-[#003049] text-[10px] font-sans font-semibold">
+                    {item.origin.split(",")[0]}
                   </div>
                 </div>
 
-                <div className="p-5 space-y-2">
-                  <h3 className="font-sans font-bold text-sm sm:text-base text-[#241919] group-hover:text-[#c85a32] transition-colors leading-snug">
-                    {rel.name}
+                <div className="p-5 space-y-1.5">
+                  <span className="text-[10px] font-sans uppercase tracking-widest text-[#ff5500] font-bold block">
+                    {item.company}
+                  </span>
+                  <h3 className="font-display text-lg font-medium text-[#003049] group-hover:text-[#ff5500] transition-colors truncate">
+                    {item.name}
                   </h3>
-                  <p className="text-xs text-[#747474] line-clamp-2 font-light leading-relaxed">
-                    {rel.tagline}
+                  <p className="text-xs font-sans text-[#003049]/70 line-clamp-1">
+                    {item.tagline}
                   </p>
-                  <div className="pt-2 flex items-center justify-between text-[11px] font-mono text-[#c85a32] font-semibold">
-                    <span>Inspect Stone Specimen</span>
-                    <span>→</span>
-                  </div>
                 </div>
               </Link>
             ))}
           </div>
+        </section>
+      )}
 
-        </div>
-      </motion.section>
-
-      {/* ── FLOATING GLASS QUICK-ACTION DOCK ── */}
+      {/* ══════════════════════════════════════════════════════════════
+          MODAL: REQUEST EXPORT QUOTATION & DOSSIER
+      ══════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
-        {showStickyDock && (
-          <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed bottom-6 inset-x-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-40 max-w-2xl w-full"
-          >
-            <div className="bg-[#18191c]/90 backdrop-blur-xl border border-white/20 p-3 sm:p-3.5 rounded-3xl shadow-2xl flex items-center justify-between gap-3 text-white">
-              
-              <div className="flex items-center gap-3 pl-2 min-w-0">
-                <div className="w-10 h-10 rounded-xl overflow-hidden bg-black flex-none border border-white/20 hidden sm:block">
-                  <img src={currentGalleryImage} alt={product.name} className="w-full h-full object-cover" />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="font-sans font-bold text-xs sm:text-sm truncate text-white">
-                    {product.name}
-                  </h4>
-                  <p className="text-[11px] font-mono text-white/60 truncate">
-                    {product.company} · {product.origin.split(",")[0]}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 flex-none">
-                <Link
-                  href={`/request-sample?stone=${product.id}`}
-                  className="px-3.5 py-2.5 bg-[#c85a32] hover:bg-[#b04a25] text-white rounded-xl text-xs font-mono uppercase font-bold tracking-wider transition-all flex items-center gap-1.5"
-                >
-                  <Package className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Sample Box</span>
-                </Link>
-
-                <button
-                  type="button"
-                  onClick={handleScrollToQuote}
-                  className="px-4 py-2.5 bg-white text-[#241919] hover:bg-[#faf8f5] rounded-xl text-xs font-mono uppercase font-bold tracking-wider transition-all flex items-center gap-1.5 cursor-pointer"
-                >
-                  <span>Inquire Quote</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── IMAGE ZOOM LIGHTBOX MODAL ── */}
-      <AnimatePresence>
-        {isZoomed && (
-          <div
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 cursor-zoom-out"
-            onClick={() => setIsZoomed(false)}
-          >
+        {isQuoteModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative max-w-6xl max-h-[90vh] rounded-3xl overflow-hidden border border-white/20 shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ duration: 0.25 }}
+              className="relative w-full max-w-lg rounded-2xl bg-white p-6 sm:p-8 shadow-2xl border border-[#003049]/15"
             >
-              <img
-                src={currentGalleryImage}
-                alt={product.name}
-                className="w-full h-full object-contain max-h-[88vh]"
-              />
+              {/* Close Button */}
               <button
                 type="button"
-                onClick={() => setIsZoomed(false)}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/70 border border-white/20 text-white flex items-center justify-center cursor-pointer hover:bg-black font-bold"
+                onClick={() => setIsQuoteModalOpen(false)}
+                className="absolute top-5 right-5 w-8 h-8 rounded-full border border-[#003049]/20 flex items-center justify-center text-[#003049] hover:bg-[#003049]/5 transition-colors cursor-pointer"
               >
-                ✕
+                <X size={16} />
               </button>
+
+              {quoteSubmitted ? (
+                <div className="text-center py-8 space-y-4">
+                  <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+                    <Check size={28} />
+                  </div>
+                  <h3 className="font-display text-2xl font-medium text-[#003049]">
+                    Inquiry Received
+                  </h3>
+                  <p className="text-xs font-sans text-[#003049]/70 max-w-sm mx-auto">
+                    Our direct export desk has received your specification for <strong>{product.name}</strong>. A technical dossier and CIF port estimate will be dispatched to your email.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsQuoteModalOpen(false);
+                      setQuoteSubmitted(false);
+                    }}
+                    className="px-6 py-2.5 rounded-full bg-[#003049] text-white text-xs font-sans font-semibold uppercase tracking-wider"
+                  >
+                    Close
+                  </button>
+                </div>
+              ) : (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setQuoteSubmitted(true);
+                  }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <span className="text-[10px] font-sans uppercase tracking-widest text-[#ff5500] font-bold block">
+                      Direct Quarry Export Desk
+                    </span>
+                    <h3 className="font-display text-2xl font-medium text-[#003049] mt-0.5">
+                      Request Quotation: {product.name}
+                    </h3>
+                    <p className="text-xs font-sans text-[#003049]/70 mt-1">
+                      Selected: {selectedFinish.label} · {selectedThickness} · {containersCount} Container(s)
+                    </p>
+                  </div>
+
+                  <div className="space-y-3 pt-2">
+                    <div>
+                      <label className="block text-[11px] font-sans font-semibold text-[#003049] uppercase tracking-wider mb-1">
+                        Your Name / Practice
+                      </label>
+                      <input
+                        required
+                        type="text"
+                        placeholder="e.g. Sarah Jenkins, Foster + Partners"
+                        className="w-full px-3.5 py-2.5 rounded-lg border border-[#003049]/20 text-xs font-sans text-[#003049] focus:outline-none focus:border-[#ff5500]"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-sans font-semibold text-[#003049] uppercase tracking-wider mb-1">
+                          Corporate Email
+                        </label>
+                        <input
+                          required
+                          type="email"
+                          placeholder="architect@domain.com"
+                          className="w-full px-3.5 py-2.5 rounded-lg border border-[#003049]/20 text-xs font-sans text-[#003049] focus:outline-none focus:border-[#ff5500]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-sans font-semibold text-[#003049] uppercase tracking-wider mb-1">
+                          Destination Port / Country
+                        </label>
+                        <input
+                          required
+                          type="text"
+                          placeholder="e.g. Rotterdam / Houston"
+                          className="w-full px-3.5 py-2.5 rounded-lg border border-[#003049]/20 text-xs font-sans text-[#003049] focus:outline-none focus:border-[#ff5500]"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-sans font-semibold text-[#003049] uppercase tracking-wider mb-1">
+                        Project Notes / Special Edge Cuts
+                      </label>
+                      <textarea
+                        rows={3}
+                        placeholder="Specify project type, slab sizing tolerances, or target delivery window..."
+                        className="w-full px-3.5 py-2.5 rounded-lg border border-[#003049]/20 text-xs font-sans text-[#003049] focus:outline-none focus:border-[#ff5500] resize-none"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-3.5 rounded-full bg-[#ff5500] text-white hover:bg-[#e04a00] font-sans font-semibold text-xs uppercase tracking-wider transition-colors shadow-md cursor-pointer mt-4"
+                  >
+                    Send Quotation Request
+                  </button>
+                </form>
+              )}
             </motion.div>
           </div>
         )}

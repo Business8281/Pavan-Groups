@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ArrowRight } from "@animateicons/react/lucide";
+import { ArrowRight } from "lucide-react";
 
 export interface PillarStage {
   id: string;

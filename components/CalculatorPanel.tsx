@@ -16,7 +16,7 @@ import {
   Box,
   Globe,
   Compass,
-} from "@animateicons/react/lucide";
+} from "lucide-react";
 import { scrollToHash } from "@/components/SmoothScroll";
 
 interface CalculatorPanelProps {
@@ -63,7 +63,7 @@ export default function CalculatorPanel({
       <div>
         <div className="mb-4">
           <h2 className="text-xl font-bold text-gray-800 flex items-center">
-            <Globe className="text-indigo-600 mr-2 flex-none" size={20} />
+            <Globe className="text-[#ff5500] mr-2 flex-none" size={20} />
             Sea Shipment Calculator
           </h2>
           <p className="text-xs text-gray-500 mt-1 leading-relaxed">
@@ -79,7 +79,7 @@ export default function CalculatorPanel({
               FROM (Origin Port in India)
             </label>
             <select
-              className="w-full border border-gray-300 rounded-lg p-2 text-sm text-gray-800 bg-gray-50 outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+              className="w-full border border-gray-300 rounded-lg p-2 text-sm text-gray-800 bg-gray-50 outline-none focus:ring-2 focus:ring-[#ff5500]/40 focus:border-[#ff5500] cursor-pointer"
               value={origin ? origin.code : ""}
               onChange={(e) => {
                 const code = e.target.value;
@@ -114,14 +114,14 @@ export default function CalculatorPanel({
                     setDestination(null);
                     setDestSearch("");
                   }}
-                  className="text-[10px] text-indigo-600 hover:text-indigo-800 font-medium cursor-pointer"
+                  className="text-[10px] text-[#ff5500] hover:text-[#e04a00] font-medium cursor-pointer"
                 >
                   Clear
                 </button>
               )}
             </div>
             <div
-              className="w-full border border-gray-300 rounded-lg p-2 text-sm text-gray-800 bg-gray-50 outline-none focus-within:ring-2 focus-within:ring-indigo-500 cursor-pointer relative flex items-center"
+              className="w-full border border-gray-300 rounded-lg p-2 text-sm text-gray-800 bg-gray-50 outline-none focus-within:ring-2 focus-within:ring-[#ff5500]/40 focus-within:border-[#ff5500] cursor-pointer relative flex items-center"
               onClick={() => setIsDestOpen(true)}
             >
               <input
@@ -169,7 +169,7 @@ export default function CalculatorPanel({
                 ).map((p) => (
                   <div
                     key={p.code}
-                    className="p-2 text-sm hover:bg-indigo-50 cursor-pointer text-gray-800 transition-colors"
+                    className="p-2 text-sm hover:bg-orange-50 cursor-pointer text-gray-800 transition-colors"
                     onMouseDown={(e) => {
                       e.preventDefault();
                       setDestination(p);
@@ -203,7 +203,7 @@ export default function CalculatorPanel({
                 type="button"
                 className={`flex-1 py-1.5 text-xs font-medium rounded-md flex items-center justify-center transition-all cursor-pointer ${
                   isFCL
-                    ? "bg-white shadow text-indigo-600 font-semibold"
+                    ? "bg-white shadow text-[#ff5500] font-semibold"
                     : "text-gray-500 hover:text-gray-800"
                 }`}
                 onClick={() => setIsFCL(true)}
@@ -214,7 +214,7 @@ export default function CalculatorPanel({
                 type="button"
                 className={`flex-1 py-1.5 text-xs font-medium rounded-md flex items-center justify-center transition-all cursor-pointer ${
                   !isFCL
-                    ? "bg-white shadow text-indigo-600 font-semibold"
+                    ? "bg-white shadow text-[#ff5500] font-semibold"
                     : "text-gray-500 hover:text-gray-800"
                 }`}
                 onClick={() => setIsFCL(false)}
@@ -228,8 +228,8 @@ export default function CalculatorPanel({
                   type="button"
                   className={`flex-1 py-1.5 text-xs font-medium rounded-md flex items-center justify-center transition-all cursor-pointer ${
                     !is40ft
-                      ? "bg-white shadow text-indigo-600 font-semibold"
-                      : "text-gray-500 hover:text-gray-800"
+                      ? "bg-white shadow text-[#ff5500] font-semibold"
+                    : "text-gray-500 hover:text-gray-800"
                   }`}
                   onClick={() => setIs40ft(false)}
                 >
@@ -239,8 +239,8 @@ export default function CalculatorPanel({
                   type="button"
                   className={`flex-1 py-1.5 text-xs font-medium rounded-md flex items-center justify-center transition-all cursor-pointer ${
                     is40ft
-                      ? "bg-white shadow text-indigo-600 font-semibold"
-                      : "text-gray-500 hover:text-gray-800"
+                      ? "bg-white shadow text-[#ff5500] font-semibold"
+                    : "text-gray-500 hover:text-gray-800"
                   }`}
                   onClick={() => setIs40ft(true)}
                 >
@@ -252,20 +252,20 @@ export default function CalculatorPanel({
 
           {/* Route Strip */}
           {origin && destination && (
-            <div className="flex items-center justify-between bg-indigo-50 p-2.5 rounded-lg text-indigo-800 text-sm">
-              <span className="font-bold font-mono">{origin.code}</span>
+            <div className="flex items-center justify-between bg-orange-50/70 border border-orange-200/60 p-2.5 rounded-lg text-[#003049] text-sm">
+              <span className="font-bold font-mono text-[#003049]">{origin.code}</span>
               <div className="flex-1 flex items-center justify-center relative mx-3">
-                <div className="w-full border-t-2 border-dashed border-indigo-300" />
-                <Compass size={14} className="absolute text-indigo-600 bg-indigo-50 px-0.5" />
+                <div className="w-full border-t-2 border-dashed border-[#ff5500]/40" />
+                <Compass size={14} className="absolute text-[#ff5500] bg-orange-50/90 px-0.5" />
               </div>
-              <span className="font-bold font-mono">{destination.code}</span>
+              <span className="font-bold font-mono text-[#003049]">{destination.code}</span>
             </div>
           )}
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-2.5 pt-1">
             <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-100">
-              <div className="flex items-center text-indigo-500 mb-1">
+              <div className="flex items-center text-[#ff5500] mb-1">
                 <Compass size={13} className="mr-1.5 flex-none" />
                 <span className="text-[10px] font-semibold text-gray-500 uppercase">
                   TRANSIT TIME
@@ -277,7 +277,7 @@ export default function CalculatorPanel({
             </div>
 
             <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-100">
-              <div className="flex items-center text-purple-500 mb-1">
+              <div className="flex items-center text-[#ff5500] mb-1">
                 <FileCheck size={13} className="mr-1.5 flex-none" />
                 <span className="text-[10px] font-semibold text-gray-500 uppercase">
                   CUSTOMS
@@ -289,7 +289,7 @@ export default function CalculatorPanel({
             </div>
 
             <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-100">
-              <div className="flex items-center text-blue-500 mb-1">
+              <div className="flex items-center text-[#ff5500] mb-1">
                 <MapIcon size={13} className="mr-1.5 flex-none" />
                 <span className="text-[10px] font-semibold text-gray-500 uppercase">
                   DISTANCE
@@ -299,14 +299,14 @@ export default function CalculatorPanel({
                 {stats ? `${stats.distanceNm} nm` : "-"}
               </div>
               {stats?.chokepoints && (
-                <div className="text-[8.5px] text-indigo-600 mt-1 uppercase leading-tight line-clamp-3">
+                <div className="text-[8.5px] text-[#ff5500] mt-1 uppercase leading-tight line-clamp-3 font-medium">
                   via {stats.chokepoints}
                 </div>
               )}
             </div>
 
             <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-100">
-              <div className="flex items-center text-green-500 mb-1">
+              <div className="flex items-center text-[#ff5500] mb-1">
                 <Box size={13} className="mr-1.5 flex-none" />
                 <span className="text-[10px] font-semibold text-gray-500 uppercase">
                   MODE
@@ -319,7 +319,7 @@ export default function CalculatorPanel({
 
             <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-100 col-span-2 flex items-center justify-between">
               <div>
-                <div className="flex items-center text-orange-500 mb-0.5">
+                <div className="flex items-center text-[#ff5500] mb-0.5">
                   <Calendar size={13} className="mr-1.5 flex-none" />
                   <span className="text-[10px] font-semibold text-gray-500 uppercase">
                     EST. VESSEL ARRIVAL
@@ -340,7 +340,7 @@ export default function CalculatorPanel({
             <button
               type="button"
               onClick={handleQuoteClick}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-lg shadow-md flex items-center justify-center transition-colors text-sm cursor-pointer"
+              className="w-full bg-[#ff5500] hover:bg-[#e04a00] text-white font-bold py-2.5 px-4 rounded-lg shadow-md flex items-center justify-center transition-colors text-sm cursor-pointer"
             >
               <span>Get Shipping Quote</span>
               <ArrowRight size={16} className="ml-2" />
@@ -357,8 +357,8 @@ export default function CalculatorPanel({
             </button>
           </>
         ) : (
-          <div className="p-3 bg-blue-50 text-blue-800 rounded-lg text-xs flex items-start leading-relaxed">
-            <MapIcon className="mr-2 shrink-0 mt-0.5" size={15} />
+          <div className="p-3 bg-orange-50/70 border border-orange-200/50 text-[#003049] rounded-lg text-xs flex items-start leading-relaxed">
+            <MapIcon className="mr-2 shrink-0 mt-0.5 text-[#ff5500]" size={15} />
             <span>
               Select origin port & destination country, or click any country on
               the globe, to display instant sea shipment stats.

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Package, ShieldCheck, Box } from "@animateicons/react/lucide";
+import { Package, ShieldCheck, Box } from "lucide-react";
 
 interface DimensionalMatrixProps {
   companyName: string;
@@ -43,10 +43,10 @@ export default function DimensionalMatrix({
     <div className="bg-white text-[#140d0a] border-b border-[#140d0a]/10">
       
       {/* ── SECTION 1: ARCHITECTURAL SPECIFICATION MATRIX ── */}
-      <section className="py-20 md:py-28 px-4 sm:px-6 md:px-12 lg:px-16 max-w-7xl mx-auto">
+      <section className="py-12 sm:py-20 md:py-28 px-4 sm:px-6 md:px-12 lg:px-16 max-w-7xl mx-auto">
         
         {/* Header Block & Unit Toggle */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16 pb-6 border-b border-[#140d0a]/10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 mb-8 sm:mb-12 md:mb-16 pb-6 border-b border-[#140d0a]/10">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-[0.24em] font-bold text-[#c85a32] block mb-2">
               TECHNICAL SPECIFICATIONS · ISO 9001:2015
@@ -61,7 +61,7 @@ export default function DimensionalMatrix({
             <button
               type="button"
               onClick={() => setUseImperialUnits(false)}
-              className={`px-5 py-2 rounded-full text-[10.5px] font-mono uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+              className={`px-4 sm:px-5 py-2 rounded-full text-[10.5px] font-mono uppercase tracking-wider transition-all duration-300 cursor-pointer touch-manipulation ${
                 !useImperialUnits
                   ? "bg-[#140d0a] text-white font-bold shadow-sm"
                   : "text-[#747474] hover:text-[#140d0a]"
@@ -72,7 +72,7 @@ export default function DimensionalMatrix({
             <button
               type="button"
               onClick={() => setUseImperialUnits(true)}
-              className={`px-5 py-2 rounded-full text-[10.5px] font-mono uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+              className={`px-4 sm:px-5 py-2 rounded-full text-[10.5px] font-mono uppercase tracking-wider transition-all duration-300 cursor-pointer touch-manipulation ${
                 useImperialUnits
                   ? "bg-[#140d0a] text-white font-bold shadow-sm"
                   : "text-[#747474] hover:text-[#140d0a]"
@@ -84,13 +84,13 @@ export default function DimensionalMatrix({
         </div>
 
         {/* ── 2-CARD TECHNICAL SPECIFICATION SPREAD (PURE WHITE ARCHITECTURAL) ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8">
           
           {/* Card 1: Dimensions & Sizing */}
-          <div className="bg-white border border-[#140d0a]/10 p-7 sm:p-9 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+          <div className="bg-white border border-[#140d0a]/10 p-5 sm:p-7 md:p-9 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between">
             <div>
               {/* Card Header */}
-              <div className="flex items-center justify-between pb-4 mb-6 border-b border-[#140d0a]/10">
+              <div className="flex items-center justify-between pb-3 sm:pb-4 mb-4 sm:mb-6 border-b border-[#140d0a]/10">
                 <span className="text-[10px] font-mono uppercase tracking-[0.2em] font-semibold text-[#8c8273]">
                   01 · SIZING & CALIBRATION
                 </span>
@@ -99,13 +99,13 @@ export default function DimensionalMatrix({
                 </span>
               </div>
 
-              <h3 className="font-display font-light text-2xl sm:text-3xl text-[#140d0a] mb-6">
+              <h3 className="font-display font-light text-2xl sm:text-3xl text-[#140d0a] mb-4 sm:mb-6">
                 Dimensions & Thickness Standards
               </h3>
 
               {/* Available Thicknesses */}
-              <div className="mb-7">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-[#747474] block mb-3 font-semibold">
+              <div className="mb-5 sm:mb-7">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#747474] block mb-2.5 font-semibold">
                   Available Thickness Standards:
                 </span>
                 <div className="flex flex-wrap gap-2">
@@ -115,7 +115,7 @@ export default function DimensionalMatrix({
                   ).map((t) => (
                     <span
                       key={t}
-                      className="px-3.5 py-1.5 bg-[#fcfaf7] border border-[#140d0a]/15 text-[#140d0a] font-mono text-xs font-semibold rounded-xs shadow-xs"
+                      className="px-3 py-1 sm:px-3.5 sm:py-1.5 bg-[#fcfaf7] border border-[#140d0a]/15 text-[#140d0a] font-mono text-xs font-semibold rounded-xs shadow-xs"
                     >
                       {t}
                     </span>
@@ -124,20 +124,20 @@ export default function DimensionalMatrix({
               </div>
 
               {/* Standard Modular Sizing */}
-              <div className="mb-7">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-[#747474] block mb-3 font-semibold">
+              <div className="mb-5 sm:mb-7">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#747474] block mb-2.5 font-semibold">
                   Standard Architectural Formats:
                 </span>
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-2.5">
                   {(useImperialUnits
                     ? specifications.standardSizesImperial
                     : specifications.standardSizesMetric
                   ).map((s, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-2.5 p-2.5 bg-[#fcfaf7] border border-[#140d0a]/10 text-[#140d0a] font-mono text-xs rounded-xs"
+                      className="flex items-center gap-2 p-2 sm:p-2.5 bg-[#fcfaf7] border border-[#140d0a]/10 text-[#140d0a] font-mono text-xs rounded-xs"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#c85a32]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#c85a32] flex-none" />
                       <span className="font-medium">{s}</span>
                     </div>
                   ))}

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
-import { Globe, Plus, Minus, RefreshCw } from "@animateicons/react/lucide";
+import { Globe, Plus, Minus, RefreshCw } from "lucide-react";
 import {
   GLOBAL_PORTS_DATA,
   CHENNAI_ORIGIN,

@@ -16,7 +16,7 @@ export const TOP_CATEGORIES_METADATA: FilterCategoryOption[] = [
     title: "SLATE STONE",
     subtitle: "Markapur Slates & CNC Carvings",
     href: "/products?category=slate",
-    image: "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80",
+    image: "/images/black-slate-stone-1.jpg",
   },
   {
     id: "applications",
@@ -49,6 +49,14 @@ export const TOP_CATEGORIES_METADATA: FilterCategoryOption[] = [
     subtitle: "Rajasthan Slabs & Crystals",
     href: "/products?category=north-indian-granite",
     image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "pebbles",
+    slug: "pebbles",
+    title: "NATURAL PEBBLES",
+    subtitle: "Rough & Polished River Agates",
+    href: "/products/pebbles",
+    image: "/images/pavan-impex/pavan-impex-448.jpg",
   },
 ];
 
@@ -248,7 +256,7 @@ export const APPLICATION_AREAS = [
 ];
 
 export const QUARRY_DIVISIONS = [
-  { id: "Pavan Impex", label: "Pavan Impex (Markapur Slates & CNC)" },
+  { id: "Pavan Impex", label: "Pavan Impex (Markapur Slates)" },
   { id: "Sai Balaji Impex", label: "Sai Balaji Impex (Cuddapah Limestones)" },
   { id: "Pavan Granite", label: "Pavan Granite (Chimakurthy Galaxy)" },
   { id: "Pavan Stones World", label: "Pavan Stones World (Exotic Stones & Slabs)" },
@@ -287,7 +295,7 @@ export const SLATE_STONE_VARIETIES: SubtypeDefinition[] = [
     hex: "#d97706",
     test: (p: ProductStone) => {
       const str = `${p.name} ${p.tagline} ${p.description} ${p.color} ${(p.features || []).join(" ")}`.toLowerCase();
-      return str.includes("california gold") || str.includes("gold mica") || str.includes("golden mica");
+      return str.includes("california gold") || str.includes("gold mica") || str.includes("golden mica") || str.includes("gold slate");
     },
   },
   {
@@ -305,7 +313,7 @@ export const SLATE_STONE_VARIETIES: SubtypeDefinition[] = [
     hex: "#ca8a04",
     test: (p: ProductStone) => {
       const str = `${p.name} ${p.tagline} ${p.description} ${p.color} ${(p.features || []).join(" ")}`.toLowerCase();
-      return str.includes("gold rustic") || str.includes("rustic gold") || str.includes("gold painted") || str.includes("gold foil") || str.includes("golden");
+      return str.includes("gold rustic") || str.includes("rustic gold") || str.includes("gold slate") || str.includes("gold painted") || str.includes("gold foil") || str.includes("golden");
     },
   },
   {
@@ -470,7 +478,16 @@ export const SOUTH_INDIAN_GRANITE_SUBTYPES: SubtypeDefinition[] = [
     hex: "#78350f",
     test: (p: ProductStone) => {
       const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
-      return str.includes("mahogany") || str.includes("dakshin mahogany") || str.includes("ruby mahogany");
+      return str.includes("mahogany") || str.includes("dakshin mahogany") || str.includes("ruby mahogany") || str.includes("mahogany grey");
+    },
+  },
+  {
+    id: "mahogany-grey",
+    label: "Mahogany Grey",
+    hex: "#475569",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("mahogany grey") || str.includes("mahogany gray");
     },
   },
   {
@@ -479,7 +496,7 @@ export const SOUTH_INDIAN_GRANITE_SUBTYPES: SubtypeDefinition[] = [
     hex: "#475569",
     test: (p: ProductStone) => {
       const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
-      return str.includes("cera grey") || str.includes("cera gray") || str.includes("classic grey");
+      return str.includes("cera grey") || str.includes("cera gray") || str.includes("classic grey") || str.includes("mahogany grey");
     },
   },
   {
@@ -528,12 +545,39 @@ export const SOUTH_INDIAN_GRANITE_SUBTYPES: SubtypeDefinition[] = [
     },
   },
   {
+    id: "tan-red",
+    label: "Tan Red",
+    hex: "#b91c1c",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("tan red") || str.includes("red granite");
+    },
+  },
+  {
+    id: "nh-red",
+    label: "NH Red",
+    hex: "#b91c1c",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("nh red") || str.includes("red granite");
+    },
+  },
+  {
     id: "chilly-red",
     label: "Chilly Red",
     hex: "#991b1b",
     test: (p: ProductStone) => {
       const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
-      return str.includes("chilly red") || str.includes("chilli red") || str.includes("imperial red") || str.includes("ruby red") || str.includes("red granite");
+      return str.includes("chilly red") || str.includes("chilli red") || str.includes("imperial red") || str.includes("ruby red") || str.includes("red granite") || str.includes("tan red") || str.includes("nh red");
+    },
+  },
+  {
+    id: "ice-blue",
+    label: "Ice Blue",
+    hex: "#2563eb",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("ice blue") || str.includes("blue granite");
     },
   },
   {
@@ -542,20 +586,353 @@ export const SOUTH_INDIAN_GRANITE_SUBTYPES: SubtypeDefinition[] = [
     hex: "#1e3a8a",
     test: (p: ProductStone) => {
       const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
-      return str.includes("tan blue") || str.includes("lavender blue") || str.includes("himalayan blue") || str.includes("blue granite");
+      return str.includes("tan blue") || str.includes("lavender blue") || str.includes("himalayan blue") || str.includes("blue granite") || str.includes("ice blue");
     },
   },
 ];
 
-// 5. NORTH INDIAN GRANITE (Official 2 Subtypes)
+// 5. NORTH INDIAN GRANITE (Official Subtypes)
 export const NORTH_INDIAN_GRANITE_SUBTYPES: SubtypeDefinition[] = [
+  {
+    id: "black-marinace",
+    label: "Black Marinace",
+    hex: "#18181b",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("marinace") || str.includes("black marinace");
+    },
+  },
+  {
+    id: "new-universe-black",
+    label: "New Universe Black",
+    hex: "#09090b",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("universe black") || str.includes("new universe");
+    },
+  },
+  {
+    id: "star-black",
+    label: "Star Black",
+    hex: "#09090b",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("star black") || str.includes("star-black") || str.includes("black star") || str.includes("galaxy");
+    },
+  },
+  {
+    id: "rajasthan-z-black",
+    label: "Rajasthan Z Black",
+    hex: "#09090b",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("z black") || str.includes("z-black") || str.includes("rajasthan black");
+    },
+  },
+  {
+    id: "black-markino",
+    label: "Black Markino",
+    hex: "#18181b",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("markino") || str.includes("marquina") || str.includes("black markino");
+    },
+  },
+  {
+    id: "m-red",
+    label: "M Red",
+    hex: "#991b1b",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return (str.includes("m red") || str.includes("m-red") || str.includes("miraj red")) && !str.includes("colombo");
+    },
+  },
+  {
+    id: "colombo-red",
+    label: "Colombo Red",
+    hex: "#b91c1c",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("colombo");
+    },
+  },
+  {
+    id: "new-jem-red",
+    label: "New Jem Red",
+    hex: "#881337",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("jem red") || str.includes("gem red") || str.includes("new jem") || str.includes("new gem");
+    },
+  },
+  {
+    id: "aadhuniki-grey",
+    label: "Aadhuniki Grey",
+    hex: "#64748b",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("aadhuniki") || str.includes("adhunik") || str.includes("adhuniki");
+    },
+  },
+  {
+    id: "khalda-gold",
+    label: "Khalda Gold",
+    hex: "#d97706",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return (str.includes("khalda") || str.includes("kharda")) && !str.includes("red");
+    },
+  },
+  {
+    id: "desert-gold",
+    label: "Desert Gold",
+    hex: "#b45309",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("desert gold") || str.includes("desert-gold");
+    },
+  },
+  {
+    id: "khalda-red",
+    label: "Khalda Red",
+    hex: "#dc2626",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return (str.includes("khalda red") || str.includes("kharda red") || (str.includes("khalda") && str.includes("red")) || str.includes("kalda red")) && !str.includes("new");
+    },
+  },
+  {
+    id: "kalda-red-new",
+    label: "Kalda Red New",
+    hex: "#b91c1c",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("kalda red new") || str.includes("kalda-red-new") || str.includes("new khalda red") || str.includes("khalda red new");
+    },
+  },
+  {
+    id: "cera-grey",
+    label: "Cera Grey",
+    hex: "#64748b",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return (str.includes("cera grey") || str.includes("cera-grey")) && !str.includes("dark");
+    },
+  },
+  {
+    id: "cera-grey-dark",
+    label: "Cera Grey Dark",
+    hex: "#334155",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return (str.includes("cera grey") || str.includes("cera-grey")) && str.includes("dark");
+    },
+  },
+  {
+    id: "glacier-white",
+    label: "Glacier White",
+    hex: "#f8fafc",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("glacier white") || str.includes("glacier");
+    },
+  },
+  {
+    id: "sindoori-red",
+    label: "Sindoori Red",
+    hex: "#e11d48",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("sindoori") || str.includes("sinduri");
+    },
+  },
+  {
+    id: "copper-red",
+    label: "Copper Red",
+    hex: "#b91c1c",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("copper red") || str.includes("copper-red");
+    },
+  },
+  {
+    id: "md-grey",
+    label: "MD Grey",
+    hex: "#475569",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("md grey") || str.includes("md-grey");
+    },
+  },
+  {
+    id: "rj-steel-grey",
+    label: "RJ Steel Grey",
+    hex: "#334155",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("rj steel grey") || str.includes("rj-steel-grey") || (str.includes("steel grey") && !str.includes("south"));
+    },
+  },
   {
     id: "p-white",
     label: "P White",
     hex: "#e5e7eb",
     test: (p: ProductStone) => {
       const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
-      return str.includes("p white") || str.includes("platinum white") || str.includes("p-white") || str.includes("alaska white") || str.includes("white granite");
+      return str.includes("p white") || str.includes("platinum white") || str.includes("p-white") || str.includes("alaska white");
+    },
+  },
+  {
+    id: "s-white",
+    label: "S White",
+    hex: "#e2e8f0",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return (str.includes("s white") || str.includes("s-white")) && !str.includes("new s white") && !str.includes("grey");
+    },
+  },
+  {
+    id: "new-s-white",
+    label: "New S White",
+    hex: "#e2e8f0",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("new s white") || str.includes("new-s-white");
+    },
+  },
+  {
+    id: "s-white-grey",
+    label: "S White Grey",
+    hex: "#94a3b8",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("s white grey") || str.includes("s-white-grey") || (str.includes("s white") && str.includes("grey"));
+    },
+  },
+  {
+    id: "ice-white",
+    label: "Ice White",
+    hex: "#cbd5e1",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("ice white") || str.includes("ice-white");
+    },
+  },
+  {
+    id: "ocean-blue",
+    label: "Ocean Blue",
+    hex: "#1d4ed8",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("ocean blue") || str.includes("ocean-blue");
+    },
+  },
+  {
+    id: "blue-rose",
+    label: "Blue Rose",
+    hex: "#2563eb",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("blue rose") || str.includes("blue-rose");
+    },
+  },
+  {
+    id: "china-white",
+    label: "China White",
+    hex: "#f8fafc",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("china white") || str.includes("china-white");
+    },
+  },
+  {
+    id: "apple-green",
+    label: "Apple Green",
+    hex: "#15803d",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("apple green") || str.includes("apple-green");
+    },
+  },
+  {
+    id: "koliwada",
+    label: "Koliwada",
+    hex: "#94a3b8",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("koliwada") || str.includes("koliwada-granite");
+    },
+  },
+  {
+    id: "crystal-yellow",
+    label: "Crystal Yellow",
+    hex: "#eab308",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("crystal yellow") || str.includes("crystal-yellow");
+    },
+  },
+  {
+    id: "picaso-gold",
+    label: "Picaso Gold",
+    hex: "#ca8a04",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("picaso") || str.includes("picasso") || str.includes("picaso-gold");
+    },
+  },
+  {
+    id: "ikon-brown",
+    label: "Ikon Brown",
+    hex: "#78716c",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("ikon brown") || str.includes("icon brown") || str.includes("ikon-brown");
+    },
+  },
+  {
+    id: "cat-eyes",
+    label: "Cat Eyes",
+    hex: "#78350f",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("cat eye") || str.includes("cat-eye") || str.includes("cat's eye") || str.includes("cat eyes");
+    },
+  },
+  {
+    id: "lava-black",
+    label: "Lava Black",
+    hex: "#18181b",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("lava black") || str.includes("lava-black") || str.includes("black lava");
+    },
+  },
+  {
+    id: "z-brown",
+    label: "Z Brown",
+    hex: "#573c2e",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("z brown") || str.includes("z-brown");
+    },
+  },
+  {
+    id: "jirawal-white",
+    label: "Jirawal White",
+    hex: "#f1f5f9",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("jirawal") || str.includes("jirawal white") || str.includes("jirawal-white");
+    },
+  },
+  {
+    id: "jasmine-white",
+    label: "Jasmine White",
+    hex: "#fef3c7",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return (str.includes("jasmine") && !str.includes("gold")) || str.includes("jasmine white") || str.includes("jasmine-white");
     },
   },
   {
@@ -564,14 +941,204 @@ export const NORTH_INDIAN_GRANITE_SUBTYPES: SubtypeDefinition[] = [
     hex: "#d97706",
     test: (p: ProductStone) => {
       const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
-      return str.includes("tiger skin") || str.includes("tiger-skin") || str.includes("tiger yellow") || str.includes("cheetah") || str.includes("royal black") || str.includes("rajasthan");
+      return str.includes("tiger skin") || str.includes("tiger-skin") || str.includes("tiger yellow") || str.includes("cheetah") || str.includes("royal black");
+    },
+  },
+  {
+    id: "panchanwada",
+    label: "Panchanwada",
+    hex: "#6b7280",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("panchanwada") || str.includes("panchanvada");
+    },
+  },
+  {
+    id: "r-black-malkot",
+    label: "R Black Malkot",
+    hex: "#18181b",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("malkot") || str.includes("r black malkot") || str.includes("r-black-malkot");
+    },
+  },
+  {
+    id: "jasmine-gold",
+    label: "Jasmine Gold",
+    hex: "#d97706",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("jasmine gold") || str.includes("jasmine-gold");
+    },
+  },
+  {
+    id: "volga-black",
+    label: "Volga Black",
+    hex: "#0f172a",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("volga") || str.includes("volga black") || str.includes("volga-black");
+    },
+  },
+  {
+    id: "electric-black",
+    label: "Electric Black",
+    hex: "#09090b",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("electric black") || str.includes("electric-black");
+    },
+  },
+  {
+    id: "oliva-gold",
+    label: "Oliva Gold",
+    hex: "#b45309",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("oliva") || str.includes("oilva") || str.includes("olive gold") || str.includes("oliva-gold");
+    },
+  },
+  {
+    id: "copper-silk",
+    label: "Copper Silk",
+    hex: "#c2410c",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return (str.includes("copper silk") || str.includes("copper-silk")) && !str.includes("new copper silk") && !str.includes("new-copper-silk");
+    },
+  },
+  {
+    id: "new-copper-silk",
+    label: "New Copper Silk",
+    hex: "#ea580c",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("new copper silk") || str.includes("new-copper-silk");
+    },
+  },
+  {
+    id: "brazil-brown",
+    label: "Brazil Brown",
+    hex: "#451a03",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("brazil brown") || str.includes("brazil-brown") || str.includes("brazilian brown");
+    },
+  },
+  {
+    id: "k-white",
+    label: "K White",
+    hex: "#f1f5f9",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("k white") || str.includes("k-white") || str.includes("kotputli white");
+    },
+  },
+  {
+    id: "rj-black-galaxy",
+    label: "RJ Black Galaxy",
+    hex: "#18181b",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("rj black galaxy") || str.includes("rj-black-galaxy") || (str.includes("galaxy") && str.includes("rajasthan"));
+    },
+  },
+  {
+    id: "grey-galaxy",
+    label: "Grey Galaxy",
+    hex: "#475569",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("grey galaxy") || str.includes("grey-galaxy") || str.includes("gray galaxy") || str.includes("gray-galaxy");
+    },
+  },
+  {
+    id: "mery-gold",
+    label: "Mery Gold",
+    hex: "#eab308",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("mery gold") || str.includes("mery-gold") || str.includes("marigold") || str.includes("mary gold");
+    },
+  },
+  {
+    id: "berry-brown",
+    label: "Berry Brown",
+    hex: "#b45309",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("berry brown") || str.includes("berry-brown") || str.includes("barry brown");
+    },
+  },
+];
+
+// 6. PEBBLES (Official Subtypes)
+export const PEBBLES_SUBTYPES: SubtypeDefinition[] = [
+  {
+    id: "rough-pebbles",
+    label: "Rough Natural Pebbles",
+    hex: "#78716c",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.finish}`.toLowerCase();
+      return str.includes("rough") || str.includes("cleft");
+    },
+  },
+  {
+    id: "polished-river-pebbles",
+    label: "Polished River Pebbles",
+    hex: "#f5f5f4",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description} ${p.color}`.toLowerCase();
+      return str.includes("white") || str.includes("flat") || str.includes("onyx") || str.includes("jasper") || str.includes("amber");
+    },
+  },
+  {
+    id: "exotic-agate-pebbles",
+    label: "Agate & Exotic Gem Pebbles",
+    hex: "#0284c7",
+    test: (p: ProductStone) => {
+      const str = `${p.name} ${p.tagline} ${p.description}`.toLowerCase();
+      return str.includes("agate") || str.includes("moss") || str.includes("lilac") || str.includes("lavender") || str.includes("pink");
     },
   },
 ];
 
 // Subtype Getter and Matcher Utilities
+export function getProductCategoryLabel(product: ProductStone): string {
+  if (!product) return "";
+  const cat = (product.category || "").toLowerCase();
+
+  if (cat === "chipouts" || cat === "chipout") return "Chipouts";
+  if (cat === "cnc") return "CNC Designs";
+  if (cat === "crazy-pattern" || cat === "crazy pattern") return "Crazy Pattern";
+  if (cat === "mosaic") return "Mosaic";
+  if (cat === "pebbles") return "Pebbles";
+  if (cat === "slate") return "Slate Stone";
+  if (cat === "limestone") return "Limestone";
+  if (cat === "pavers") return "Pavers";
+  if (cat === "cladding") return "Wall Cladding";
+  if (cat === "applications") return "Applications";
+  if (cat === "granite") {
+    const originLower = (product.origin || "").toLowerCase();
+    const badgeLower = (product.badge || "").toLowerCase();
+    if (
+      originLower.includes("rajasthan") ||
+      originLower.includes("north") ||
+      badgeLower.includes("north indian")
+    ) {
+      return "North Indian Granite";
+    }
+    return "South Indian Granite";
+  }
+
+  return product.category
+    ? product.category.charAt(0).toUpperCase() + product.category.slice(1)
+    : "";
+}
+
 export function getCategorySubtypes(categoryKey: string): SubtypeDefinition[] {
   const cat = categoryKey.toLowerCase();
+  if (cat.includes("pebble")) return PEBBLES_SUBTYPES;
   if (cat.includes("slate") || cat.includes("cnc")) return SLATE_STONE_VARIETIES;
   if (cat.includes("application") || cat.includes("paver") || cat.includes("cladding")) return APPLICATION_SUBTYPES;
   if (cat.includes("limestone")) return LIMESTONE_SUBTYPES;
@@ -625,6 +1192,15 @@ export function matchesNorthIndianGraniteSubtype(product: ProductStone, selected
   });
 }
 
+export function matchesPebblesSubtype(product: ProductStone, selectedSubtypes: string[]): boolean {
+  if (selectedSubtypes.length === 0) return true;
+  return selectedSubtypes.some((sId) => {
+    const def = PEBBLES_SUBTYPES.find((d) => d.id === sId || d.label.toLowerCase() === sId.toLowerCase());
+    if (def) return def.test(product);
+    return false;
+  });
+}
+
 export function matchesCategorySubtype(product: ProductStone, categoryKey: string, selectedSubtypes: string[]): boolean {
   if (selectedSubtypes.length === 0) return true;
   const subtypes = getCategorySubtypes(categoryKey);
@@ -641,16 +1217,27 @@ export function matchesCategory(product: ProductStone, selectedCategories: strin
   return selectedCategories.some((cat) => {
     const catLower = cat.toLowerCase().trim();
 
-    // 1) SLATE STONE (CNC products come under SLATE STONE category!)
+    // 1) SLATE STONE
     if (
       catLower === "slate" ||
       catLower === "slates" ||
       catLower === "slate-stone" ||
       catLower === "slate stone" ||
-      catLower === "cnc" ||
-      catLower === "cnc-carvings"
+      catLower === "slate stones" ||
+      catLower === "slate-stones"
     ) {
-      return product.category === "slate" || product.category === "cnc";
+      return product.category === "slate";
+    }
+
+    // 2) CNC DESIGNS & CARVINGS
+    if (
+      catLower === "cnc" ||
+      catLower === "cnc-designs" ||
+      catLower === "cnc designs" ||
+      catLower === "cnc-carvings" ||
+      catLower === "cnc carvings"
+    ) {
+      return product.category === "cnc";
     }
 
     // 2) APPLICATIONS (Wall Cladding, Pavers, Cobbles)
@@ -664,12 +1251,22 @@ export function matchesCategory(product: ProductStone, selectedCategories: strin
       return product.category === "pavers" || product.category === "cladding";
     }
 
-    // 3) LIMESTONE
+    // 3) MOSAIC / MOSAICS
+    if (
+      catLower === "mosaic" ||
+      catLower === "mosaics" ||
+      catLower === "stone-mosaic" ||
+      catLower === "slate-mosaic"
+    ) {
+      return product.category === "mosaic";
+    }
+
+    // 4) LIMESTONE
     if (catLower === "limestone" || catLower === "limestones") {
       return product.category === "limestone";
     }
 
-    // 4) SOUTH INDIAN GRANITE
+    // 5) SOUTH INDIAN GRANITE
     if (
       catLower === "south-indian-granite" ||
       catLower === "south indian granite" ||
@@ -685,7 +1282,7 @@ export function matchesCategory(product: ProductStone, selectedCategories: strin
       );
     }
 
-    // 5) NORTH INDIAN GRANITE
+    // 6) NORTH INDIAN GRANITE
     if (
       catLower === "north-indian-granite" ||
       catLower === "north indian granite" ||
@@ -701,9 +1298,45 @@ export function matchesCategory(product: ProductStone, selectedCategories: strin
       );
     }
 
+    // 7) PEBBLES (Rough & Polished River Agate Pebbles)
+    if (
+      catLower === "pebbles" ||
+      catLower === "pebble" ||
+      catLower === "rough-pebbles" ||
+      catLower === "polished-pebbles"
+    ) {
+      return product.category === "pebbles";
+    }
+
     // Fallback for general granite
     if (catLower === "granite" || catLower === "granites") {
       return product.category === "granite";
+    }
+
+    // 8) CRAZY PATTERN (Organic flagstone paving)
+    if (
+      catLower === "crazy pattern" ||
+      catLower === "crazy-pattern" ||
+      catLower === "crazy_pattern"
+    ) {
+      return (
+        product.category === "crazy-pattern" ||
+        (product.category as any) === "crazy pattern" ||
+        product.name.toLowerCase().includes("crazy pattern")
+      );
+    }
+
+    // 9) CHIPOUTS (Linear Chiseled Chipouts)
+    if (
+      catLower === "chipouts" ||
+      catLower === "chipout"
+    ) {
+      return (
+        product.category === "chipouts" ||
+        (product.category as any) === "chipout" ||
+        product.name.toLowerCase().includes("chipout") ||
+        product.id.toLowerCase().includes("chipout")
+      );
     }
 
     return product.category === catLower;
@@ -813,6 +1446,10 @@ export function calculateFacetCounts(products: ProductStone[]) {
     cnc: 0,
     pavers: 0,
     cladding: 0,
+    pebbles: 0,
+    mosaic: 0,
+    "crazy-pattern": 0,
+    chipouts: 0,
   };
 
   const companies: Record<string, number> = {};
@@ -829,13 +1466,18 @@ export function calculateFacetCounts(products: ProductStone[]) {
 
   products.forEach((p) => {
     // Categories
-    if (p.category === "slate" || p.category === "cnc") {
+    if (p.category === "mosaic") {
+      categories.mosaic = (categories.mosaic || 0) + 1;
+    } else if (p.category === "cnc") {
+      categories.cnc = (categories.cnc || 0) + 1;
+    } else if (p.category === "slate") {
       categories.slate = (categories.slate || 0) + 1;
-      if (p.category === "cnc") categories.cnc = (categories.cnc || 0) + 1;
     } else if (p.category === "pavers" || p.category === "cladding") {
       categories.applications = (categories.applications || 0) + 1;
       if (p.category === "pavers") categories.pavers = (categories.pavers || 0) + 1;
       if (p.category === "cladding") categories.cladding = (categories.cladding || 0) + 1;
+    } else if (p.category === "pebbles") {
+      categories.pebbles = (categories.pebbles || 0) + 1;
     } else if (p.category === "limestone") {
       categories.limestone = (categories.limestone || 0) + 1;
     } else if (p.category === "granite") {
@@ -851,6 +1493,10 @@ export function calculateFacetCounts(products: ProductStone[]) {
       } else {
         categories["south-indian-granite"] = (categories["south-indian-granite"] || 0) + 1;
       }
+    } else if (p.category === "crazy-pattern" || (p.category as any) === "crazy pattern") {
+      categories["crazy-pattern"] = (categories["crazy-pattern"] || 0) + 1;
+    } else if (p.category === "chipouts" || (p.category as any) === "chipout") {
+      categories.chipouts = (categories.chipouts || 0) + 1;
     }
 
     // Companies
@@ -925,6 +1571,11 @@ export function calculateFacetCounts(products: ProductStone[]) {
     }).length;
   });
 
+  const pebblesSubtypes: Record<string, number> = {};
+  PEBBLES_SUBTYPES.forEach((pb) => {
+    pebblesSubtypes[pb.id] = products.filter((p) => p.category === "pebbles" && pb.test(p)).length;
+  });
+
   return {
     categories,
     companies,
@@ -937,6 +1588,7 @@ export function calculateFacetCounts(products: ProductStone[]) {
     limestoneSubtypes,
     southGraniteSubtypes,
     northGraniteSubtypes,
+    pebblesSubtypes,
   };
 }
 
