@@ -22,6 +22,7 @@ interface CompanyCollection {
   buttonShadow: string;
   bgGradient: string;
   image: string;
+  logo?: string;
 }
 
 const COLLECTIONS: CompanyCollection[] = [
@@ -43,6 +44,7 @@ const COLLECTIONS: CompanyCollection[] = [
     buttonShadow: "rgba(154, 52, 18, 0.25)",
     bgGradient: "linear-gradient(135deg, #1c1f24 0%, #2e343d 50%, #15171a 100%)",
     image: "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=80",
+    logo: "/images/pavan-impex-logo.png",
   },
   {
     num: "02",
@@ -62,6 +64,7 @@ const COLLECTIONS: CompanyCollection[] = [
     buttonShadow: "rgba(180, 83, 9, 0.25)",
     bgGradient: "linear-gradient(135deg, #2b2823 0%, #443c33 50%, #1c1915 100%)",
     image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    logo: "/images/sai-balaji-impex-logo.png",
   },
   {
     num: "03",
@@ -81,6 +84,7 @@ const COLLECTIONS: CompanyCollection[] = [
     buttonShadow: "rgba(15, 118, 110, 0.3)",
     bgGradient: "linear-gradient(135deg, #121316 0%, #22211c 50%, #090a0c 100%)",
     image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80",
+    logo: "/images/pavan-granites-logo.png",
   },
   {
     num: "04",
@@ -195,6 +199,8 @@ function StaggeredText({
     },
   };
 
+  const words = text.split(" ");
+
   return (
     <motion.span
       className={`inline-block ${className}`}
@@ -204,14 +210,19 @@ function StaggeredText({
       viewport={{ once: false, amount: 0.25 }}
       aria-label={text}
     >
-      {text.split("").map((char, index) => (
-        <motion.span
-          key={index}
-          variants={letterVariants}
-          style={{ display: "inline-block" }}
-        >
-          {char === " " ? "\u00A0" : char}
-        </motion.span>
+      {words.map((word, wordIndex) => (
+        <span key={wordIndex} className="inline-block whitespace-nowrap">
+          {word.split("").map((char, charIndex) => (
+            <motion.span
+              key={charIndex}
+              variants={letterVariants}
+              style={{ display: "inline-block" }}
+            >
+              {char}
+            </motion.span>
+          ))}
+          {wordIndex < words.length - 1 && "\u00A0"}
+        </span>
       ))}
     </motion.span>
   );
@@ -388,6 +399,16 @@ export default function Products() {
           >
             <div className="grid grid-cols-1 md:grid-cols-12 items-stretch min-h-[360px] lg:min-h-[440px] relative z-10">
               <div className="md:col-span-6 lg:col-span-5 p-5 sm:p-8 md:p-12 lg:p-16 flex flex-col justify-center order-2 md:order-1">
+                {/* Official Brand Logo */}
+                {COLLECTIONS[0].logo && (
+                  <div className="mb-4 sm:mb-5">
+                    <img
+                      src={COLLECTIONS[0].logo}
+                      alt={`${COLLECTIONS[0].name} Official Logo`}
+                      className="h-12 sm:h-14 md:h-16 w-auto object-contain"
+                    />
+                  </div>
+                )}
 
                 <h3
                   className="font-display font-normal leading-[1.02] tracking-[-0.015em] mb-2 sm:mb-3 transition-colors"
@@ -490,6 +511,16 @@ export default function Products() {
               </div>
 
               <div className="md:col-span-6 lg:col-span-5 p-5 sm:p-8 md:p-12 lg:p-16 flex flex-col justify-center order-2 md:order-2">
+                {/* Official Brand Logo */}
+                {COLLECTIONS[1].logo && (
+                  <div className="mb-4 sm:mb-5">
+                    <img
+                      src={COLLECTIONS[1].logo}
+                      alt={`${COLLECTIONS[1].name} Official Logo`}
+                      className="h-12 sm:h-14 md:h-16 w-auto object-contain"
+                    />
+                  </div>
+                )}
 
                 <h3
                   className="font-display font-normal leading-[1.02] tracking-[-0.015em] mb-2 sm:mb-3 transition-colors"
@@ -538,25 +569,35 @@ export default function Products() {
             }}
             className="sticky border-2 border-[#ea580c] shadow-xl md:shadow-2xl overflow-hidden will-change-transform relative bg-white py-3 sm:py-6 lg:py-8"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 md:gap-20 lg:gap-[160px] xl:gap-[200px] items-stretch relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-10 lg:gap-14 items-stretch relative z-10">
 
               {/* ── LEFT: PAVAN GRANITE (NO IMAGE - PURE WHITE WITH BRACKET "]" BORDER) ── */}
-              <div className="relative p-5 sm:p-7 lg:p-11 md:pr-14 lg:pr-16 flex flex-col justify-between">
-                {/* Architectural Bracket "]" for Pavan Granite (covers 50% width top & bottom) */}
+              <div className="relative p-6 sm:p-8 lg:p-10 flex flex-col justify-between">
+                {/* Architectural Bracket "]" for Pavan Granite */}
                 <div className="absolute inset-0 pointer-events-none z-10">
                   {/* Right vertical line of ] */}
                   <div className="absolute top-0 bottom-0 right-0 w-[2px] bg-[#0f766e]" />
-                  {/* Top right line of ] (covers half width) */}
-                  <div className="absolute top-0 right-0 w-1/2 h-[2px] bg-[#0f766e]" />
-                  {/* Bottom right line of ] (covers half width) */}
-                  <div className="absolute bottom-0 right-0 w-1/2 h-[2px] bg-[#0f766e]" />
+                  {/* Top right line of ] */}
+                  <div className="absolute top-0 right-0 w-24 sm:w-32 h-[2px] bg-[#0f766e]" />
+                  {/* Bottom right line of ] */}
+                  <div className="absolute bottom-0 right-0 w-24 sm:w-32 h-[2px] bg-[#0f766e]" />
                 </div>
 
                 <div className="relative z-10">
+                  {/* Official Brand Logo */}
+                  {COLLECTIONS[2].logo && (
+                    <div className="mb-4 sm:mb-5">
+                      <img
+                        src={COLLECTIONS[2].logo}
+                        alt={`${COLLECTIONS[2].name} Official Logo`}
+                        className="h-12 sm:h-14 md:h-16 w-auto object-contain"
+                      />
+                    </div>
+                  )}
 
                   {/* Title */}
                   <h3
-                    className="font-display font-normal leading-[1.05] tracking-[-0.015em] mb-2 sm:mb-3 transition-colors text-2xl sm:text-3xl lg:text-5xl"
+                    className="font-display font-normal leading-[1.08] tracking-[-0.015em] mb-2 sm:mb-3 transition-colors text-2xl sm:text-3xl lg:text-4xl xl:text-[42px]"
                     style={{ color: COLLECTIONS[2].titleColor }}
                   >
                     <StaggeredText text={COLLECTIONS[2].name} />
@@ -593,22 +634,22 @@ export default function Products() {
               </div>
 
               {/* ── RIGHT: PAVAN STONES WORLD (NO IMAGE - PURE WHITE WITH BRACKET "[" BORDER) ── */}
-              <div className="relative p-5 sm:p-7 lg:p-11 md:pl-14 lg:pl-16 flex flex-col justify-between">
-                {/* Architectural Bracket "[" for Pavan Stones World (covers 50% width top & bottom) */}
+              <div className="relative p-6 sm:p-8 lg:p-10 flex flex-col justify-between">
+                {/* Architectural Bracket "[" for Pavan Stones World */}
                 <div className="absolute inset-0 pointer-events-none z-10">
                   {/* Left vertical line of [ */}
                   <div className="absolute top-0 bottom-0 left-0 w-[2px] bg-[#722424]" />
-                  {/* Top left line of [ (covers half width) */}
-                  <div className="absolute top-0 left-0 w-1/2 h-[2px] bg-[#722424]" />
-                  {/* Bottom left line of [ (covers half width) */}
-                  <div className="absolute bottom-0 left-0 w-1/2 h-[2px] bg-[#722424]" />
+                  {/* Top left line of [ */}
+                  <div className="absolute top-0 left-0 w-24 sm:w-32 h-[2px] bg-[#722424]" />
+                  {/* Bottom left line of [ */}
+                  <div className="absolute bottom-0 left-0 w-24 sm:w-32 h-[2px] bg-[#722424]" />
                 </div>
 
                 <div className="relative z-10">
 
                   {/* Title */}
                   <h3
-                    className="font-display font-normal leading-[1.05] tracking-[-0.015em] mb-2 sm:mb-3 transition-colors text-2xl sm:text-3xl lg:text-5xl"
+                    className="font-display font-normal leading-[1.08] tracking-[-0.015em] mb-2 sm:mb-3 transition-colors text-2xl sm:text-3xl lg:text-4xl xl:text-[42px]"
                     style={{ color: COLLECTIONS[3].titleColor }}
                   >
                     <StaggeredText text={COLLECTIONS[3].name} />

@@ -63,16 +63,27 @@ export default function CompanyLocationSection({
             <div className="space-y-6">
               
               {/* Division Badge */}
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#747474] font-semibold block">
-                  Operated Under Pavan Stones Group
-                </span>
-                <h3 className="font-display font-medium text-2xl text-[#241919]">
-                  {location.name}
-                </h3>
-                <p className="text-xs font-mono font-medium" style={{ color: brandColor }}>
-                  {location.divisionTitle}
-                </p>
+              <div className="space-y-3">
+                {location.logo && (
+                  <div className="inline-block py-1">
+                    <img
+                      src={location.logo}
+                      alt={`${location.name} Logo`}
+                      className="h-10 sm:h-12 w-auto object-contain max-w-[160px]"
+                    />
+                  </div>
+                )}
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#747474] font-semibold block">
+                    Operated Under Pavan Stones Group
+                  </span>
+                  <h3 className="font-display font-medium text-2xl text-[#241919]">
+                    {location.name}
+                  </h3>
+                  <p className="text-xs font-mono font-medium" style={{ color: brandColor }}>
+                    {location.divisionTitle}
+                  </p>
+                </div>
               </div>
 
               {/* Physical Address */}

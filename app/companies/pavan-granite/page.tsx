@@ -683,21 +683,30 @@ export default function CompanyDedicatedPage() {
       {/* ── CONTENT BELOW: ROLLS OVER & COVERS HERO ON SCROLL ── */}
       <div className="relative z-10 bg-white shadow-[0_-30px_70px_-15px_rgba(0,0,0,0.35)]">
         
-        {/* ── ABOUT SECTION (LEFT IMAGE, RIGHT TEXT & HEADING) ── */}
+        {/* ── ABOUT SECTION (LEFT LOGO SHOWCASE, RIGHT TEXT & HEADING) ── */}
         <section id="about" className="py-16 md:py-24 px-6 md:px-14 lg:px-20 bg-white border-b border-[#747474]/15">
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             
-            {/* Left: Image */}
-            <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#181615] rounded-none shadow-lg border border-[#747474]/20">
-              <img
-                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85"
-                alt="Pavan Granite Monumental Architecture"
-                className="w-full h-full object-cover"
-              />
+            {/* Left: Official Brand Identity & Logo Showcase (Clean, No border, No shadow) */}
+            <div className="relative aspect-[4/3] w-full flex flex-col items-center justify-center p-6 sm:p-10 bg-white">
+              <div className="relative z-10 w-full h-full flex items-center justify-center">
+                <img
+                  src="/images/pavan-granites-logo.png"
+                  alt="Pavan Granites Official Logo"
+                  className="max-h-[85%] max-w-[90%] w-auto h-auto object-contain"
+                />
+              </div>
             </div>
 
             {/* Right: Heading & Content */}
             <div className="space-y-6">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#0f766e]" />
+                <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.25em] uppercase text-[#0f766e] font-bold">
+                  OFFICIAL DIVISION · EST. 2002
+                </span>
+              </div>
+
               <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-[#241919] tracking-tight">
                 What is this about?
               </h2>

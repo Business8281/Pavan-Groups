@@ -10,6 +10,7 @@ interface StoneCategory {
   href: string;
   image: string;
   alt: string;
+  logo?: string;
 }
 
 const STONE_CATEGORIES: StoneCategory[] = [
@@ -20,6 +21,7 @@ const STONE_CATEGORIES: StoneCategory[] = [
     href: "/products/slate-stone",
     image: "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=1200&q=80",
     alt: "Slate Stone Wall Cladding with Natural 3D Textures",
+    logo: "/images/pavan-impex-logo.png",
   },
   {
     id: "limestone",
@@ -28,6 +30,7 @@ const STONE_CATEGORIES: StoneCategory[] = [
     href: "/products/limestones",
     image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
     alt: "Calcareous Limestone Patio Pavers and Landscaping",
+    logo: "/images/sai-balaji-impex-logo.png",
   },
   {
     id: "south-indian-granite",
@@ -36,6 +39,7 @@ const STONE_CATEGORIES: StoneCategory[] = [
     href: "/products/south-indian-granite",
     image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80",
     alt: "South Indian Granite Polished Countertops and Slabs",
+    logo: "/images/pavan-granites-logo.png",
   },
   {
     id: "north-indian-granite",
@@ -74,6 +78,17 @@ export default function HeroStoneCategories() {
 
                 {/* Subtle Cinematic Vignette for Text Legibility */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent pointer-events-none transition-opacity duration-300 group-hover:from-black/90 group-hover:via-black/40" />
+
+                {/* Optional Division Logo Badge */}
+                {cat.logo && (
+                  <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-white/95 backdrop-blur-md px-2.5 py-1.5 rounded-[4px] pointer-events-none z-10">
+                    <img
+                      src={cat.logo}
+                      alt="Division Brand Logo"
+                      className="h-4 sm:h-5 md:h-6 w-auto object-contain"
+                    />
+                  </div>
+                )}
 
                 {/* Card Content Overlay */}
                 <div className="absolute inset-0 p-3 sm:p-5 md:p-6 lg:p-5 xl:p-6 flex flex-col justify-end pointer-events-none">

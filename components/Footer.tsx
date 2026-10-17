@@ -409,8 +409,16 @@ export default function Footer() {
                   
                   {/* Compact Map Header */}
                   <div className="px-4 py-2.5 bg-white border-b border-[#252422]/10 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-[#ff5500] animate-pulse" />
+                    <div className="flex items-center gap-2.5">
+                      {activeLocation.logo ? (
+                        <img
+                          src={activeLocation.logo}
+                          alt={activeLocation.name}
+                          className="h-7 w-auto object-contain"
+                        />
+                      ) : (
+                        <div className="w-2 h-2 rounded-full bg-[#ff5500] animate-pulse" />
+                      )}
                       <div>
                         <span className="font-display text-[13px] font-semibold text-[#252422] inline-block mr-2">
                           {activeLocation.name}

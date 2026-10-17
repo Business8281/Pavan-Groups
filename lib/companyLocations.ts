@@ -16,12 +16,14 @@ export interface CompanyLocationInfo {
   email: string;
   port: string;
   accentColor: string;
+  logo?: string;
 }
 
 export const COMPANY_LOCATIONS: Record<string, CompanyLocationInfo> = {
   "pavan-impex": {
     name: "Pavan Impex",
     slug: "pavan-impex",
+    logo: "/images/pavan-impex-logo.png",
     divisionTitle: "Natural Slate & Wall Cladding Division",
     tagline: "Natural Slate Stone Exports & Processing Facility",
     speciality: "Slate Stones & 3D Cladding Panels",
@@ -60,6 +62,7 @@ export const COMPANY_LOCATIONS: Record<string, CompanyLocationInfo> = {
   "pavan-granite": {
     name: "Pavan Granite",
     slug: "pavan-granite",
+    logo: "/images/pavan-granites-logo.png",
     divisionTitle: "Monolithic Granite Processing Works",
     tagline: "Italian Gangsaw Monolithic Granite Processing Facility",
     speciality: "Black Galaxy & Monolithic Architectural Granite Slabs",
@@ -79,6 +82,7 @@ export const COMPANY_LOCATIONS: Record<string, CompanyLocationInfo> = {
   "sai-balaji-impex": {
     name: "Sai Balaji Impex",
     slug: "sai-balaji-impex",
+    logo: "/images/sai-balaji-impex-logo.png",
     divisionTitle: "Limestone & Precision Pavers Works",
     tagline: "Calcareous Limestone Processing & Quarrying Hub",
     speciality: "Cuddapah Black, Lime Blue & Anti-Skid Pavers",
