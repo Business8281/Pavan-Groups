@@ -14,7 +14,7 @@ interface ProductCardImageProps {
 export default function ProductCardImage({
   images,
   alt,
-  className = "w-full h-full object-cover sm:object-contain transition-transform duration-500 ease-out group-hover:scale-105",
+  className = "w-full h-full object-cover sm:object-contain transition-transform duration-500 ease-out group-hover:scale-105 p-4 sm:p-5",
   intervalMs = 2000,
   isCardHovered,
   showIndicators = true,
@@ -89,7 +89,7 @@ export default function ProductCardImage({
 
       {/* Visual slide indicator dots when hovered or multi-image */}
       {showIndicators && validImages.length > 1 && (
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-xs opacity-70 group-hover:opacity-100 transition-opacity">
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-xs opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none">
           {validImages.map((_, dotIdx) => (
             <span
               key={dotIdx}

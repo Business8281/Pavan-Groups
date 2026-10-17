@@ -36,7 +36,6 @@ next-env.d.ts
 
 # Mac OS X hidden files
 ._*
-**/._*
 .DS_Store
 **/.DS_Store
 
@@ -48,4 +47,3 @@ test_images.js
 old_preloader.txt
 scratch.py
 scratch.txt
-

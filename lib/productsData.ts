@@ -50,7 +50,7 @@ export interface ProductStone {
   badge?: string;
 }
 
-export const PRODUCTS_DATABASE: ProductStone[] = [
+export const SLATE_STONE_PRODUCTS: ProductStone[] = [
   {
     id: "black-slate",
     name: "Black Slate",
@@ -343,6 +343,11 @@ export const PRODUCTS_DATABASE: ProductStone[] = [
       portOfLoading: "Chennai Port / Krishnapatnam Port, Andhra Pradesh, India",
     },
   },
+];
+
+export const PRODUCTS_DATABASE: ProductStone[] = [
+  ...SOUTH_INDIAN_GRANITE_PRODUCTS,
+  ...NORTH_INDIAN_GRANITE_PRODUCTS,
   {
     id: "sun-god-spiritual-mural",
     name: "Sun God (Surya Bhagwan) Spiritual Slate Mural",
@@ -16969,8 +16974,7 @@ export const PRODUCTS_DATABASE: ProductStone[] = [
   },
   ...PAVAN_IMPEX_CATALOG_PRODUCTS,
   ...CRAZY_PATTERN_PRODUCTS,
-  ...NORTH_INDIAN_GRANITE_PRODUCTS,
-  ...SOUTH_INDIAN_GRANITE_PRODUCTS,
+  ...SLATE_STONE_PRODUCTS,
 ];
 
 // Helper functions for data access

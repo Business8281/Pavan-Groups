@@ -486,6 +486,19 @@ function ProductsContent() {
       if (sortBy === "name-desc") return b.name.localeCompare(a.name);
       if (sortBy === "rating") return (b.rating || 4.5) - (a.rating || 4.5);
 
+      // Move these 3 items (Black Slate, Gold Slate, Autumn Slate) to the bottom unless specifically filtering slate
+      const isOnlySlateFiltered =
+        selectedCategories.length === 1 &&
+        (selectedCategories[0] === "slate" || selectedCategories[0] === "slate-stone");
+      if (!isOnlySlateFiltered) {
+        const isMovedToBottom = (id: string) =>
+          id === "black-slate" || id === "gold-slate" || id === "autumn-slate";
+        const aBottom = isMovedToBottom(a.id);
+        const bBottom = isMovedToBottom(b.id);
+        if (aBottom && !bBottom) return 1;
+        if (!aBottom && bBottom) return -1;
+      }
+
       // In All Products view, keep crazy pattern products at the bottom unless specifically filtered
       const onlyCrazyPattern =
         selectedCategories.length === 1 &&
@@ -1129,7 +1142,7 @@ function ProductsContent() {
                         { key: "mosaic", label: "Natural Stone Mosaics", count: liveFacets.categories.mosaic || 0 },
                         { key: "cnc", label: "CNC Designs & 3D Reliefs", count: liveFacets.categories.cnc || 0 },
                         { key: "pebbles", label: "Natural Pebbles (Rough & Polished)", count: liveFacets.categories.pebbles || 0 },
-                        { key: "slate", label: "Slate Stone (Natural Cleft)", count: liveFacets.categories.slate || 0 },
+                        { key: "slate", label: "Slate Stones (Natural Cleft)", count: liveFacets.categories.slate || 0 },
                         { key: "applications", label: "Applications (Pavers & Cladding)", count: liveFacets.categories.applications || 0 },
                         { key: "limestone", label: "Limestone", count: liveFacets.categories.limestone || 0 },
                         { key: "south-indian-granite", label: "South Indian Granite", count: liveFacets.categories["south-indian-granite"] || 0 },
@@ -1881,7 +1894,7 @@ function ProductsContent() {
                         {/* Product Image Link with 2-second hover rotation for multi-image products */}
                         <Link
                           href={`/products/${product.id}`}
-                          className="block w-full h-full p-4 sm:p-5"
+                          className="block w-full h-full"
                         >
                           <ProductCardImage
                             images={product.gallery && product.gallery.length > 0 ? product.gallery : [product.image]}
@@ -1891,7 +1904,7 @@ function ProductsContent() {
                         </Link>
 
                         {/* Quick View Button Hover Overlay */}
-                        <div className="absolute inset-x-0 bottom-2.5 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 hidden sm:flex justify-center pointer-events-none">
+                        <div className="absolute inset-x-0 bottom-8 sm:bottom-7 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 hidden sm:flex justify-center pointer-events-none">
                           <button
                             type="button"
                             onClick={() => {
@@ -2024,7 +2037,7 @@ function ProductsContent() {
                         { key: "mosaic", label: "Natural Stone Mosaics", count: liveFacets.categories.mosaic || 0 },
                         { key: "cnc", label: "CNC Designs & 3D Reliefs", count: liveFacets.categories.cnc || 0 },
                         { key: "pebbles", label: "Natural Pebbles (Rough & Polished)", count: liveFacets.categories.pebbles || 0 },
-                        { key: "slate", label: "Slate Stone (Natural Cleft)", count: liveFacets.categories.slate || 0 },
+                        { key: "slate", label: "Slate Stones (Natural Cleft)", count: liveFacets.categories.slate || 0 },
                         { key: "applications", label: "Applications (Pavers & Cladding)", count: liveFacets.categories.applications || 0 },
                         { key: "limestone", label: "Limestone", count: liveFacets.categories.limestone || 0 },
                         { key: "south-indian-granite", label: "South Indian Granite", count: liveFacets.categories["south-indian-granite"] || 0 },

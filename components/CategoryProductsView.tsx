@@ -1148,7 +1148,7 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
                         </button>
 
                         {/* Product Image Link with 2-second hover rotation for multi-image products */}
-                        <Link href={`/products/${product.id}`} className="block w-full h-full p-4 sm:p-5">
+                        <Link href={`/products/${product.id}`} className="block w-full h-full">
                           <ProductCardImage
                             images={product.gallery && product.gallery.length > 0 ? product.gallery : [product.image]}
                             alt={product.name}
@@ -1157,7 +1157,7 @@ function CategoryProductsViewInner({ categorySlug }: { categorySlug: string }) {
                         </Link>
 
                         {/* Quick View Hover Overlay */}
-                        <div className="absolute inset-x-0 bottom-2.5 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 hidden sm:flex justify-center pointer-events-none">
+                        <div className="absolute inset-x-0 bottom-8 sm:bottom-7 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 hidden sm:flex justify-center pointer-events-none">
                           <button
                             type="button"
                             onClick={() => {

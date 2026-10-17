@@ -1,130 +1,19 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ArrowRight, ArrowUpRight, Lock, Package, Layers, FileText, TrendingUp } from "lucide-react";
+import { Check, ArrowRight, ArrowUpRight, Lock, Package, Layers, FileText, TrendingUp, Search } from "lucide-react";
+import { PRODUCTS_DATABASE, ProductStone } from "@/lib/productsData";
 
-interface StoneSpecimen {
-  id: string;
-  name: string;
-  division: string;
-  category: "slate" | "limestone" | "granite" | "cnc";
-  gradient: string;
-  origin: string;
-  defaultFinishes: string[];
-  recommendedThickness: string;
-}
-
-const SPECIMENS: StoneSpecimen[] = [
-  {
-    id: "black-galaxy-granite",
-    name: "Black Galaxy Granite",
-    division: "Pavan Granite",
-    category: "granite",
-    gradient: "linear-gradient(135deg, #090a0c 0%, #221f17 50%, #040506 100%)",
-    origin: "Chimakurthy, AP",
-    defaultFinishes: ["95+ Diamond Mirror Polish", "Leathered Velvet Touch", "Honed Matte"],
-    recommendedThickness: "20mm (3/4 in)",
-  },
-  {
-    id: "black-slate-stone",
-    name: "Black Slate Stone",
-    division: "Pavan Impex",
-    category: "slate",
-    gradient: "linear-gradient(135deg, #17191d 0%, #282b31 50%, #101114 100%)",
-    origin: "Markapur, AP",
-    defaultFinishes: ["Natural Cleft", "Calibrated Bottom", "Honed Smooth"],
-    recommendedThickness: "15mm (5/8 in)",
-  },
-  {
-    id: "cuddapah-black-limestone",
-    name: "Cuddapah Black Limestone",
-    division: "Sai Balaji Impex",
-    category: "limestone",
-    gradient: "linear-gradient(135deg, #151719 0%, #25282d 50%, #0d0e10 100%)",
-    origin: "Cuddapah Basin, AP",
-    defaultFinishes: ["Natural Non-Slip (R11)", "Honed Matte", "Tumbled Antique"],
-    recommendedThickness: "20mm (3/4 in)",
-  },
-  {
-    id: "indian-autumn-slate",
-    name: "Indian Autumn Slate",
-    division: "Pavan Impex",
-    category: "slate",
-    gradient: "linear-gradient(135deg, #532f1f 0%, #7d4428 50%, #3a1f13 100%)",
-    origin: "Markapur, AP",
-    defaultFinishes: ["Hand-Split Layered", "Tumbled Rustic", "Calibrated"],
-    recommendedThickness: "18mm (3/4 in)",
-  },
-  {
-    id: "lime-yellow-limestone",
-    name: "Lime Yellow Limestone",
-    division: "Sai Balaji Impex",
-    category: "limestone",
-    gradient: "linear-gradient(135deg, #7c6433 0%, #a48a4c 50%, #524220 100%)",
-    origin: "Cuddapah, AP",
-    defaultFinishes: ["Antiqued Velvet", "Brushed", "Calibrated"],
-    recommendedThickness: "20mm (3/4 in)",
-  },
-  {
-    id: "lime-blue-limestone",
-    name: "Lime Blue Limestone",
-    division: "Sai Balaji Impex",
-    category: "limestone",
-    gradient: "linear-gradient(135deg, #2e3842 0%, #475564 50%, #1e242b 100%)",
-    origin: "Cuddapah, AP",
-    defaultFinishes: ["Calibrated Coping", "Cobbled", "Flamed"],
-    recommendedThickness: "20mm (3/4 in)",
-  },
-  {
-    id: "california-gold-slate",
-    name: "California Gold Slate",
-    division: "Pavan Impex",
-    category: "slate",
-    gradient: "linear-gradient(135deg, #6c471c 0%, #96692f 50%, #442a0e 100%)",
-    origin: "Markapur, AP",
-    defaultFinishes: ["Golden Sparkle", "Riven Surface", "Calibrated"],
-    recommendedThickness: "15mm (5/8 in)",
-  },
-  {
-    id: "silver-sparkle-granite",
-    name: "Silver Sparkle Granite",
-    division: "Pavan Granite",
-    category: "granite",
-    gradient: "linear-gradient(135deg, #0e1012 0%, #22262b 50%, #090a0c 100%)",
-    origin: "Chimakurthy, AP",
-    defaultFinishes: ["Diamond Gloss", "Honed Matte", "Lapato"],
-    recommendedThickness: "20mm (3/4 in)",
-  },
-  {
-    id: "absolute-black-granite",
-    name: "Absolute Black Granite",
-    division: "Pavan Granite",
-    category: "granite",
-    gradient: "linear-gradient(135deg, #060607 0%, #111214 50%, #030304 100%)",
-    origin: "South India Basin",
-    defaultFinishes: ["Flawless Mirror Polish", "Flamed", "Water Jet"],
-    recommendedThickness: "20mm (3/4 in)",
-  },
-  {
-    id: "mint-white-buddha-meditation-001",
-    name: "Mint White Sandstone Relief",
-    division: "Pavan Stones World",
-    category: "cnc",
-    gradient: "linear-gradient(135deg, #f7f3eb 0%, #e2d9cb 50%, #c4b59f 100%)",
-    origin: "Rajasthan Atelier, India",
-    defaultFinishes: ["CNC 3D Milled Relief", "Hand-Honed Velvet", "Natural Sandstone Cleft"],
-    recommendedThickness: "25mm (1 in)",
-  },
-  {
-    id: "mint-white-om-ganesha-006",
-    name: "Mint White Om Ganesha Relief",
-    division: "Pavan Stones World",
-    category: "cnc",
-    gradient: "linear-gradient(135deg, #f7f3eb 0%, #e2d9cb 50%, #c4b59f 100%)",
-    origin: "Rajasthan Atelier, India",
-    defaultFinishes: ["CNC 3D Milled Relief", "Hand-Honed Velvet"],
-    recommendedThickness: "25mm (1 in)",
-  },
+const CATEGORY_TABS = [
+  { id: "all", label: "All Stones" },
+  { id: "granite", label: "Granite" },
+  { id: "slate", label: "Slate Stone" },
+  { id: "limestone", label: "Limestone" },
+  { id: "crazy-pattern", label: "Crazy Pattern" },
+  { id: "chipouts", label: "Chipouts & Pavers" },
+  { id: "cnc", label: "CNC Murals" },
+  { id: "pebbles", label: "Natural Pebbles" },
+  { id: "mosaic", label: "Stone Mosaics" },
 ];
 
 const DESTINATION_PORTS = [
@@ -145,8 +34,23 @@ const DESTINATION_PORTS = [
 ];
 
 export default function SampleRequest() {
-  const [selectedSpecimenId, setSelectedSpecimenId] = useState<string>("black-galaxy-granite");
-  const [selectedFinish, setSelectedFinish] = useState<string>("95+ Diamond Mirror Polish");
+  // Deduplicate products strictly by name to ensure no duplicates
+  const uniqueProducts = useMemo(() => {
+    const map = new Map<string, ProductStone>();
+    PRODUCTS_DATABASE.forEach((p) => {
+      const key = p.name.trim().toLowerCase();
+      if (!map.has(key)) {
+        map.set(key, p);
+      }
+    });
+    return Array.from(map.values());
+  }, []);
+
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [visibleCount, setVisibleCount] = useState<number>(18);
+  const [selectedProductId, setSelectedProductId] = useState<string>("black-galaxy-granite");
+  const [selectedFinish, setSelectedFinish] = useState<string>("High-Gloss Mirror Polished");
   const [selectedSize, setSelectedSize] = useState<string>("600 x 300 mm (2x1 ft)");
   const [selectedThickness, setSelectedThickness] = useState<string>("20mm (3/4 in)");
   const [estimatedVolume, setEstimatedVolume] = useState<string>("1 x 20ft FCL Container (~700-900 sqm)");
@@ -164,15 +68,45 @@ export default function SampleRequest() {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [referenceNumber, setReferenceNumber] = useState<string>("");
 
-  const currentSpecimen =
-    SPECIMENS.find((s) => s.id === selectedSpecimenId) || SPECIMENS[0];
+  const filteredProducts = useMemo(() => {
+    return uniqueProducts.filter((p) => {
+      const matchesCat =
+        selectedCategory === "all" ||
+        p.category === selectedCategory ||
+        (selectedCategory === "limestone" && p.category.includes("limestone")) ||
+        (selectedCategory === "slate" && p.category.includes("slate"));
 
-  const handleSpecimenSelect = (specimenId: string) => {
-    setSelectedSpecimenId(specimenId);
-    const spec = SPECIMENS.find((s) => s.id === specimenId);
-    if (spec && spec.defaultFinishes.length > 0) {
-      setSelectedFinish(spec.defaultFinishes[0]);
+      const matchesSearch =
+        !searchQuery.trim() ||
+        p.name.toLowerCase().includes(searchQuery.toLowerCase().trim()) ||
+        p.category.toLowerCase().includes(searchQuery.toLowerCase().trim());
+
+      return matchesCat && matchesSearch;
+    });
+  }, [uniqueProducts, selectedCategory, searchQuery]);
+
+  const currentProduct = useMemo(() => {
+    return (
+      uniqueProducts.find((p) => p.id === selectedProductId) ||
+      uniqueProducts.find((p) => p.id === "black-galaxy") ||
+      uniqueProducts[0]
+    );
+  }, [uniqueProducts, selectedProductId]);
+
+  const availableFinishes = useMemo(() => {
+    if (currentProduct?.availableFinishes && currentProduct.availableFinishes.length > 0) {
+      return currentProduct.availableFinishes;
     }
+    return ["Natural Cleft", "Honed Matte", "High-Gloss Mirror Polish", "Thermal Flamed", "Tumbled Antique"];
+  }, [currentProduct]);
+
+  const handleProductSelect = (product: ProductStone) => {
+    setSelectedProductId(product.id);
+    const finishes =
+      product.availableFinishes && product.availableFinishes.length > 0
+        ? product.availableFinishes
+        : ["Natural Cleft", "Honed Matte", "High-Gloss Mirror Polish", "Thermal Flamed", "Tumbled Antique"];
+    setSelectedFinish(finishes[0]);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -190,24 +124,29 @@ export default function SampleRequest() {
   return (
     <section
       id="request-sample"
-      className="relative pt-8 pb-16 md:pt-10 md:pb-24 px-4 sm:px-6 md:px-12 lg:px-16 bg-white overflow-hidden"
+      className="relative pt-10 pb-20 md:pt-14 md:pb-28 px-4 sm:px-6 md:px-12 lg:px-16 bg-gradient-to-b from-[#faf8f5] via-white to-[#faf8f5] overflow-hidden"
     >
+      {/* Subtle brand ambient glows */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#ff5500]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-20 left-10 w-96 h-96 bg-[#003049]/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         
         {/* ── SECTION HEADER ── */}
-        <div className="max-w-2xl mb-8 md:mb-12">
-          <h2 className="font-display font-light text-[#514a38] leading-[1.1] tracking-[-0.01em] text-4xl md:text-5xl">
-            Request a Sample
+        <div className="max-w-3xl mb-8 md:mb-12">
+          <h2 className="font-display font-light text-[#003049] leading-[1.08] tracking-[-0.02em] text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4">
+            Request an Architectural <span className="text-[#ff5500] italic font-serif font-normal">Sample Kit</span>
           </h2>
+          <p className="text-[#003049]/75 text-sm sm:text-base md:text-[17px] font-light leading-relaxed">
+            Complimentary air courier dispatch of calibrated natural stone specimens, finish swatches, and certified ASTM laboratory test reports delivered to your office or atelier worldwide within 48–72 hours.
+          </p>
         </div>
 
         {/* ── 2-COLUMN ATELIER LAYOUT ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
           {/* ── LEFT COLUMN: BESPOKE SAMPLE REQUEST CONCIERGE FORM (7 Cols) ── */}
-          <div className="lg:col-span-7 bg-[#fcfcfc] border border-[#747474]/15 rounded-sm p-6 sm:p-10 shadow-sm relative overflow-hidden">
-            
+          <div className="lg:col-span-7 bg-white border border-[#003049]/12 rounded-xl p-5 sm:p-8 md:p-10 shadow-[0_8px_30px_rgba(0,48,73,0.06)] relative overflow-hidden">
             {isSubmitted ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.96 }}
@@ -218,162 +157,236 @@ export default function SampleRequest() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", damping: 15 }}
-                  className="w-20 h-20 rounded-full bg-white border-2 border-[#514a38] flex items-center justify-center mx-auto shadow-sm text-3xl text-[#514a38]"
+                  className="w-20 h-20 rounded-full bg-gradient-to-br from-[#ff5500] to-[#e04300] flex items-center justify-center mx-auto shadow-xl shadow-[#ff5500]/30 text-3xl text-white ring-8 ring-[#ff5500]/15"
                 >
                   <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
                   >
-                    <Check size={36} className="text-[#514a38]" />
+                    <Check size={38} className="text-white stroke-[2.5]" />
                   </motion.div>
                 </motion.div>
 
                 <div>
-                  <span className="text-[10px] font-mono uppercase tracking-[0.24em] font-bold text-[#747474] block mb-3">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.26em] font-bold text-[#ff5500] block mb-3">
                     SAMPLE DISPATCH QUEUED SUCCESSFULLY
                   </span>
-                  <h3 className="font-display text-4xl font-light text-[#241919] mb-3">
+                  <h3 className="font-display text-3xl sm:text-4xl font-light text-[#003049] mb-3">
                     Thank You, {contactName || "Valued Client"}
                   </h3>
-                  <p className="text-xs font-mono text-[#454545] font-semibold mb-6 flex items-center justify-center gap-3">
-                    Sample Tracking ID: 
-                    <span className="text-[#241919] bg-white px-4 py-1.5 rounded border border-[#747474]/20 tracking-wider shadow-inner">{referenceNumber}</span>
-                  </p>
-                  <p className="text-[15px] text-[#454545] font-light max-w-md mx-auto leading-relaxed">
-                    Our export logistics desk has queued your curated <strong className="text-[#241919] font-medium">{currentSpecimen.name}</strong> sample kit for express air courier dispatch to <strong className="text-[#241919] font-medium">{destinationPort}</strong>.
+                  <div className="inline-flex items-center justify-center gap-2.5 text-xs font-mono text-[#003049] font-semibold mb-5 bg-[#faf8f5] px-4 py-2 rounded-lg border border-[#003049]/15 shadow-sm">
+                    <span>Sample Tracking ID:</span>
+                    <span className="text-[#ff5500] font-bold tracking-wider">{referenceNumber}</span>
+                  </div>
+                  <p className="text-sm sm:text-[15px] text-[#003049]/75 font-light max-w-md mx-auto leading-relaxed">
+                    Our export logistics desk has queued your curated <strong className="text-[#003049] font-semibold">{currentProduct.name}</strong> sample kit for priority air courier dispatch to <strong className="text-[#003049] font-semibold">{destinationPort}</strong>.
                   </p>
                 </div>
 
-                <div className="p-5 bg-white border border-[#747474]/15 rounded-sm max-w-md mx-auto text-left space-y-3 text-xs font-mono text-[#747474]">
-                  <div className="flex justify-between border-b border-[#747474]/10 pb-2">
+                <div className="p-5 bg-[#faf8f5] border border-[#003049]/12 rounded-lg max-w-md mx-auto text-left space-y-3 text-xs font-mono text-[#003049]/80">
+                  <div className="flex justify-between border-b border-[#003049]/10 pb-2">
                     <span>Stone Specimen:</span>
-                    <span className="font-bold text-[#241919] text-right">{currentSpecimen.name}</span>
+                    <span className="font-bold text-[#003049] text-right">{currentProduct.name}</span>
                   </div>
-                  <div className="flex justify-between border-b border-[#747474]/10 pb-2">
+                  <div className="flex justify-between border-b border-[#003049]/10 pb-2">
                     <span>Selected Finish:</span>
-                    <span className="font-bold text-[#241919] text-right">{selectedFinish}</span>
+                    <span className="font-bold text-[#003049] text-right">{selectedFinish}</span>
                   </div>
-                  <div className="flex justify-between border-b border-[#747474]/10 pb-2">
+                  <div className="flex justify-between border-b border-[#003049]/10 pb-2">
                     <span>Target Port:</span>
-                    <span className="font-bold text-[#241919] text-right">{destinationPort}</span>
+                    <span className="font-bold text-[#003049] text-right">{destinationPort}</span>
                   </div>
                   <div className="flex justify-between pt-1">
                     <span>Est. Dispatch:</span>
-                    <span className="font-bold text-[#514a38]">Within 48 Hours (Air)</span>
+                    <span className="font-bold text-[#ff5500]">Within 48 Hours (Air Priority)</span>
                   </div>
                 </div>
 
-                <div className="pt-6 flex justify-center">
+                <div className="pt-4 flex justify-center">
                   <button
                     type="button"
                     onClick={() => setIsSubmitted(false)}
-                    className="px-8 py-4 bg-[#241919] text-white hover:bg-[#3e352a] rounded-sm text-[10.5px] font-mono uppercase tracking-[0.18em] font-bold transition-all cursor-pointer shadow-sm"
+                    className="px-8 py-3.5 bg-[#003049] hover:bg-[#ff5500] text-white rounded-lg text-[11px] font-mono uppercase tracking-[0.2em] font-bold transition-all duration-300 cursor-pointer shadow-md shadow-[#003049]/20 hover:shadow-lg hover:shadow-[#ff5500]/30"
                   >
                     Submit Another Request
                   </button>
                 </div>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-10">
+              <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-10">
                 
                 {/* ── STEP 1: STONE SPECIMEN SELECTION ── */}
-                <div className="space-y-5 pb-8 border-b border-[#747474]/15">
-                  <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-full bg-[#241919] text-white font-mono text-xs flex items-center justify-center font-bold">
+                <div className="space-y-5 pb-8 border-b border-[#003049]/10">
+                  <div className="flex items-center gap-3.5">
+                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#ff5500] to-[#e04300] text-white font-mono text-xs sm:text-sm flex items-center justify-center font-bold shadow-md shadow-[#ff5500]/25 ring-4 ring-[#ff5500]/15 flex-none">
                       1
                     </span>
-                    <h3 className="font-display text-2xl font-light text-[#241919] tracking-tight">
+                    <h3 className="font-display text-xl sm:text-2xl font-normal text-[#003049] tracking-tight">
                       Select Stone Variety & Texture
                     </h3>
                   </div>
 
-                  {/* Visual Specimen Swatch Grid */}
-                  <div>
-                    <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-3 pl-0 sm:pl-9">
-                      Click Stone Specimen: *
+                  {/* Category Filter Tabs */}
+                  <div className="pl-0 sm:pl-11">
+                    <label className="text-[10px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2.5">
+                      Select by Category:
                     </label>
-                    
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pl-0 sm:pl-9">
-                      {SPECIMENS.map((spec) => {
-                        const isSelected = selectedSpecimenId === spec.id;
+                    <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none">
+                      {CATEGORY_TABS.map((cat) => {
+                        const isCatActive = selectedCategory === cat.id;
                         return (
                           <button
-                            key={spec.id}
+                            key={cat.id}
                             type="button"
-                            onClick={() => handleSpecimenSelect(spec.id)}
-                            className={`p-3 rounded-sm border text-left transition-all duration-300 cursor-pointer flex items-center gap-3 relative overflow-hidden ${
-                              isSelected
-                                ? "bg-white border-[#241919] shadow-[0_0_0_1px_#241919] text-[#241919]"
-                                : "bg-white hover:bg-[#f8fafc] border-[#747474]/20 text-[#241919]"
+                            onClick={() => {
+                              setSelectedCategory(cat.id);
+                              setVisibleCount(18);
+                            }}
+                            className={`px-3 py-1.5 rounded-full text-xs font-mono whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                              isCatActive
+                                ? "bg-[#003049] text-white font-bold shadow-xs"
+                                : "bg-white border border-[#003049]/15 text-[#003049]/70 hover:text-[#003049] hover:border-[#ff5500]/50"
                             }`}
                           >
-                            <div
-                              className="w-6 h-6 rounded-none border border-[#747474]/30 shadow-sm flex-none relative z-10"
-                              style={{ background: spec.gradient }}
-                            />
-                            <div className="min-w-0 relative z-10">
-                              <span className={`text-[12px] font-medium block leading-tight truncate ${isSelected ? "text-[#241919] font-bold" : "text-[#241919]"}`}>
-                                {spec.name}
-                              </span>
-                              <span
-                                className={`text-[9px] font-mono block truncate mt-0.5 ${
-                                  isSelected ? "text-[#514a38] font-semibold" : "text-[#747474]"
-                                }`}
-                              >
-                                {spec.division.split(" ")[0]}
-                              </span>
-                            </div>
+                            {cat.label}
                           </button>
                         );
                       })}
                     </div>
                   </div>
 
-                  {/* Surface Finish Chips */}
-                  <div className="pl-0 sm:pl-9 mt-4">
-                    <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-3">
+                  {/* Quick Search */}
+                  <div className="pl-0 sm:pl-11">
+                    <div className="relative">
+                      <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#003049]/40 pointer-events-none" />
+                      <input
+                        type="text"
+                        placeholder="Search our stones (e.g. Black Galaxy, Slate, Lime Blue, Red Granite)..."
+                        value={searchQuery}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value);
+                          setVisibleCount(18);
+                        }}
+                        className="w-full bg-[#fbf9f6] focus:bg-white border border-[#003049]/15 focus:border-[#ff5500] focus:ring-2 focus:ring-[#ff5500]/15 rounded-lg text-xs text-[#003049] pl-9 pr-14 py-2 outline-none transition-all placeholder:text-[#003049]/40 font-mono"
+                      />
+                      {searchQuery && (
+                        <button
+                          type="button"
+                          onClick={() => setSearchQuery("")}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-mono text-[#747474] hover:text-[#ff5500] cursor-pointer"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Visual Specimen Swatch Grid with Genuine Products */}
+                  <div>
+                    <label className="text-[10px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-3 pl-0 sm:pl-11">
+                      Choose Your Stone Specimen ({filteredProducts.length} Available): *
+                    </label>
+                    
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 pl-0 sm:pl-11">
+                      {filteredProducts.slice(0, visibleCount).map((prod) => {
+                        const isSelected = selectedProductId === prod.id;
+                        return (
+                          <button
+                            key={prod.id}
+                            type="button"
+                            onClick={() => handleProductSelect(prod)}
+                            className={`p-2.5 sm:p-3 rounded-lg border text-left transition-all duration-200 cursor-pointer flex items-center gap-2.5 sm:gap-3 relative overflow-hidden group ${
+                              isSelected
+                                ? "bg-[#fff9f5] border-2 border-[#ff5500] shadow-[0_4px_16px_rgba(255,85,0,0.14)] ring-1 ring-[#ff5500]/40"
+                                : "bg-white hover:bg-[#fffbf8] border-[#003049]/15 hover:border-[#ff5500]/40 shadow-xs hover:shadow"
+                            }`}
+                          >
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-md overflow-hidden bg-[#faf8f5] border border-black/10 flex-none relative shadow-2xs">
+                              <img
+                                src={prod.image}
+                                alt={prod.name}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                }}
+                              />
+                            </div>
+                            <div className="min-w-0 relative z-10 flex-1">
+                              <span className={`text-[11.5px] sm:text-[12px] block leading-tight truncate transition-colors ${
+                                isSelected ? "text-[#003049] font-bold" : "text-[#003049] font-medium group-hover:text-[#ff5500]"
+                              }`}>
+                                {prod.name}
+                              </span>
+                              <span className="text-[9.5px] font-mono text-[#747474] capitalize block truncate mt-0.5">
+                                {prod.category.replace("-", " ")}
+                              </span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {filteredProducts.length > visibleCount && (
+                      <div className="pl-0 sm:pl-11 mt-3.5 text-center">
+                        <button
+                          type="button"
+                          onClick={() => setVisibleCount((prev) => prev + 24)}
+                          className="px-4 py-2 text-xs font-mono uppercase tracking-wider text-[#003049] hover:text-white bg-white hover:bg-[#003049] border border-[#003049]/20 hover:border-[#003049] rounded-lg transition-all cursor-pointer font-bold shadow-xs"
+                        >
+                          Show More Stones ({filteredProducts.length - visibleCount} more)
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Surface Finish Chips for the selected product */}
+                  <div className="pl-0 sm:pl-11 mt-4">
+                    <label className="text-[10px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-3">
                       Surface Finish Profile: *
                     </label>
-                    <div className="flex flex-wrap gap-2.5">
-                      {currentSpecimen.defaultFinishes.map((fin) => (
-                        <button
-                          key={fin}
-                          type="button"
-                          onClick={() => setSelectedFinish(fin)}
-                          className={`px-4 py-2 text-xs font-mono rounded-sm transition-all cursor-pointer ${
-                            selectedFinish === fin
-                              ? "bg-white border-[#241919] shadow-[0_0_0_1px_#241919] text-[#241919] font-bold"
-                              : "bg-white border border-[#747474]/20 text-[#454545] hover:border-[#241919] hover:text-[#241919]"
-                          }`}
-                        >
-                          {fin}
-                        </button>
-                      ))}
+                    <div className="flex flex-wrap gap-2 sm:gap-2.5">
+                      {availableFinishes.map((fin) => {
+                        const isSelected = selectedFinish === fin;
+                        return (
+                          <button
+                            key={fin}
+                            type="button"
+                            onClick={() => setSelectedFinish(fin)}
+                            className={`px-3.5 sm:px-4 py-2 text-xs font-mono rounded-lg transition-all duration-200 cursor-pointer flex items-center ${
+                              isSelected
+                                ? "bg-[#003049] text-white border-2 border-[#003049] shadow-md shadow-[#003049]/20 font-bold"
+                                : "bg-white border border-[#003049]/20 text-[#003049]/80 hover:border-[#ff5500] hover:text-[#ff5500] hover:bg-[#fff9f5]"
+                            }`}
+                          >
+                            <span>{fin}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
 
                 {/* ── STEP 2: DIMENSIONS & VOLUME ESTIMATE ── */}
-                <div className="space-y-5 pb-8 border-b border-[#747474]/15">
-                  <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-full bg-[#241919] text-white font-mono text-xs flex items-center justify-center font-bold">
+                <div className="space-y-5 pb-8 border-b border-[#003049]/10">
+                  <div className="flex items-center gap-3.5">
+                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#ff5500] to-[#e04300] text-white font-mono text-xs sm:text-sm flex items-center justify-center font-bold shadow-md shadow-[#ff5500]/25 ring-4 ring-[#ff5500]/15 flex-none">
                       2
                     </span>
-                    <h3 className="font-display text-2xl font-light text-[#241919] tracking-tight">
+                    <h3 className="font-display text-xl sm:text-2xl font-normal text-[#003049] tracking-tight">
                       Target Sizing & Project Scope
                     </h3>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pl-0 sm:pl-9">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 pl-0 sm:pl-11">
                     <div>
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
+                      <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
                         Target Sizing / Form Factor:
                       </label>
                       <select
                         value={selectedSize}
                         onChange={(e) => setSelectedSize(e.target.value)}
-                        className="w-full bg-white border border-[#747474]/30 rounded-sm text-[#241919] p-3.5 text-sm focus:outline-none focus:border-[#241919] transition-all cursor-pointer"
+                        className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all cursor-pointer outline-none font-medium"
                       >
                         <option value="600 x 300 mm (2x1 ft)">600 x 300 mm (2x1 ft)</option>
                         <option value="600 x 600 mm (2x2 ft)">600 x 600 mm (2x2 ft)</option>
@@ -386,13 +399,13 @@ export default function SampleRequest() {
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
+                      <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
                         Target Thickness:
                       </label>
                       <select
                         value={selectedThickness}
                         onChange={(e) => setSelectedThickness(e.target.value)}
-                        className="w-full bg-white border border-[#747474]/30 rounded-sm text-[#241919] p-3.5 text-sm focus:outline-none focus:border-[#241919] transition-all cursor-pointer"
+                        className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all cursor-pointer outline-none font-medium"
                       >
                         <option value="12mm (1/2 in)">12mm (1/2 in)</option>
                         <option value="15mm (5/8 in)">15mm (5/8 in)</option>
@@ -405,14 +418,14 @@ export default function SampleRequest() {
                     </div>
                   </div>
 
-                  <div className="pl-0 sm:pl-9 mt-4">
-                    <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
+                  <div className="pl-0 sm:pl-11 mt-4">
+                    <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
                       Estimated Project Requirement: *
                     </label>
                     <select
                       value={estimatedVolume}
                       onChange={(e) => setEstimatedVolume(e.target.value)}
-                      className="w-full bg-white border border-[#747474]/30 rounded-sm text-[#241919] p-3.5 text-sm focus:outline-none focus:border-[#241919] transition-all cursor-pointer"
+                      className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all cursor-pointer outline-none font-medium"
                       required
                     >
                       <option value="Trial Sample Evaluation (< 200 sqm)">Trial Sample Evaluation (&lt; 200 sqm)</option>
@@ -425,24 +438,24 @@ export default function SampleRequest() {
                 </div>
 
                 {/* ── STEP 3: DESTINATION SEA PORT ── */}
-                <div className="space-y-5 pb-8 border-b border-[#747474]/15">
-                  <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-full bg-[#241919] text-white font-mono text-xs flex items-center justify-center font-bold">
+                <div className="space-y-5 pb-8 border-b border-[#003049]/10">
+                  <div className="flex items-center gap-3.5">
+                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#ff5500] to-[#e04300] text-white font-mono text-xs sm:text-sm flex items-center justify-center font-bold shadow-md shadow-[#ff5500]/25 ring-4 ring-[#ff5500]/15 flex-none">
                       3
                     </span>
-                    <h3 className="font-display text-2xl font-light text-[#241919] tracking-tight">
-                      Destination Sea Port <span className="text-[#747474] text-lg hidden sm:inline">(For CIF Freight Quotation)</span>
+                    <h3 className="font-display text-xl sm:text-2xl font-normal text-[#003049] tracking-tight">
+                      Destination Sea Port <span className="text-[#ff5500] text-base font-sans font-medium hidden sm:inline">(For CIF Freight Quotation)</span>
                     </h3>
                   </div>
 
-                  <div className="pl-0 sm:pl-9">
-                    <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
+                  <div className="pl-0 sm:pl-11">
+                    <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
                       Nearest Port of Discharge: *
                     </label>
                     <select
                       value={destinationPort}
                       onChange={(e) => setDestinationPort(e.target.value)}
-                      className="w-full bg-white border border-[#747474]/30 rounded-sm text-[#241919] p-3.5 text-sm focus:outline-none focus:border-[#241919] transition-all cursor-pointer"
+                      className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all cursor-pointer outline-none font-medium"
                       required
                     >
                       {DESTINATION_PORTS.map((p) => (
@@ -454,8 +467,8 @@ export default function SampleRequest() {
                   </div>
 
                   {destinationPort.includes("Other") && (
-                    <div className="pl-0 sm:pl-9 mt-4">
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
+                    <div className="pl-0 sm:pl-11 mt-4">
+                      <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
                         Specify Your Target Port / City:
                       </label>
                       <input
@@ -463,7 +476,7 @@ export default function SampleRequest() {
                         placeholder="e.g. Port of Rotterdam, Netherlands"
                         value={customPort}
                         onChange={(e) => setCustomPort(e.target.value)}
-                        className="w-full bg-white border border-[#747474]/30 rounded-sm text-[#241919] p-3.5 text-sm focus:outline-none focus:border-[#241919] transition-all"
+                        className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all outline-none font-medium"
                         required
                       />
                     </div>
@@ -472,18 +485,18 @@ export default function SampleRequest() {
 
                 {/* ── STEP 4: COMPANY & COURIER DISPATCH DETAILS ── */}
                 <div className="space-y-5">
-                  <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-full bg-[#241919] text-white font-mono text-xs flex items-center justify-center font-bold">
+                  <div className="flex items-center gap-3.5">
+                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#ff5500] to-[#e04300] text-white font-mono text-xs sm:text-sm flex items-center justify-center font-bold shadow-md shadow-[#ff5500]/25 ring-4 ring-[#ff5500]/15 flex-none">
                       4
                     </span>
-                    <h3 className="font-display text-2xl font-light text-[#241919] tracking-tight">
+                    <h3 className="font-display text-xl sm:text-2xl font-normal text-[#003049] tracking-tight">
                       Company & Courier Delivery
                     </h3>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pl-0 sm:pl-9">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 pl-0 sm:pl-11">
                     <div>
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
+                      <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
                         Company / Practice: *
                       </label>
                       <input
@@ -491,13 +504,13 @@ export default function SampleRequest() {
                         placeholder="e.g. Studio Arc / Stone Direct"
                         value={companyName}
                         onChange={(e) => setCompanyName(e.target.value)}
-                        className="w-full bg-white border border-[#747474]/30 rounded-sm text-[#241919] p-3.5 text-sm focus:outline-none focus:border-[#241919] transition-all"
+                        className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all outline-none font-medium"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
+                      <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
                         Contact Person: *
                       </label>
                       <input
@@ -505,15 +518,15 @@ export default function SampleRequest() {
                         placeholder="e.g. David Henderson"
                         value={contactName}
                         onChange={(e) => setContactName(e.target.value)}
-                        className="w-full bg-white border border-[#747474]/30 rounded-sm text-[#241919] p-3.5 text-sm focus:outline-none focus:border-[#241919] transition-all"
+                        className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all outline-none font-medium"
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pl-0 sm:pl-9 mt-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 pl-0 sm:pl-11 mt-4">
                     <div>
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
+                      <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
                         Corporate Email: *
                       </label>
                       <input
@@ -521,13 +534,13 @@ export default function SampleRequest() {
                         placeholder="e.g. hello@studioarc.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-white border border-[#747474]/30 rounded-sm text-[#241919] p-3.5 text-sm focus:outline-none focus:border-[#241919] transition-all"
+                        className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all outline-none font-medium"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
+                      <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
                         Phone / WhatsApp: *
                       </label>
                       <input
@@ -535,14 +548,14 @@ export default function SampleRequest() {
                         placeholder="e.g. +61 412 345 678"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className="w-full bg-white border border-[#747474]/30 rounded-sm text-[#241919] p-3.5 text-sm focus:outline-none focus:border-[#241919] transition-all"
+                        className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all outline-none font-medium"
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="pl-0 sm:pl-9 mt-4">
-                    <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
+                  <div className="pl-0 sm:pl-11 mt-4">
+                    <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
                       Sample Delivery Street Address (For DHL / FedEx): *
                     </label>
                     <textarea
@@ -550,46 +563,47 @@ export default function SampleRequest() {
                       placeholder="Suite 402, Level 4, 120 Collins Street, Melbourne VIC 3000, Australia"
                       value={courierAddress}
                       onChange={(e) => setCourierAddress(e.target.value)}
-                      className="w-full bg-white border border-[#747474]/30 rounded-sm text-[#241919] p-3.5 text-sm focus:outline-none focus:border-[#241919] transition-all resize-none"
+                      className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all outline-none resize-none font-medium"
                       required
                     />
                   </div>
 
-                  <div className="pl-0 sm:pl-9 mt-4">
-                    <label className="text-[10px] font-mono uppercase tracking-wider text-[#747474] font-bold block mb-2">
+                  <div className="pl-0 sm:pl-11 mt-4">
+                    <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
                       Specific Architectural Requirements (Optional):
                     </label>
                     <textarea
                       rows={2}
-                      placeholder="e.g. Looking for pool coping pieces with bullnose edge profiles."
+                      placeholder="e.g. Looking for pool coping pieces with bullnose edge profiles or specific slip resistance."
                       value={projectNotes}
                       onChange={(e) => setProjectNotes(e.target.value)}
-                      className="w-full bg-white border border-[#747474]/30 rounded-sm text-[#241919] p-3.5 text-sm focus:outline-none focus:border-[#241919] transition-all resize-none"
+                      className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all outline-none resize-none font-medium"
                     />
                   </div>
                 </div>
 
                 {/* ── SUBMIT BUTTON ── */}
-                <div className="pt-6 pl-0 sm:pl-9">
+                <div className="pt-4 pl-0 sm:pl-11">
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full p-4 rounded-sm bg-[#241919] hover:bg-[#3e352a] text-white text-[11.5px] font-mono uppercase tracking-[0.22em] font-bold transition-all shadow-sm cursor-pointer flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-4 px-6 rounded-lg bg-gradient-to-r from-[#ff5500] via-[#ff661a] to-[#ff4400] hover:from-[#e64d00] hover:to-[#cc3700] text-white text-[11.5px] sm:text-xs font-mono uppercase tracking-[0.22em] font-bold transition-all duration-300 shadow-lg shadow-[#ff5500]/25 hover:shadow-xl hover:shadow-[#ff5500]/35 hover:scale-[1.005] active:scale-[0.99] cursor-pointer flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
-                        <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         Queuing Express Dispatch...
                       </span>
                     ) : (
                       <>
                         <span>Submit Sample Kit Dispatch Request</span>
-                        <ArrowRight size={14} />
+                        <ArrowRight size={15} />
                       </>
                     )}
                   </button>
-                  <div className="text-[10px] font-mono text-[#747474] text-center mt-4 flex items-center justify-center gap-1.5">
-                    <Lock size={12} className="text-[#514a38]" /> Compliant with ISO 9001:2015 standards. Dispatched directly from our factory within 48-72 hours.
+                  <div className="text-[10.5px] font-mono text-[#003049]/70 text-center mt-4 flex items-center justify-center gap-2">
+                    <Lock size={13} className="text-[#ff5500] flex-none" /> 
+                    <span>Compliant with ISO 9001:2015 & ASTM standards. Factory-dispatched within 48–72 hours.</span>
                   </div>
                 </div>
 
@@ -599,131 +613,110 @@ export default function SampleRequest() {
           </div>
 
           {/* ── RIGHT COLUMN: INTERACTIVE SAMPLE ATELIER BOX VISUALIZER (5 Cols) ── */}
-          <div className="lg:col-span-5 space-y-6 sticky top-24">
+          <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
             
             {/* 3D-Feel Luxury Curated Sample Box Visualizer */}
-            <div className="bg-white border border-[#747474]/15 rounded-sm p-6 sm:p-8 shadow-sm">
-              <div className="flex items-center justify-between pb-4 mb-5 border-b border-[#747474]/15">
-                <span className="text-[9.5px] font-mono uppercase tracking-wider text-[#514a38] font-bold flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#514a38]" />
-                  SELECTED SPECIMEN
-                </span>
-                <span className="text-[10px] font-mono text-[#747474]">
-                  {currentSpecimen.origin}
-                </span>
-              </div>
-
-              {/* Dynamic Live Specimen Tile (Changes in Real Time) */}
-              <div
-                className="w-full h-48 mb-5 rounded-none border border-black/20 shadow-inner flex flex-col justify-between p-4 relative overflow-hidden transition-all duration-500"
-                style={{ background: currentSpecimen.gradient }}
-              >
-                
-                <div className="flex justify-between items-start relative z-10">
-                  <span className="text-[9px] font-mono uppercase px-2.5 py-1 rounded-sm bg-black/70 text-white backdrop-blur-sm border border-white/10">
-                    {selectedFinish}
-                  </span>
-                  <span className="text-[9px] font-mono uppercase px-2.5 py-1 rounded-sm bg-white text-[#0a0a0a] font-bold shadow-md">
-                    {selectedThickness.split(" ")[0]}
-                  </span>
-                </div>
-
-                <div className="relative z-10 bg-black/75 backdrop-blur-sm p-3 inline-block self-start border border-white/10 text-white">
-                  <span className="text-sm font-mono font-bold block leading-tight">
-                    {currentSpecimen.name}
-                  </span>
-                  <span className="text-[10px] font-mono text-[#94a3b8] block mt-1 uppercase tracking-widest">
-                    {currentSpecimen.category} · {currentSpecimen.division}
-                  </span>
-                </div>
+            <div className="bg-white border border-[#003049]/12 rounded-xl p-5 sm:p-7 shadow-[0_4px_20px_rgba(0,48,73,0.06)] relative overflow-hidden">
+              {/* Dynamic Live Specimen Image (Real Stone Photograph) */}
+              <div className="w-full h-52 sm:h-60 mb-5 rounded-lg border border-black/15 shadow-sm relative overflow-hidden bg-[#faf8f5]">
+                <img
+                  src={currentProduct.image}
+                  alt={currentProduct.name}
+                  className="w-full h-full object-cover transition-all duration-500"
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/black-slate-stone-1.jpg";
+                  }}
+                />
               </div>
 
               {/* Live Specimen Summary Details */}
-              <div className="p-4 rounded-sm bg-[#f8fafc] border border-[#747474]/15 text-xs font-mono space-y-2.5 text-[#454545]">
-                <div className="flex justify-between items-center">
-                  <span className="text-[#747474]">Target Port:</span>
-                  <span className="font-medium text-[#241919] max-w-[60%] text-right truncate">{destinationPort.split("(")[0]}</span>
+              <div className="p-4 rounded-lg bg-[#faf8f5] border border-[#003049]/10 text-xs font-mono space-y-2.5 text-[#003049]">
+                <div className="flex justify-between items-center border-b border-[#003049]/10 pb-2">
+                  <span className="text-[#003049]/65">Selected Stone:</span>
+                  <span className="font-bold text-[#003049] max-w-[65%] text-right truncate">{currentProduct.name}</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-[#003049]/10 pb-2">
+                  <span className="text-[#003049]/65">Selected Finish:</span>
+                  <span className="font-bold text-[#ff5500] max-w-[65%] text-right truncate">{selectedFinish}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[#747474]">Project Scope:</span>
-                  <span className="font-medium text-[#241919] max-w-[60%] text-right truncate">{estimatedVolume.split("(")[0]}</span>
+                  <span className="text-[#003049]/65">Target Port:</span>
+                  <span className="font-bold text-[#003049] max-w-[60%] text-right truncate">{destinationPort.split("(")[0]}</span>
                 </div>
-                <div className="flex justify-between items-center pt-1 border-t border-[#747474]/15">
-                  <span className="text-[#747474]">Air Courier:</span>
-                  <span className="font-bold text-[#514a38]">DHL / FedEx Priority</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#003049]/65">Project Scope:</span>
+                  <span className="font-bold text-[#003049] max-w-[60%] text-right truncate">{estimatedVolume.split("(")[0]}</span>
                 </div>
               </div>
             </div>
 
             {/* What is Included Inside the Pavan Stones Group Sample Box */}
-            <div className="bg-[#f8fafc] border border-[#747474]/20 rounded-sm p-8 shadow-sm">
-              <div className="mb-6 border-b border-[#747474]/15 pb-6">
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#747474] font-bold block mb-2">
+            <div className="bg-gradient-to-br from-[#003049] via-[#00283d] to-[#001f30] text-white rounded-xl p-6 sm:p-8 shadow-xl relative overflow-hidden border border-[#003049]">
+              {/* Energetic orange ambient glow */}
+              <div className="absolute -top-16 -right-16 w-44 h-44 bg-[#ff5500]/25 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="mb-6 border-b border-white/10 pb-5 relative z-10">
+                <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-[#ff7733] font-bold block mb-2">
                   EXPRESS SAMPLE KIT CONTENTS
                 </span>
-                <h4 className="font-display text-3xl font-light text-[#241919]">
-                  What's Inside Your Box
+                <h4 className="font-display text-2xl sm:text-3xl font-light text-white">
+                  What&apos;s Inside Your Box
                 </h4>
               </div>
 
-              <div className="space-y-6">
-                <div className="flex gap-4 items-start">
-                  <div className="w-8 h-8 rounded bg-[#f5f2eb] flex items-center justify-center flex-none text-[#514a38]">
+              <div className="space-y-5 relative z-10">
+                <div className="flex gap-3.5 items-start">
+                  <div className="w-8 h-8 rounded-lg bg-[#ff5500]/20 border border-[#ff5500]/30 flex items-center justify-center flex-none text-[#ff7733] shadow-sm">
                     <Package size={16} />
                   </div>
                   <div>
-                    <strong className="block text-[12px] text-[#241919] uppercase tracking-wider font-bold mb-1">3x Calibrated Specimens</strong>
-                    <span className="text-[14px] text-[#747474] font-light leading-snug">150x150mm genuine quarry cut samples in your selected finish.</span>
+                    <strong className="block text-[12px] text-white uppercase tracking-wider font-bold mb-0.5">3x Calibrated Specimens</strong>
+                    <span className="text-[13.5px] text-white/70 font-light leading-snug">150x150mm genuine quarry cut samples in your selected finish.</span>
                   </div>
                 </div>
                 
-                <div className="flex gap-4 items-start">
-                  <div className="w-8 h-8 rounded bg-[#f5f2eb] flex items-center justify-center flex-none text-[#514a38]">
+                <div className="flex gap-3.5 items-start">
+                  <div className="w-8 h-8 rounded-lg bg-[#ff5500]/20 border border-[#ff5500]/30 flex items-center justify-center flex-none text-[#ff7733] shadow-sm">
                     <Layers size={16} />
                   </div>
                   <div>
-                    <strong className="block text-[12px] text-[#241919] uppercase tracking-wider font-bold mb-1">Multi-Finish Swatch Deck</strong>
-                    <span className="text-[14px] text-[#747474] font-light leading-snug">Physical reference cards for Cleft, Honed, Polished & Tumbled finishes.</span>
+                    <strong className="block text-[12px] text-white uppercase tracking-wider font-bold mb-0.5">Multi-Finish Swatch Deck</strong>
+                    <span className="text-[13.5px] text-white/70 font-light leading-snug">Physical reference cards for Cleft, Honed, Polished & Tumbled finishes.</span>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start">
-                  <div className="w-8 h-8 rounded bg-[#f5f2eb] flex items-center justify-center flex-none text-[#514a38]">
+                  <div className="w-8 h-8 rounded-lg bg-[#ff5500]/20 border border-[#ff5500]/30 flex items-center justify-center flex-none text-[#ff7733] shadow-sm">
                     <FileText size={16} />
                   </div>
                   <div>
-                    <strong className="block text-[12px] text-[#241919] uppercase tracking-wider font-bold mb-1">ASTM Test Reports</strong>
-                    <span className="text-[14px] text-[#747474] font-light leading-snug">Certified documentation for Density, Compressive Strength & Slip Ratings.</span>
+                    <strong className="block text-[12px] text-white uppercase tracking-wider font-bold mb-0.5">ASTM Test Reports</strong>
+                    <span className="text-[13.5px] text-white/70 font-light leading-snug">Certified documentation for Density, Compressive Strength & Slip Ratings.</span>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start">
-                  <div className="w-8 h-8 rounded bg-[#f5f2eb] flex items-center justify-center flex-none text-[#514a38]">
+                  <div className="w-8 h-8 rounded-lg bg-[#ff5500]/20 border border-[#ff5500]/30 flex items-center justify-center flex-none text-[#ff7733] shadow-sm">
                     <TrendingUp size={16} />
                   </div>
                   <div>
-                    <strong className="block text-[12px] text-[#241919] uppercase tracking-wider font-bold mb-1">FOB & CIF Pricing Schedule</strong>
-                    <span className="text-[14px] text-[#747474] font-light leading-snug">Calculated logistics data tailored to your specific discharge sea port.</span>
+                    <strong className="block text-[12px] text-white uppercase tracking-wider font-bold mb-0.5">FOB & CIF Pricing Schedule</strong>
+                    <span className="text-[13.5px] text-white/70 font-light leading-snug">Calculated logistics data tailored to your specific discharge sea port.</span>
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-8 pt-5 border-t border-[#747474]/15 flex items-center justify-between text-[10px] font-mono text-[#747474]">
-                <span className="uppercase tracking-wider">DHL Priority Dispatch</span>
-                <span className="font-bold tracking-widest text-[#241919]">48-72 HOUR DELIVERY</span>
               </div>
             </div>
 
             {/* Direct Export WhatsApp Hotline */}
-            <div className="p-5 bg-white border border-[#747474]/20 rounded-sm shadow-sm flex items-center justify-between gap-4">
+            <div className="p-5 bg-white border border-[#003049]/12 rounded-xl shadow-sm flex items-center justify-between gap-4">
               <div>
-                <span className="text-[9px] font-mono uppercase tracking-widest text-[#747474] block font-bold mb-1">
+                <span className="text-[9.5px] font-mono uppercase tracking-widest text-[#ff5500] block font-bold mb-1">
                   DIRECT EXPORT DESK:
                 </span>
-                <span className="text-xs font-mono font-bold text-[#241919] block">
+                <span className="text-xs sm:text-sm font-mono font-bold text-[#003049] block">
                   +91 94402 71559
                 </span>
-                <span className="text-[10px] font-mono text-[#747474]">
+                <span className="text-[11px] font-mono text-[#003049]/65">
                   export@pavangroups.com
                 </span>
               </div>
@@ -732,10 +725,10 @@ export default function SampleRequest() {
                 href="https://wa.me/919440271559?text=Hello%2C%20I%20would%20like%20to%20request%20natural%20stone%20samples%20from%20Pavan%20Stones%20Group."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2.5 rounded-sm bg-[#25D366] hover:bg-[#20ba59] text-white text-[10px] font-mono uppercase tracking-widest font-bold shadow-sm transition-all flex-none flex items-center gap-2"
+                className="px-4 py-2.5 rounded-lg bg-[#25D366] hover:bg-[#20ba59] text-white text-[10.5px] font-mono uppercase tracking-wider font-bold shadow-md shadow-[#25D366]/20 transition-all duration-200 flex-none flex items-center gap-1.5"
               >
                 <span>WhatsApp</span>
-                <ArrowUpRight size={13} />
+                <ArrowUpRight size={14} />
               </a>
             </div>
 

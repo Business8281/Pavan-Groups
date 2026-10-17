@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ShieldCheck } from "lucide-react";
 import { scrollToHash } from "@/components/SmoothScroll";
 
 interface CompanyCollection {
@@ -224,7 +224,7 @@ export default function Products() {
     <section
       ref={sectionRef}
       id="products"
-      className="relative z-10 py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-16 bg-[#ffffff] text-[#241919] shadow-[0_-25px_50px_-12px_rgba(0,0,0,0.25)] transition-shadow duration-300"
+      className="relative z-10 py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-16 bg-[#ffffff] text-[#241919]"
     >
       <div className="max-w-7xl mx-auto space-y-10 md:space-y-16">
 
@@ -251,8 +251,8 @@ export default function Products() {
               </div>
             </div>
 
-            {/* Static Orbit Badge - fixed at the first position on the facility image seam */}
-            <div className="absolute right-0 sm:-right-4 md:-right-8 top-1/2 -translate-y-1/2 translate-x-1/4 sm:translate-x-0 z-20 pointer-events-none select-none">
+            {/* Static Orbit Badge - centered on image on mobile, positioned on right seam on desktop */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 sm:left-auto sm:-right-4 md:-right-8 sm:translate-x-0 z-20 pointer-events-none select-none">
               <div className="relative w-28 h-28 xs:w-32 xs:h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 flex items-center justify-center">
 
                 {/* Outer 360° Continuous Rotating SVG Text Ring */}
@@ -336,9 +336,15 @@ export default function Products() {
                 <span className="italic font-normal text-[#ff5500]">Group</span>
               </h2>
               <div className="w-20 h-[3px] bg-gradient-to-r from-[#ff5500] to-[#ff5500]/20 rounded-full mt-3.5" />
-              <div className="mt-3.5 inline-flex items-center gap-2 px-3 py-1.5 rounded bg-[#faf8f5] border border-[#252422]/10 text-xs sm:text-[13px] font-mono tracking-wider text-[#252422]">
-                <span className="text-[#ff5500] font-semibold">IEC number :</span>
-                <span className="font-bold tracking-widest text-[#252422]">0909020744</span>
+              <div className="mt-3.5 inline-flex items-center gap-2 select-none">
+                <ShieldCheck className="w-4 h-4 text-[#ff5500] stroke-[2]" />
+                <span className="text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase text-[#7c3a1d]">
+                  IEC NUMBER
+                </span>
+                <span className="h-3.5 w-[1px] bg-gray-300" />
+                <span className="font-mono text-xs sm:text-[13px] font-bold tracking-[0.12em] text-[#252422]">
+                  0909020744
+                </span>
               </div>
             </div>
 

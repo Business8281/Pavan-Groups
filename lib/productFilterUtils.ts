@@ -11,30 +11,6 @@ export interface FilterCategoryOption {
 
 export const TOP_CATEGORIES_METADATA: FilterCategoryOption[] = [
   {
-    id: "slate",
-    slug: "slate-stone",
-    title: "SLATE STONE",
-    subtitle: "Markapur Slates & CNC Carvings",
-    href: "/products?category=slate",
-    image: "/images/black-slate-stone-1.jpg",
-  },
-  {
-    id: "applications",
-    slug: "applications",
-    title: "APPLICATIONS",
-    subtitle: "Wall Cladding, Pavers & Cobbles",
-    href: "/products?category=applications",
-    image: "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "limestone",
-    slug: "limestone",
-    title: "LIMESTONE",
-    subtitle: "Cuddapah Black & Lime Yellow",
-    href: "/products?category=limestone",
-    image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80",
-  },
-  {
     id: "south-indian-granite",
     slug: "south-indian-granite",
     title: "SOUTH INDIAN GRANITE",
@@ -51,12 +27,36 @@ export const TOP_CATEGORIES_METADATA: FilterCategoryOption[] = [
     image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80",
   },
   {
+    id: "limestone",
+    slug: "limestone",
+    title: "LIMESTONE",
+    subtitle: "Cuddapah Black & Lime Yellow",
+    href: "/products?category=limestone",
+    image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "applications",
+    slug: "applications",
+    title: "APPLICATIONS",
+    subtitle: "Wall Cladding, Pavers & Cobbles",
+    href: "/products?category=applications",
+    image: "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=800&q=80",
+  },
+  {
     id: "pebbles",
     slug: "pebbles",
     title: "NATURAL PEBBLES",
     subtitle: "Rough & Polished River Agates",
     href: "/products/pebbles",
     image: "/images/pavan-impex/pavan-impex-448.jpg",
+  },
+  {
+    id: "slate",
+    slug: "slate-stone",
+    title: "SLATE STONE",
+    subtitle: "Markapur Slates & CNC Carvings",
+    href: "/products?category=slate",
+    image: "/images/black-slate-stone-1.jpg",
   },
 ];
 

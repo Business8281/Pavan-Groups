@@ -54,8 +54,7 @@ export default function CalculatorPanel({
 
   const handleQuoteClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    scrollToHash("#contact", 1.6);
-    window.history.replaceState(null, "", "#contact");
+    window.location.href = "/contact";
   };
 
   return (

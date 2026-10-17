@@ -16,6 +16,7 @@ export default function ContactPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showBackImage, setShowBackImage] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,8 +42,8 @@ export default function ContactPage() {
           
           {/* Left Side: Interactive Mascot (Above) & Abstract Architectural Visual Block (Below) */}
           <div className="w-full flex flex-col justify-start space-y-6 sm:space-y-8 order-2 lg:order-1">
-            {/* Interactive Mascot (Above) */}
-            <div className="flex flex-col items-center justify-center pt-2 sm:pt-4">
+            {/* Interactive Mascot (Above) - visible on desktop */}
+            <div className="hidden lg:flex flex-col items-center justify-center pt-2 sm:pt-4">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -58,30 +59,43 @@ export default function ContactPage() {
             </div>
 
             {/* Architectural Visual Block (Below) */}
-            <div className="relative w-full h-[320px] sm:h-[450px] lg:h-[650px] flex justify-center items-center lg:items-start lg:justify-start">
-              {/* Wide Background Image */}
+            <div 
+              onMouseEnter={() => setShowBackImage(true)}
+              onMouseLeave={() => setShowBackImage(false)}
+              onClick={() => setShowBackImage(!showBackImage)}
+              className="relative w-full h-[320px] sm:h-[450px] lg:h-[650px] flex justify-center items-center lg:items-start lg:justify-start group cursor-pointer select-none"
+            >
+              {/* Backside Image (Appears & elevates in front on hover) */}
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="absolute top-6 sm:top-10 left-0 lg:left-8 w-[68%] lg:w-[340px] h-[75%] lg:h-[480px] overflow-hidden rounded-lg shadow-lg border border-[#747474]/15"
+                className={`absolute top-6 sm:top-10 left-0 lg:left-8 w-[68%] lg:w-[340px] h-[75%] lg:h-[480px] overflow-hidden rounded-lg border border-[#747474]/15 transition-all duration-500 ease-out ${
+                  showBackImage
+                    ? "z-30 scale-105 translate-x-4 lg:translate-x-12 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.4)]"
+                    : "z-10 scale-100 translate-x-0 shadow-lg"
+                } group-hover:z-30 group-hover:scale-105 group-hover:translate-x-4 lg:group-hover:translate-x-12 group-hover:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.4)]`}
               >
                 <img 
                   src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=800&q=80"
                   alt="Marble Texture Background"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/10" />
+                <div className={`absolute inset-0 transition-opacity duration-300 ${showBackImage ? "opacity-0" : "bg-black/10 group-hover:opacity-0"}`} />
               </motion.div>
               
-              {/* Main Image */}
+              {/* Main Front Image (Recedes on hover) */}
               <motion.img 
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
                 src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80" 
                 alt="Pavan Stones Group Extraction" 
-                className="relative z-10 top-4 sm:top-12 lg:top-16 right-0 lg:-right-16 w-[75%] lg:w-[380px] h-[80%] lg:h-[520px] object-cover rounded-lg shadow-2xl grayscale-[15%]"
+                className={`relative top-4 sm:top-12 lg:top-16 right-0 lg:-right-16 w-[75%] lg:w-[380px] h-[80%] lg:h-[520px] object-cover rounded-lg transition-all duration-500 ease-out ${
+                  showBackImage
+                    ? "z-10 scale-95 opacity-70 shadow-lg grayscale-0"
+                    : "z-20 scale-100 opacity-100 shadow-2xl grayscale-[15%]"
+                } group-hover:z-10 group-hover:scale-95 group-hover:opacity-70 group-hover:grayscale-0`}
               />
             </div>
           </div>
@@ -233,8 +247,17 @@ export default function ContactPage() {
                )}
              </motion.div>
 
+              {/* Mobile Interactive Mascot: Swapped above Quick Contact Telemetry */}
+              <div className="flex lg:hidden flex-col items-center justify-center pt-8 pb-3">
+                <Mascot
+                  directions={getAssetPath("/mascots/fox-riso-directions.webp")}
+                  reactions={getAssetPath("/mascots/fox-riso-reactions.webp")}
+                  size={140}
+                />
+              </div>
+
               {/* ── Quick Contact Telemetry ── */}
-              <div className="mt-10 space-y-4 border-t border-[#747474]/20 pt-8">
+              <div className="mt-4 lg:mt-10 space-y-4 border-t border-[#747474]/20 pt-8">
                 {/* Request a Quote */}
                 <a
                   href="/request-sample"

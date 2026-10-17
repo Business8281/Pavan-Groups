@@ -148,8 +148,8 @@ export const SAI_BALAJI_IMPEX_EDITORIAL_DATA: CompanyEditorialData = {
   companyName: "Sai Balaji Impex",
   stoneFamily: "Limestone & Precision Pavers",
   establishedYear: "1998",
-  locationName: "Cuddapah Basin, Andhra Pradesh, India",
-  coordinates: "14.4752° N · 78.8260° E",
+  locationName: "Bethamcherla, Andhra Pradesh, India",
+  coordinates: "15.4696° N · 78.1678° E",
   accentColor: "#514a38",
   heroStatement: {
     lead: "The Mastery of Microcrystalline Limestone.",
@@ -200,7 +200,7 @@ export const SAI_BALAJI_IMPEX_EDITORIAL_DATA: CompanyEditorialData = {
       image: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1600&q=80",
       imageAlt: "Limestone Quarry Formations",
       tagline: "Billion-Year Compressed Calcrete",
-      coordinate: "14.4752° N · CUDDAPAH BASIN BENCH 01",
+      coordinate: "15.4696° N · BETHAMCHERLA BENCH 01",
     },
     {
       id: "limestone-thermal-comfort",

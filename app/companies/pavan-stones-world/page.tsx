@@ -241,8 +241,8 @@ const COMPANIES_DATABASE: Record<string, CompanyData> = {
     divisionName: "Calcareous Limestone & Paving Division",
     speciality: "Limestone Pavers, Pool Copings & Stepping Stones",
     established: "1998",
-    location: "Cuddapah & Kurnool Limestone Basins, Andhra Pradesh, India",
-    coordinates: "14.4673° N · 78.8242° E · CUDDAPAH",
+    location: "Cement Nagar Road, Bugganipalli, Bethamcherla, Andhra Pradesh, India",
+    coordinates: "15.4696° N · 78.1678° E · BETHAMCHERLA",
     accentColor: "#3d2b18",
     overview: [
       "Limestone is known for its durability, natural beauty, and non-slip properties. It stays cool underfoot in hot weather, making it the preferred choice for outdoor areas, swimming pools, and patios."

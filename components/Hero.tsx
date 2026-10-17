@@ -1,7 +1,11 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { Globe, Settings, Leaf, ArrowRight } from "lucide-react";
 import { getAssetPath } from "@/lib/basePath";
+import { scrollToHash } from "@/components/SmoothScroll";
 
 const MARQUEE_ITEMS = [
   "Granite", "·", "Limestone", "·", "Slate", "·", "Cobbles",
@@ -12,7 +16,7 @@ const MARQUEE_ITEMS = [
 
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [phase, setPhase] = useState<"laser" | "split" | "locked" | "glow">("laser");
+  const router = useRouter();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -26,71 +30,14 @@ export default function Hero() {
         });
       }
     }
-
-    // 100% Synchronized choreography
-    const t1 = setTimeout(() => setPhase("split"), 500);
-    const t2 = setTimeout(() => setPhase("locked"), 1300);
-    const t3 = setTimeout(() => setPhase("glow"), 1700);
-
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
   }, []);
+
 
   return (
     <section
       id="home"
-      className="sticky top-0 z-0 w-full min-h-[90dvh] sm:min-h-[94dvh] md:min-h-screen flex flex-col justify-between items-center overflow-hidden bg-[#090706] mt-[72px] md:mt-0 pt-12 sm:pt-16 md:pt-24 pb-4 sm:pb-6 select-none"
+      className="sticky top-0 z-0 w-full min-h-[92dvh] md:min-h-screen flex flex-col justify-between overflow-hidden bg-[#090706] mt-[72px] md:mt-0 pt-16 sm:pt-20 md:pt-28 pb-0 select-none"
     >
-      <style jsx>{`
-        /* ── LUXURY LIQUID PRISM WAVE ── */
-        @keyframes liquidPrismSweep {
-          0% {
-            background-position: -200% center;
-          }
-          100% {
-            background-position: 200% center;
-          }
-        }
-
-        .liquid-prism-title {
-          background: linear-gradient(
-            115deg,
-            rgba(255, 255, 255, 0.88) 0%,
-            rgba(255, 255, 255, 0.98) 35%,
-            #ffffff 50%,
-            rgba(255, 255, 255, 0.98) 65%,
-            rgba(255, 255, 255, 0.88) 100%
-          );
-          background-size: 200% auto;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          animation: liquidPrismSweep 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-
-        /* ── LIVING WHITE NEON PULSE ── */
-        @keyframes whiteNeonPulse {
-          0%, 100% {
-            text-shadow:
-              0 0 10px rgba(255, 255, 255, 0.95),
-              0 0 26px rgba(255, 255, 255, 0.75),
-              0 0 58px rgba(255, 255, 255, 0.4);
-          }
-          50% {
-            text-shadow:
-              0 0 16px rgba(255, 255, 255, 1),
-              0 0 40px rgba(255, 255, 255, 0.95),
-              0 0 85px rgba(255, 255, 255, 0.65);
-          }
-        }
-
-        .white-neon-glow {
-          animation: whiteNeonPulse 3.5s ease-in-out infinite alternate;
-        }
-      `}</style>
-
       {/* ── BACKGROUND VIDEO LAYER ── */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <video
@@ -101,103 +48,152 @@ export default function Hero() {
           muted
           playsInline
           preload="auto"
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-cover object-center scale-[1.02]"
         >
           <source src={getAssetPath("/assets/webpage_front_display_video.mp4")} type="video/mp4" />
         </video>
-
-        {/* ── CINEMATIC DUAL CONTRAST VIGNETTE ── */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.18) 50%, rgba(0,0,0,0.65) 100%)",
-          }}
-        />
       </div>
 
-      {/* ── TOP SPACER ── */}
-      <div className="relative z-10" />
-
-      {/* ── SOLE HERO FOCUS: SYNCHRONIZED ARCHITECTURAL APERTURE SPLIT ── */}
-      <div className="relative z-10 px-3 sm:px-6 md:px-12 max-w-7xl mx-auto w-full flex flex-col items-center justify-center text-center my-auto">
-        <div className="relative w-full max-w-5xl h-24 sm:h-32 md:h-48 flex items-center justify-center">
+      {/* ── HERO CONTENT WRAPPER ── */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-16 flex-1 flex flex-col justify-between pt-4 sm:pt-8 pb-8 sm:pb-10">
+        
+        {/* Main Hero Statement */}
+        <div className="max-w-2xl lg:max-w-3xl flex flex-col items-start text-left my-auto">
           
-          {/* Central Laser Filament Ray */}
+          {/* Eyebrow */}
           <motion.div
-            initial={{ scaleX: 0, opacity: 0 }}
-            animate={
-              phase === "laser"
-                ? { scaleX: 1, opacity: 1 }
-                : phase === "split"
-                ? { scaleX: 1.1, opacity: 0.85 }
-                : { scaleX: 1.4, opacity: 0 }
-            }
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute h-[1.5px] w-full max-w-[90vw] sm:max-w-xl md:max-w-4xl bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_18px_#ffffff] z-20 pointer-events-none"
-          />
-
-          {/* Top Half of Typography (Rises from Laser Horizon) */}
-          <motion.div
-            initial={{ y: "40%", opacity: 0 }}
-            animate={
-              phase === "laser"
-                ? { y: "40%", opacity: 0 }
-                : phase === "split"
-                ? { y: "0%", opacity: 1 }
-                : { y: "0%", opacity: 1 }
-            }
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            style={{ clipPath: phase === "locked" || phase === "glow" ? "none" : "inset(0 0 50% 0)" }}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="flex items-center mb-3 sm:mb-4"
           >
-            <span
-              style={{ fontSize: "clamp(20px, 5.6vw, 76px)" }}
-              className={`font-display font-light text-white uppercase leading-none whitespace-nowrap tracking-[0.14em] sm:tracking-[0.2em] md:tracking-[0.24em] transition-all duration-700 ${
-                phase === "glow" ? "white-neon-glow" : "drop-shadow-[0_4px_24px_rgba(0,0,0,0.7)]"
-              }`}
-            >
-              <span className="liquid-prism-title">
-                PAVAN STONES GROUP
-              </span>
+            <span className="text-[11px] sm:text-xs md:text-sm font-medium tracking-[0.26em] uppercase text-[#ebd4b8] drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
+              NATURAL STONE &middot; GLOBAL SPACES
             </span>
           </motion.div>
 
-          {/* Bottom Half of Typography (Lowers from Laser Horizon) */}
-          {phase !== "locked" && phase !== "glow" && (
-            <motion.div
-              initial={{ y: "-40%", opacity: 0 }}
-              animate={
-                phase === "laser"
-                  ? { y: "-40%", opacity: 0 }
-                  : { y: "0%", opacity: 1 }
-              }
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              style={{ clipPath: "inset(50% 0 0 0)" }}
-              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          {/* Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="font-display text-[40px] xs:text-[48px] sm:text-[60px] md:text-[70px] lg:text-[80px] xl:text-[86px] font-normal leading-[1.05] tracking-normal drop-shadow-[0_4px_28px_rgba(0,0,0,0.95)] mb-4 sm:mb-6"
+          >
+            <span className="text-white">Nature Builds</span> <br />
+            <span className="bg-gradient-to-r from-[#faecd8] via-[#e8c697] to-[#d4a86c] bg-clip-text text-transparent font-medium">
+              A Better Tomorrow
+            </span>
+          </motion.h1>
+
+          {/* Subheading */}
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[14px] sm:text-[16px] md:text-[18px] text-[#f3ede4] font-light leading-relaxed max-w-xl mb-7 sm:mb-9 drop-shadow-[0_2px_14px_rgba(0,0,0,0.9)]"
+          >
+            Premium Indian Natural Stones for Architectural, Residential and Commercial Projects Worldwide.
+          </motion.p>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-wrap items-center gap-3 sm:gap-4"
+          >
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-gradient-to-r from-[#ebd6ba] to-[#dfc097] hover:from-[#faecd8] hover:to-[#ebd4b8] text-[#1a1412] text-xs sm:text-[13px] font-semibold tracking-wide rounded-[3px] transition-all duration-200 shadow-[0_4px_18px_rgba(0,0,0,0.45)] hover:shadow-[0_6px_24px_rgba(223,178,120,0.4)] hover:-translate-y-0.5 group"
             >
-              <span 
-                style={{ fontSize: "clamp(20px, 5.6vw, 76px)" }}
-                className="font-display font-light text-white uppercase leading-none whitespace-nowrap tracking-[0.14em] sm:tracking-[0.2em] md:tracking-[0.24em] drop-shadow-[0_4px_24px_rgba(0,0,0,0.7)]"
-              >
-                <span className="liquid-prism-title">
-                  PAVAN STONES GROUP
-                </span>
-              </span>
-            </motion.div>
-          )}
+              <span>Explore Products</span>
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+            </Link>
+
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 border border-black hover:border-black bg-transparent hover:bg-black/10 text-[#ff5500] text-xs sm:text-[13px] font-semibold tracking-wide rounded-[3px] transition-all duration-200 shadow-md cursor-pointer group hover:-translate-y-0.5"
+            >
+              <span>Request a Quote</span>
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+            </Link>
+          </motion.div>
+        </div>
+
+        {/* ── LOWER SECTION: TRUST BADGES (LEFT) & SCRIPT ACCENT (RIGHT) ── */}
+        <div className="w-full flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 sm:gap-4 pt-8 sm:pt-10">
+          
+          {/* Trust Badges on Bottom Left */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-wrap items-center gap-5 sm:gap-8 md:gap-11"
+          >
+            {/* Global Export */}
+            <div className="flex items-center gap-2.5 sm:gap-3 group">
+              <div className="w-10 h-10 rounded-full bg-white/[0.08] backdrop-blur-md border border-[#dfb278]/30 flex items-center justify-center text-[#dfb278] group-hover:text-[#faecd8] group-hover:border-[#dfb278]/60 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.3)]">
+                <Globe className="w-5 h-5 stroke-[1.6]" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-[12px] sm:text-[13px] font-semibold text-white leading-tight drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">Global</span>
+                <span className="text-[11px] sm:text-[12px] text-[#ebd4b8]/85 leading-tight">Export</span>
+              </div>
+            </div>
+
+            {/* Consistent Quality */}
+            <div className="flex items-center gap-2.5 sm:gap-3 group">
+              <div className="w-10 h-10 rounded-full bg-white/[0.08] backdrop-blur-md border border-[#dfb278]/30 flex items-center justify-center text-[#dfb278] group-hover:text-[#faecd8] group-hover:border-[#dfb278]/60 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.3)]">
+                <Settings className="w-5 h-5 stroke-[1.6]" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-[12px] sm:text-[13px] font-semibold text-white leading-tight drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">Consistent</span>
+                <span className="text-[11px] sm:text-[12px] text-[#ebd4b8]/85 leading-tight">Quality</span>
+              </div>
+            </div>
+
+            {/* Sustainable & Natural */}
+            <div className="flex items-center gap-2.5 sm:gap-3 group">
+              <div className="w-10 h-10 rounded-full bg-white/[0.08] backdrop-blur-md border border-[#dfb278]/30 flex items-center justify-center text-[#dfb278] group-hover:text-[#faecd8] group-hover:border-[#dfb278]/60 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.3)]">
+                <Leaf className="w-5 h-5 stroke-[1.6]" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-[12px] sm:text-[13px] font-semibold text-white leading-tight drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">Sustainable</span>
+                <span className="text-[11px] sm:text-[12px] text-[#ebd4b8]/85 leading-tight">& Natural</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Calligraphic Script Badge on Bottom Right */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col items-center justify-end text-center pb-1 select-none flex-none self-end sm:self-auto"
+          >
+            <div
+              className="leading-[1.05] tracking-wide select-none drop-shadow-[0_2px_16px_rgba(0,0,0,0.95)]"
+              style={{ fontFamily: "'Alex Brush', 'Great Vibes', cursive" }}
+            >
+              <div className="text-[30px] xs:text-[34px] sm:text-[38px] font-normal text-white">Stone</div>
+              <div className="text-[18px] xs:text-[20px] sm:text-[22px] font-light -mt-1 text-[#ebd4b8]">for a better</div>
+              <div className="text-[28px] xs:text-[32px] sm:text-[36px] font-normal -mt-0.5 bg-gradient-to-r from-[#faecd8] via-[#e8c697] to-[#d4a86c] bg-clip-text text-transparent">World</div>
+            </div>
+            <div className="w-8 sm:w-9 h-[1.5px] bg-[#dfb278]/80 mt-2 mx-auto rounded-full shadow-[0_0_8px_rgba(223,178,120,0.6)]" />
+          </motion.div>
 
         </div>
+
       </div>
 
       {/* ── BOTTOM MARQUEE ── */}
-      <div className="relative z-10 w-full overflow-hidden py-2 sm:py-2.5 border-t border-white/10 bg-black/30 backdrop-blur-sm pointer-events-none">
+      <div className="relative z-10 w-full overflow-hidden py-2 sm:py-2.5 border-t border-white/10 bg-transparent pointer-events-none">
         <div className="marquee-track flex whitespace-nowrap gap-6 sm:gap-8">
           {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
             <span
               key={i}
               className={`text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.3em] uppercase flex-none font-medium drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)] ${
-                item === "·" ? "text-[#c85a32]" : "text-white/85"
+                item === "·" ? "text-[#dfb278]" : "text-[#ebd4b8]"
               }`}
             >
               {item}
@@ -208,5 +204,3 @@ export default function Hero() {
     </section>
   );
 }
-
-

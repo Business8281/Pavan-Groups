@@ -35,7 +35,7 @@ export default function Navigation() {
   const lastY = useRef(0);
   const pathname = usePathname();
   const router = useRouter();
-  const { wishlistCount, openWishlistDrawer } = useWishlist();
+  const { wishlistCount, openWishlistDrawer, isDrawerOpen } = useWishlist();
 
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
@@ -116,6 +116,14 @@ export default function Navigation() {
     setIsSearchOpen(false);
   }, [pathname]);
 
+  // Automatically close mobile hamburger menu when wishlist drawer opens
+  useEffect(() => {
+    if (isDrawerOpen) {
+      setOpen(false);
+      setIsSearchOpen(false);
+    }
+  }, [isDrawerOpen]);
+
   // Lock body scroll while the sheet is open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -193,15 +201,7 @@ export default function Navigation() {
   const handleQuoteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setOpen(false);
-    const scrolled = scrollToHash("#get-quote", 1.4);
-    if (!scrolled) {
-      const el = document.getElementById("get-quote");
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else {
-        router.push("/contact");
-      }
-    }
+    router.push("/contact");
   };
 
   return (
@@ -414,66 +414,84 @@ export default function Navigation() {
           </ul>
         </LayoutGroup>
 
-        {/* Wishlist Button (Desktop) */}
-        <button
-          type="button"
-          onClick={openWishlistDrawer}
-          onMouseEnter={preloadCatalog}
-          className="relative z-10 p-2.5 rounded-full text-[#003049] hover:text-[#ef4444] hover:bg-[#ef4444]/10 transition-all duration-300 cursor-pointer flex items-center justify-center focus:outline-none ml-auto lg:ml-0"
-          aria-label={`View Shortlisted Stones (${wishlistCount} items)`}
-          title="View Shortlisted Stones"
-        >
-          <Heart className={`w-5 h-5 transition-transform active:scale-90 ${wishlistCount > 0 ? "fill-[#ef4444] text-[#ef4444]" : ""}`} />
-          {wishlistCount > 0 && (
-            <motion.span
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              key={wishlistCount}
-              className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-[#ef4444] text-white text-[10px] font-mono font-bold rounded-full flex items-center justify-center shadow-xs"
-            >
-              {wishlistCount}
-            </motion.span>
-          )}
-        </button>
+        {/* Desktop CTA Links */}
+        <div className="hidden lg:flex items-center gap-3 ml-auto">
+          <Link
+            href="/request-sample"
+            onClick={() => setOpen(false)}
+            className="inline-flex items-center gap-2 relative z-10 px-4 py-2.5 text-[10px] font-medium tracking-[0.22em] uppercase transition-all duration-300 cursor-pointer bg-transparent border border-[#003049]/35 text-[#003049] hover:border-[#003049] hover:bg-[#003049] hover:text-white shadow-xs focus:outline-none"
+          >
+            <span>Request Sample</span>
+          </Link>
 
-        {/* CTA (Get Quote) */}
-        <button
-          onClick={handleQuoteClick}
-          className="hidden md:inline-flex items-center gap-2.5 relative z-10 px-5 py-2.5 text-[10px] font-medium tracking-[0.22em] uppercase transition-all duration-300 cursor-pointer bg-transparent border border-[#ff5500] text-[#ff5500] hover:bg-[#ff5500] hover:text-white shadow-sm focus:outline-none"
-        >
-          <span>Get Quote</span>
-          <ArrowRight size={12} />
-        </button>
+          <Link
+            href="/contact"
+            onClick={() => setOpen(false)}
+            className="inline-flex items-center gap-2.5 relative z-10 px-5 py-2.5 text-[10px] font-medium tracking-[0.22em] uppercase transition-all duration-300 cursor-pointer bg-transparent border border-[#ff5500] text-[#ff5500] hover:bg-[#ff5500] hover:text-white shadow-sm focus:outline-none"
+          >
+            <span>Get Quote</span>
+            <ArrowRight size={12} />
+          </Link>
+        </div>
 
-        {/* Burger Button with enlarged touch target */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="lg:hidden relative z-10 w-10 h-10 -mr-2 flex flex-col justify-center items-center gap-1.5 bg-transparent border-none p-0 cursor-pointer touch-manipulation"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-        >
-          <span
-            className="block h-[1.5px] bg-[#003049] transition-all duration-400 origin-center"
-            style={{
-              transform: open ? "translateY(7.5px) rotate(45deg)" : "none",
-              width: "24px",
+        {/* Right Nav Group: Wishlist Icon (Just before hamburger menu in mobile view) + Hamburger Menu */}
+        <div className="flex items-center gap-1 sm:gap-2 relative z-10 ml-auto lg:ml-0">
+          {/* Wishlist Icon Button */}
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              setIsSearchOpen(false);
+              openWishlistDrawer();
             }}
-          />
-          <span
-            className="block h-[1.5px] bg-[#003049] transition-all duration-300"
-            style={{
-              width: open ? "0px" : "18px",
-              opacity: open ? 0 : 1,
-            }}
-          />
-          <span
-            className="block h-[1.5px] bg-[#003049] transition-all duration-400 origin-center"
-            style={{
-              transform: open ? "translateY(-7.5px) rotate(-45deg)" : "none",
-              width: "24px",
-            }}
-          />
-        </button>
+            onMouseEnter={preloadCatalog}
+            className="relative p-2 sm:p-2.5 rounded-full text-[#003049] hover:text-[#ef4444] hover:bg-[#ef4444]/10 transition-all duration-300 cursor-pointer flex items-center justify-center focus:outline-none touch-manipulation"
+            aria-label={`View Shortlisted Stones (${wishlistCount} items)`}
+            title="View Shortlisted Stones"
+          >
+            <Heart className={`w-5 h-5 transition-transform active:scale-90 ${wishlistCount > 0 ? "fill-[#ef4444] text-[#ef4444]" : ""}`} />
+            {wishlistCount > 0 && (
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                key={wishlistCount}
+                className="absolute -top-0.5 -right-0.5 min-w-[17px] h-[17px] px-1 bg-[#ef4444] text-white text-[9.5px] font-mono font-bold rounded-full flex items-center justify-center shadow-xs"
+              >
+                {wishlistCount}
+              </motion.span>
+            )}
+          </button>
+
+          {/* Burger Button with enlarged touch target */}
+          <button
+            onClick={() => setOpen(!open)}
+            className="lg:hidden relative w-10 h-10 -mr-2 flex flex-col justify-center items-center gap-1.5 bg-transparent border-none p-0 cursor-pointer touch-manipulation"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+          >
+            <span
+              className="block h-[1.5px] bg-[#003049] transition-all duration-400 origin-center"
+              style={{
+                transform: open ? "translateY(7.5px) rotate(45deg)" : "none",
+                width: "24px",
+              }}
+            />
+            <span
+              className="block h-[1.5px] bg-[#003049] transition-all duration-300"
+              style={{
+                width: open ? "0px" : "18px",
+                opacity: open ? 0 : 1,
+              }}
+            />
+            <span
+              className="block h-[1.5px] bg-[#003049] transition-all duration-400 origin-center"
+              style={{
+                transform: open ? "translateY(-7.5px) rotate(-45deg)" : "none",
+                width: "24px",
+              }}
+            />
+          </button>
+        </div>
       </nav>
 
       {/* Mobile & Tablet Drawer (Smooth Responsive Viewport) */}
@@ -512,9 +530,6 @@ export default function Navigation() {
             </div>
           </form>
 
-          <span className="text-[9px] font-mono tracking-[0.35em] uppercase text-[#c85a32] font-semibold mb-0.5">
-            Navigation Menu
-          </span>
           {links.map((l) => (
             <div key={l.label} className="text-center w-full">
               {l.isContact ? (
@@ -539,23 +554,22 @@ export default function Navigation() {
             </div>
           ))}
 
-          <button
-            onClick={() => {
-              setOpen(false);
-              openWishlistDrawer();
-            }}
-            className="mt-2 w-full max-w-xs py-3 bg-[#faf8f5] hover:bg-[#ef4444]/10 border border-[#241919]/15 text-[#241919] hover:text-[#ef4444] text-[11px] tracking-[0.2em] uppercase font-bold flex items-center justify-center gap-2 rounded-lg cursor-pointer transition-all"
-          >
-            <Heart className={`w-4 h-4 ${wishlistCount > 0 ? "fill-[#ef4444] text-[#ef4444]" : ""}`} />
-            <span>Shortlisted Stones ({wishlistCount})</span>
-          </button>
 
-          <button
-            onClick={handleQuoteClick}
-            className="mt-1 w-full max-w-xs py-3.5 bg-[#ff5500] hover:bg-[#e04b00] active:scale-[0.98] text-white text-[10.5px] tracking-[0.24em] uppercase font-semibold border-none cursor-pointer transition-all shadow-md touch-manipulation"
+          <Link
+            href="/request-sample"
+            onClick={() => setOpen(false)}
+            className="mt-2 w-full max-w-xs py-3 bg-white hover:bg-[#003049] border border-[#003049]/30 text-[#003049] hover:text-white text-[10.5px] tracking-[0.22em] uppercase font-bold flex items-center justify-center gap-2 rounded-lg cursor-pointer transition-all duration-200 text-center block shadow-xs"
+          >
+            Request Sample
+          </Link>
+
+          <Link
+            href="/contact"
+            onClick={() => setOpen(false)}
+            className="mt-1.5 w-full max-w-xs py-3.5 bg-[#ff5500] hover:bg-[#e04b00] active:scale-[0.98] text-white text-[10.5px] tracking-[0.24em] uppercase font-semibold border-none cursor-pointer transition-all shadow-md touch-manipulation text-center block"
           >
             Request Quotation
-          </button>
+          </Link>
         </div>
 
         {/* Mobile Drawer Footer Contacts */}

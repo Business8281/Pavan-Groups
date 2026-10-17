@@ -241,8 +241,8 @@ const COMPANIES_DATABASE: Record<string, CompanyData> = {
     divisionName: "Limestone & Precision Paver Division",
     speciality: "Dense Calcareous Limestone & Anti-Skid Pavers",
     established: "1998",
-    location: "Markapur & Cuddapah Basin, Andhra Pradesh, India",
-    coordinates: "14.4752° N · 78.8260° E · CUDDAPAH",
+    location: "Cement Nagar Road, Bugganipalli, Bethamcherla, Andhra Pradesh, India",
+    coordinates: "15.4696° N · 78.1678° E · BETHAMCHERLA",
     accentColor: "#514a38",
     overview: [
       "Limestone is a durable outdoor stone known for its anti-skid surface — making it perfect for areas around swimming pools, pathways, and driveways. It handles Australian outdoor conditions extremely well."

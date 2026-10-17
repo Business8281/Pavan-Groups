@@ -210,11 +210,11 @@ export default function BrowseTilesBy() {
                     <span className="text-[10px] font-mono font-bold text-[#ff5500]">
                       {stone.num} · {stone.category}
                     </span>
-                    <span className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-[4px] transition-colors ${
-                      isExpanded ? "bg-[#ff5500] text-white" : "bg-white/10 text-white/70"
-                    }`}>
-                      {isExpanded ? "Active" : "Tap to View"}
-                    </span>
+                    {!isExpanded && (
+                      <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-[4px] bg-white/10 text-white/70">
+                        Tap to View
+                      </span>
+                    )}
                   </div>
 
                   {isExpanded ? (
