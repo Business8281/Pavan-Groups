@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "next build",
+    "build": "next build && find out -name '__next.*' -delete && cp -f .assetsignore out/.assetsignore",
     "start": "next start",
     "deploy": "wrangler deploy"
   },
