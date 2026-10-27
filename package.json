@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
     "@animateicons/react": "^0.5.0",
@@ -30,6 +31,7 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.153.0"
   }
 }
