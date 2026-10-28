@@ -583,8 +583,8 @@ export default function Navigation() {
               +91 9246462600
             </a>
             <span>•</span>
-            <a href="mailto:export@pavangroups.com" className="text-[#241919] font-semibold hover:text-[#ff5500] py-1">
-              export@pavangroups.com
+            <a href="mailto:Pavanimpex2007@gmail.com" className="text-[#241919] font-semibold hover:text-[#ff5500] py-1">
+              Pavanimpex2007@gmail.com
             </a>
           </div>
           <span className="text-[9px] uppercase tracking-wider text-[#747474]/80">

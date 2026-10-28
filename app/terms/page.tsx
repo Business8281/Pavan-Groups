@@ -79,7 +79,7 @@ export default function TermsPage() {
               4. Inquiries &amp; Dispute Governance
             </h2>
             <p>
-              Commercial contracts are governed under Indian commercial laws and international maritime arbitration standards. For contractual questions, reach our commercial desk at <a href="mailto:export@pavangroups.com" className="text-[#ff5500] underline">export@pavangroups.com</a>.
+              Commercial contracts are governed under Indian commercial laws and international maritime arbitration standards. For contractual questions, reach our commercial desk at <a href="mailto:Pavanimpex2007@gmail.com" className="text-[#ff5500] underline">Pavanimpex2007@gmail.com</a>.
             </p>
           </section>
 

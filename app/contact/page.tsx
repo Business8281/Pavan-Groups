@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, CheckCircle2, ChevronDown } from "lucide-react";
 import { Mascot } from "page-mascot";
 import { getAssetPath } from "@/lib/basePath";
+import { COUNTRY_DIAL_CODES } from "@/components/SampleRequest";
 
 export default function ContactPage() {
   const [formState, setFormState] = useState({
@@ -14,12 +15,32 @@ export default function ContactPage() {
     interest: "Natural Slate",
     message: "",
   });
+  const [selectedCountryCode, setSelectedCountryCode] = useState<string>("IN");
+  const [phoneError, setPhoneError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showBackImage, setShowBackImage] = useState(false);
 
+  const selectedCountry = useMemo(() => {
+    return COUNTRY_DIAL_CODES.find((c) => c.code === selectedCountryCode) || COUNTRY_DIAL_CODES[0];
+  }, [selectedCountryCode]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (formState.phone.trim()) {
+      const digitsOnly = formState.phone.replace(/\D/g, "");
+      if (digitsOnly.length < selectedCountry.minDigits || digitsOnly.length > selectedCountry.maxDigits) {
+        const msg =
+          selectedCountry.minDigits === selectedCountry.maxDigits
+            ? `Please enter a valid ${selectedCountry.minDigits}-digit number`
+            : `Please enter ${selectedCountry.minDigits} to ${selectedCountry.maxDigits} digits`;
+        setPhoneError(msg);
+        return;
+      }
+    }
+    setPhoneError("");
+
     setIsSubmitting(true);
     // Simulate network request
     setTimeout(() => {
@@ -29,9 +50,30 @@ export default function ContactPage() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+
+    if (name === "phone") {
+      const raw = value.replace(/[^\d\s-]/g, "");
+      const digits = raw.replace(/\D/g, "");
+      if (digits.length > selectedCountry.maxDigits) {
+        return;
+      }
+      setFormState((prev) => ({ ...prev, phone: raw }));
+      if (digits.length > 0 && digits.length < selectedCountry.minDigits) {
+        const msg =
+          selectedCountry.minDigits === selectedCountry.maxDigits
+            ? `Please enter a valid ${selectedCountry.minDigits}-digit number`
+            : `Please enter ${selectedCountry.minDigits} to ${selectedCountry.maxDigits} digits`;
+        setPhoneError(msg);
+      } else {
+        setPhoneError("");
+      }
+      return;
+    }
+
     setFormState({
       ...formState,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
 
@@ -125,45 +167,98 @@ export default function ContactPage() {
                {!isSubmitted ? (
                  <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-7">
                    <div className="space-y-5 sm:space-y-6">
-                     <input 
-                       type="text" 
-                       name="name"
-                       required
-                       value={formState.name}
-                       onChange={handleInputChange}
-                       className="w-full bg-transparent border-b border-[#747474]/30 pb-2.5 text-[#241919] focus:outline-none focus:border-[#ff5500] placeholder:text-[#747474] text-sm transition-colors"
-                       placeholder="Your Name *"
-                     />
-                     
-                     <input 
-                       type="email" 
-                       name="email"
-                       required
-                       value={formState.email}
-                       onChange={handleInputChange}
-                       className="w-full bg-transparent border-b border-[#747474]/30 pb-2.5 text-[#241919] focus:outline-none focus:border-[#ff5500] placeholder:text-[#747474] text-sm transition-colors"
-                       placeholder="Corporate / Professional Email *"
-                     />
+                      <div className="relative">
+                        <input 
+                          type="text" 
+                          name="name"
+                          required
+                          maxLength={50}
+                          value={formState.name}
+                          onChange={handleInputChange}
+                          className="w-full bg-transparent border-b border-[#747474]/30 pb-2.5 pr-14 text-[#241919] focus:outline-none focus:border-[#ff5500] placeholder:text-[#747474] text-sm transition-colors"
+                          placeholder="Your Name *"
+                        />
+                        {formState.name.length > 0 && (
+                          <span className="absolute right-0 top-1 text-[10px] font-mono text-[#747474]/60 pointer-events-none">
+                            {formState.name.length}/50
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="relative">
+                        <input 
+                          type="email" 
+                          name="email"
+                          required
+                          maxLength={80}
+                          value={formState.email}
+                          onChange={handleInputChange}
+                          className="w-full bg-transparent border-b border-[#747474]/30 pb-2.5 pr-14 text-[#241919] focus:outline-none focus:border-[#ff5500] placeholder:text-[#747474] text-sm transition-colors"
+                          placeholder="Corporate / Professional Email *"
+                        />
+                        {formState.email.length > 0 && (
+                          <span className="absolute right-0 top-1 text-[10px] font-mono text-[#747474]/60 pointer-events-none">
+                            {formState.email.length}/80
+                          </span>
+                        )}
+                      </div>
 
-                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4">
-                       <input 
-                         type="text" 
-                         name="company"
-                         value={formState.company}
-                         onChange={handleInputChange}
-                         className="w-full bg-transparent border-b border-[#747474]/30 pb-2.5 text-[#241919] focus:outline-none focus:border-[#ff5500] placeholder:text-[#747474] text-sm transition-colors"
-                         placeholder="Architectural Firm / Company"
-                       />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4">
+                        <div className="relative">
+                          <input 
+                            type="text" 
+                            name="company"
+                            maxLength={80}
+                            value={formState.company}
+                            onChange={handleInputChange}
+                            className="w-full bg-transparent border-b border-[#747474]/30 pb-2.5 pr-14 text-[#241919] focus:outline-none focus:border-[#ff5500] placeholder:text-[#747474] text-sm transition-colors"
+                            placeholder="Architectural Firm / Company"
+                          />
+                          {formState.company.length > 0 && (
+                            <span className="absolute right-0 top-1 text-[10px] font-mono text-[#747474]/60 pointer-events-none">
+                              {formState.company.length}/80
+                            </span>
+                          )}
+                        </div>
 
-                       <input 
-                         type="tel" 
-                         name="phone"
-                         value={formState.phone}
-                         onChange={handleInputChange}
-                         className="w-full bg-transparent border-b border-[#747474]/30 pb-2.5 text-[#241919] focus:outline-none focus:border-[#ff5500] placeholder:text-[#747474] text-sm transition-colors"
-                         placeholder="Contact / WhatsApp Phone"
-                       />
-                     </div>
+                        <div>
+                          <div className={`flex items-center border-b pb-2 transition-colors ${
+                            phoneError
+                              ? "border-red-500"
+                              : "border-[#747474]/30 focus-within:border-[#ff5500]"
+                          }`}>
+                            <select
+                              value={selectedCountryCode}
+                              onChange={(e) => {
+                                setSelectedCountryCode(e.target.value);
+                                setFormState((prev) => ({ ...prev, phone: "" }));
+                                setPhoneError("");
+                              }}
+                              className="w-[78px] sm:w-[84px] bg-transparent text-[#241919] text-xs font-mono font-bold pr-1 outline-none cursor-pointer shrink-0 border-r border-[#747474]/20 mr-2"
+                              aria-label="Country Dialing Code"
+                            >
+                              {COUNTRY_DIAL_CODES.map((c) => (
+                                <option key={c.code} value={c.code}>
+                                  {c.flag} {c.dialCode}
+                                </option>
+                              ))}
+                            </select>
+                            <input 
+                              type="tel" 
+                              name="phone"
+                              value={formState.phone}
+                              onChange={handleInputChange}
+                              className="flex-1 min-w-0 w-full bg-transparent text-[#241919] focus:outline-none text-sm placeholder:text-[#747474]"
+                              placeholder={selectedCountry.placeholder}
+                            />
+                          </div>
+                          {phoneError && (
+                            <p className="text-[10.5px] font-mono text-red-500 mt-1 flex items-center gap-1">
+                              <span>⚠</span> {phoneError}
+                            </p>
+                          )}
+                        </div>
+                      </div>
 
                      <div className="relative">
                        <select 
@@ -201,15 +296,26 @@ export default function ContactPage() {
                        </div>
                      </div>
 
-                     <textarea 
-                       name="message"
-                       required
-                       rows={3}
-                       value={formState.message}
-                       onChange={handleInputChange}
-                       className="w-full bg-transparent border-b border-[#747474]/30 pb-2 text-[#241919] focus:outline-none focus:border-[#ff5500] placeholder:text-[#747474] text-sm resize-none transition-colors"
-                       placeholder="Project dimensions, target port (e.g. USNYC, AUSYD, NLRTM) or requirements *"
-                     />
+                      <div>
+                        <div className="relative">
+                          <textarea 
+                            name="message"
+                            required
+                            maxLength={500}
+                            rows={3}
+                            value={formState.message}
+                            onChange={handleInputChange}
+                            className="w-full bg-transparent border-b border-[#747474]/30 pb-2 text-[#241919] focus:outline-none focus:border-[#ff5500] placeholder:text-[#747474] text-sm resize-none transition-colors"
+                            placeholder="Project dimensions, target port (e.g. USNYC, AUSYD, NLRTM) or requirements *"
+                          />
+                        </div>
+                        <div className="flex justify-between items-center text-[10px] font-mono text-[#747474]/60 mt-0.5">
+                          <span>Include target port & sizing specifications</span>
+                          <span className={formState.message.length >= 500 ? "text-[#ff5500] font-bold" : ""}>
+                            {formState.message.length}/500
+                          </span>
+                        </div>
+                      </div>
                    </div>
 
                    <div className="pt-2">
@@ -290,7 +396,7 @@ export default function ContactPage() {
 
                 {/* Export Email */}
                 <a
-                  href="mailto:export@pavangroups.com"
+                  href="mailto:Pavanimpex2007@gmail.com"
                   className="flex items-center gap-3.5 group p-2.5 rounded-lg hover:bg-[#faf8f5] transition-colors"
                 >
                   <div className="w-9 h-9 rounded-full border border-[#747474]/25 flex items-center justify-center text-[#241919] shrink-0 group-hover:bg-[#241919] group-hover:text-white transition-all">
@@ -298,7 +404,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-[#241919] group-hover:text-[#ff5500] transition-colors">Official Export Email</p>
-                    <p className="text-[11px] text-[#747474] font-mono">export@pavangroups.com</p>
+                    <p className="text-[11px] text-[#747474] font-mono">Pavanimpex2007@gmail.com</p>
                   </div>
                 </a>
 

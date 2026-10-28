@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ArrowRight, ArrowUpRight, Lock, Package, Layers, FileText, TrendingUp, Search } from "lucide-react";
+import { Check, ArrowRight, ArrowUpRight, Lock, Package, Layers, FileText, TrendingUp, Search, MessageSquare } from "lucide-react";
 import { PRODUCTS_DATABASE, ProductStone } from "@/lib/productsData";
 
 const CATEGORY_TABS = [
@@ -33,6 +33,30 @@ const DESTINATION_PORTS = [
   "Other International Sea Port",
 ];
 
+export interface CountryDialInfo {
+  code: string;
+  name: string;
+  flag: string;
+  dialCode: string;
+  minDigits: number;
+  maxDigits: number;
+  placeholder: string;
+}
+
+export const COUNTRY_DIAL_CODES: CountryDialInfo[] = [
+  { code: "AU", name: "Australia", flag: "🇦🇺", dialCode: "+61", minDigits: 9, maxDigits: 9, placeholder: "412 345 678" },
+  { code: "US", name: "USA / Canada", flag: "🇺🇸", dialCode: "+1", minDigits: 10, maxDigits: 10, placeholder: "555 123 4567" },
+  { code: "IN", name: "India", flag: "🇮🇳", dialCode: "+91", minDigits: 10, maxDigits: 10, placeholder: "90638 17054" },
+  { code: "GB", name: "United Kingdom", flag: "🇬🇧", dialCode: "+44", minDigits: 10, maxDigits: 10, placeholder: "7911 123456" },
+  { code: "AE", name: "UAE (Dubai)", flag: "🇦🇪", dialCode: "+971", minDigits: 9, maxDigits: 9, placeholder: "50 123 4567" },
+  { code: "SA", name: "Saudi Arabia", flag: "🇸🇦", dialCode: "+966", minDigits: 9, maxDigits: 9, placeholder: "50 123 4567" },
+  { code: "NZ", name: "New Zealand", flag: "🇳🇿", dialCode: "+64", minDigits: 8, maxDigits: 10, placeholder: "21 123 4567" },
+  { code: "DE", name: "Germany", flag: "🇩🇪", dialCode: "+49", minDigits: 10, maxDigits: 11, placeholder: "151 23456789" },
+  { code: "BE", name: "Belgium", flag: "🇧🇪", dialCode: "+32", minDigits: 9, maxDigits: 9, placeholder: "470 12 34 56" },
+  { code: "SG", name: "Singapore", flag: "🇸🇬", dialCode: "+65", minDigits: 8, maxDigits: 8, placeholder: "8123 4567" },
+  { code: "OTHER", name: "Other Country", flag: "🌐", dialCode: "+", minDigits: 7, maxDigits: 15, placeholder: "Phone Number" },
+];
+
 export default function SampleRequest() {
   // Deduplicate products strictly by name to ensure no duplicates
   const uniqueProducts = useMemo(() => {
@@ -60,6 +84,7 @@ export default function SampleRequest() {
   const [companyName, setCompanyName] = useState<string>("");
   const [contactName, setContactName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [selectedCountryCode, setSelectedCountryCode] = useState<string>("AU");
   const [phone, setPhone] = useState<string>("");
   const [courierAddress, setCourierAddress] = useState<string>("");
   const [projectNotes, setProjectNotes] = useState<string>("");
@@ -67,6 +92,48 @@ export default function SampleRequest() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [referenceNumber, setReferenceNumber] = useState<string>("");
+  const [submittedWhatsappUrl, setSubmittedWhatsappUrl] = useState<string>("");
+  const [phoneError, setPhoneError] = useState<string>("");
+
+  const selectedCountry = useMemo(() => {
+    return COUNTRY_DIAL_CODES.find((c) => c.code === selectedCountryCode) || COUNTRY_DIAL_CODES[0];
+  }, [selectedCountryCode]);
+
+  const handleDestinationPortChange = (port: string) => {
+    setDestinationPort(port);
+    if (port.includes("Australia")) setSelectedCountryCode("AU");
+    else if (port.includes("USA")) setSelectedCountryCode("US");
+    else if (port.includes("UK")) setSelectedCountryCode("GB");
+    else if (port.includes("UAE")) setSelectedCountryCode("AE");
+    else if (port.includes("Saudi Arabia")) setSelectedCountryCode("SA");
+    else if (port.includes("New Zealand")) setSelectedCountryCode("NZ");
+    else if (port.includes("Germany")) setSelectedCountryCode("DE");
+    else if (port.includes("Belgium")) setSelectedCountryCode("BE");
+    else if (port.includes("Singapore")) setSelectedCountryCode("SG");
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow numbers, spaces, and hyphens
+    const raw = e.target.value.replace(/[^\d\s-]/g, "");
+    const digits = raw.replace(/\D/g, "");
+
+    // Enforce max digits for selected country
+    if (digits.length > selectedCountry.maxDigits) {
+      return;
+    }
+
+    setPhone(raw);
+
+    if (digits.length > 0 && digits.length < selectedCountry.minDigits) {
+      const msg =
+        selectedCountry.minDigits === selectedCountry.maxDigits
+          ? `Please enter a valid ${selectedCountry.minDigits}-digit number`
+          : `Please enter ${selectedCountry.minDigits} to ${selectedCountry.maxDigits} digits`;
+      setPhoneError(msg);
+    } else {
+      setPhoneError("");
+    }
+  };
 
   const filteredProducts = useMemo(() => {
     return uniqueProducts.filter((p) => {
@@ -111,14 +178,77 @@ export default function SampleRequest() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const fullPhone =
+      selectedCountry.code === "OTHER"
+        ? (phone.startsWith("+") ? phone.trim() : `+${phone.trim()}`)
+        : `${selectedCountry.dialCode} ${phone.trim()}`;
+
+    // Validate Phone Number according to selected country's min/max digits
+    const digitsOnly = phone.replace(/\D/g, "");
+    if (digitsOnly.length < selectedCountry.minDigits || digitsOnly.length > selectedCountry.maxDigits) {
+      const msg =
+        selectedCountry.minDigits === selectedCountry.maxDigits
+          ? `Please enter a valid ${selectedCountry.minDigits}-digit number`
+          : `Please enter ${selectedCountry.minDigits} to ${selectedCountry.maxDigits} digits`;
+      setPhoneError(msg);
+      return;
+    }
+    setPhoneError("");
+
     setIsSubmitting(true);
 
+    const generatedRef = `PAVAN-SMP-${Math.floor(100000 + Math.random() * 900000)}`;
+    setReferenceNumber(generatedRef);
+
+    const portDisplay =
+      destinationPort.includes("Other") && customPort.trim()
+        ? `${destinationPort} (${customPort.trim()})`
+        : destinationPort;
+
+    const messageLines = [
+      "🏛️ *PAVAN STONES GROUP — SAMPLE KIT DISPATCH REQUEST*",
+      `*Tracking Ref:* ${generatedRef}`,
+      "",
+      "📦 *1. STONE SPECIMEN:*",
+      `• *Stone:* ${currentProduct.name}`,
+      `• *Category:* ${currentProduct.category.replace(/-/g, " ").toUpperCase()}`,
+      `• *Surface Finish:* ${selectedFinish}`,
+      "",
+      "📐 *2. SPECIFICATIONS & PROJECT SCOPE:*",
+      `• *Target Sizing:* ${selectedSize}`,
+      `• *Target Thickness:* ${selectedThickness}`,
+      `• *Estimated Requirement:* ${estimatedVolume}`,
+      "",
+      "🚢 *3. DESTINATION SEA PORT:*",
+      `• *Port of Discharge:* ${portDisplay}`,
+      "",
+      "🏢 *4. COMPANY & COURIER DISPATCH:*",
+      `• *Company / Practice:* ${companyName}`,
+      `• *Contact Person:* ${contactName}`,
+      `• *Corporate Email:* ${email}`,
+      `• *Phone / WhatsApp:* ${fullPhone}`,
+      `• *Courier Delivery Address:* ${courierAddress}`,
+      ...(projectNotes.trim() ? [`• *Architectural Notes:* ${projectNotes.trim()}`] : []),
+      "",
+      "_Dispatched via https://www.pavanstonesgroup.online/ Export Concierge Desk_"
+    ];
+
+    const messageText = messageLines.join("\n");
+    const waUrl = `https://wa.me/919063817054?text=${encodeURIComponent(messageText)}`;
+    setSubmittedWhatsappUrl(waUrl);
+
+    // Open WhatsApp directly for the user
+    try {
+      window.open(waUrl, "_blank", "noopener,noreferrer");
+    } catch {
+      // If popup blocker intervened, confirmation screen has a prominent manual button
+    }
+
     setTimeout(() => {
-      const generatedRef = `PAVAN-SMP-${Math.floor(100000 + Math.random() * 900000)}`;
-      setReferenceNumber(generatedRef);
       setIsSubmitting(false);
       setIsSubmitted(true);
-    }, 1200);
+    }, 600);
   };
 
   return (
@@ -151,63 +281,117 @@ export default function SampleRequest() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="py-10 text-center space-y-8"
+                className="py-8 text-center space-y-6"
               >
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", damping: 15 }}
-                  className="w-20 h-20 rounded-full bg-gradient-to-br from-[#ff5500] to-[#e04300] flex items-center justify-center mx-auto shadow-xl shadow-[#ff5500]/30 text-3xl text-white ring-8 ring-[#ff5500]/15"
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-[#ff5500] to-[#e04300] flex items-center justify-center mx-auto shadow-xl shadow-[#ff5500]/30 text-3xl text-white ring-8 ring-[#ff5500]/15"
                 >
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
                   >
-                    <Check size={38} className="text-white stroke-[2.5]" />
+                    <Check size={36} className="text-white stroke-[2.5]" />
                   </motion.div>
                 </motion.div>
 
                 <div>
-                  <span className="text-[10px] font-mono uppercase tracking-[0.26em] font-bold text-[#ff5500] block mb-3">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.26em] font-bold text-[#ff5500] block mb-2">
                     SAMPLE DISPATCH QUEUED SUCCESSFULLY
                   </span>
-                  <h3 className="font-display text-3xl sm:text-4xl font-light text-[#003049] mb-3">
+                  <h3 className="font-display text-2xl sm:text-4xl font-light text-[#003049] mb-2">
                     Thank You, {contactName || "Valued Client"}
                   </h3>
-                  <div className="inline-flex items-center justify-center gap-2.5 text-xs font-mono text-[#003049] font-semibold mb-5 bg-[#faf8f5] px-4 py-2 rounded-lg border border-[#003049]/15 shadow-sm">
+                  <div className="inline-flex items-center justify-center gap-2.5 text-xs font-mono text-[#003049] font-semibold mb-3 bg-[#faf8f5] px-4 py-2 rounded-lg border border-[#003049]/15 shadow-sm">
                     <span>Sample Tracking ID:</span>
                     <span className="text-[#ff5500] font-bold tracking-wider">{referenceNumber}</span>
                   </div>
-                  <p className="text-sm sm:text-[15px] text-[#003049]/75 font-light max-w-md mx-auto leading-relaxed">
-                    Our export logistics desk has queued your curated <strong className="text-[#003049] font-semibold">{currentProduct.name}</strong> sample kit for priority air courier dispatch to <strong className="text-[#003049] font-semibold">{destinationPort}</strong>.
+                  <p className="text-xs sm:text-sm text-[#003049]/75 font-light max-w-md mx-auto leading-relaxed">
+                    Your complete sample specifications have been generated and dispatched to our export desk on WhatsApp (<strong className="text-[#003049] font-semibold">+91 9063817054</strong>).
                   </p>
                 </div>
 
-                <div className="p-5 bg-[#faf8f5] border border-[#003049]/12 rounded-lg max-w-md mx-auto text-left space-y-3 text-xs font-mono text-[#003049]/80">
+                {/* WhatsApp Direct Action Banner */}
+                <div className="p-4 sm:p-5 bg-[#25D366]/10 border border-[#25D366]/30 rounded-xl max-w-lg mx-auto text-center space-y-2.5">
+                  <div className="flex items-center justify-center gap-2 text-[#128C7E] font-bold text-xs sm:text-sm font-mono">
+                    <MessageSquare size={16} />
+                    <span>WhatsApp Export Dispatch Desk (+91 9063817054)</span>
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-[#003049]/70 font-light">
+                    If WhatsApp did not open automatically, click the button below to message our export desk directly:
+                  </p>
+                  {submittedWhatsappUrl && (
+                    <a
+                      href={submittedWhatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#25D366] hover:bg-[#20ba59] text-white rounded-lg text-xs font-mono uppercase tracking-wider font-bold transition-all shadow-md shadow-[#25D366]/25 hover:shadow-lg hover:shadow-[#25D366]/35"
+                    >
+                      <MessageSquare size={14} />
+                      <span>Open WhatsApp Chat (+91 9063817054)</span>
+                      <ArrowUpRight size={14} />
+                    </a>
+                  )}
+                </div>
+
+                {/* Full Submitted Specifications Summary */}
+                <div className="p-4 sm:p-5 bg-[#faf8f5] border border-[#003049]/12 rounded-lg max-w-lg mx-auto text-left space-y-2.5 text-xs font-mono text-[#003049]/80">
                   <div className="flex justify-between border-b border-[#003049]/10 pb-2">
-                    <span>Stone Specimen:</span>
+                    <span className="text-[#003049]/60">Stone Specimen:</span>
                     <span className="font-bold text-[#003049] text-right">{currentProduct.name}</span>
                   </div>
                   <div className="flex justify-between border-b border-[#003049]/10 pb-2">
-                    <span>Selected Finish:</span>
+                    <span className="text-[#003049]/60">Surface Finish:</span>
                     <span className="font-bold text-[#003049] text-right">{selectedFinish}</span>
                   </div>
                   <div className="flex justify-between border-b border-[#003049]/10 pb-2">
-                    <span>Target Port:</span>
-                    <span className="font-bold text-[#003049] text-right">{destinationPort}</span>
+                    <span className="text-[#003049]/60">Target Sizing:</span>
+                    <span className="font-bold text-[#003049] text-right">{selectedSize} ({selectedThickness})</span>
                   </div>
+                  <div className="flex justify-between border-b border-[#003049]/10 pb-2">
+                    <span className="text-[#003049]/60">Target Port:</span>
+                    <span className="font-bold text-[#003049] text-right">
+                      {destinationPort.includes("Other") && customPort ? `${destinationPort} (${customPort})` : destinationPort}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#003049]/10 pb-2">
+                    <span className="text-[#003049]/60">Company / Contact:</span>
+                    <span className="font-bold text-[#003049] text-right">{companyName} ({contactName})</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#003049]/10 pb-2">
+                    <span className="text-[#003049]/60">Phone / WhatsApp:</span>
+                    <span className="font-bold text-[#003049] text-right">
+                      {selectedCountry.code === "OTHER" ? phone : `${selectedCountry.dialCode} ${phone}`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#003049]/10 pb-2">
+                    <span className="text-[#003049]/60">Email:</span>
+                    <span className="font-bold text-[#003049] text-right">{email}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#003049]/10 pb-2">
+                    <span className="text-[#003049]/60">Courier Address:</span>
+                    <span className="font-bold text-[#003049] text-right max-w-[65%] truncate">{courierAddress}</span>
+                  </div>
+                  {projectNotes && (
+                    <div className="flex justify-between border-b border-[#003049]/10 pb-2">
+                      <span className="text-[#003049]/60">Architectural Notes:</span>
+                      <span className="font-medium text-[#003049] text-right max-w-[65%] truncate">{projectNotes}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between pt-1">
-                    <span>Est. Dispatch:</span>
+                    <span className="text-[#003049]/60">Est. Dispatch:</span>
                     <span className="font-bold text-[#ff5500]">Within 48 Hours (Air Priority)</span>
                   </div>
                 </div>
 
-                <div className="pt-4 flex justify-center">
+                <div className="pt-2 flex justify-center">
                   <button
                     type="button"
                     onClick={() => setIsSubmitted(false)}
-                    className="px-8 py-3.5 bg-[#003049] hover:bg-[#ff5500] text-white rounded-lg text-[11px] font-mono uppercase tracking-[0.2em] font-bold transition-all duration-300 cursor-pointer shadow-md shadow-[#003049]/20 hover:shadow-lg hover:shadow-[#ff5500]/30"
+                    className="px-8 py-3 bg-[#003049] hover:bg-[#ff5500] text-white rounded-lg text-[11px] font-mono uppercase tracking-[0.2em] font-bold transition-all duration-300 cursor-pointer shadow-md shadow-[#003049]/20 hover:shadow-lg hover:shadow-[#ff5500]/30"
                   >
                     Submit Another Request
                   </button>
@@ -450,7 +634,7 @@ export default function SampleRequest() {
                     </label>
                     <select
                       value={destinationPort}
-                      onChange={(e) => setDestinationPort(e.target.value)}
+                      onChange={(e) => handleDestinationPortChange(e.target.value)}
                       className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all cursor-pointer outline-none font-medium"
                       required
                     >
@@ -492,11 +676,19 @@ export default function SampleRequest() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 pl-0 sm:pl-11">
                     <div>
-                      <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
-                        Company / Practice: *
-                      </label>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold">
+                          Company / Practice: *
+                        </label>
+                        {companyName.length > 0 && (
+                          <span className="text-[10px] font-mono text-[#003049]/50">
+                            {companyName.length}/80
+                          </span>
+                        )}
+                      </div>
                       <input
                         type="text"
+                        maxLength={80}
                         placeholder="e.g. Studio Arc / Stone Direct"
                         value={companyName}
                         onChange={(e) => setCompanyName(e.target.value)}
@@ -506,11 +698,19 @@ export default function SampleRequest() {
                     </div>
 
                     <div>
-                      <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
-                        Contact Person: *
-                      </label>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold">
+                          Contact Person: *
+                        </label>
+                        {contactName.length > 0 && (
+                          <span className="text-[10px] font-mono text-[#003049]/50">
+                            {contactName.length}/50
+                          </span>
+                        )}
+                      </div>
                       <input
                         type="text"
+                        maxLength={50}
                         placeholder="e.g. David Henderson"
                         value={contactName}
                         onChange={(e) => setContactName(e.target.value)}
@@ -522,11 +722,19 @@ export default function SampleRequest() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 pl-0 sm:pl-11 mt-4">
                     <div>
-                      <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
-                        Corporate Email: *
-                      </label>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold">
+                          Corporate Email: *
+                        </label>
+                        {email.length > 0 && (
+                          <span className="text-[10px] font-mono text-[#003049]/50">
+                            {email.length}/80
+                          </span>
+                        )}
+                      </div>
                       <input
                         type="email"
+                        maxLength={80}
                         placeholder="e.g. hello@studioarc.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -539,23 +747,59 @@ export default function SampleRequest() {
                       <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
                         Phone / WhatsApp: *
                       </label>
-                      <input
-                        type="tel"
-                        placeholder="e.g. +61 412 345 678"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="w-full bg-[#faf8f5] hover:bg-white focus:bg-white border border-[#003049]/20 hover:border-[#003049]/40 focus:border-[#ff5500] focus:ring-4 focus:ring-[#ff5500]/15 rounded-lg text-[#003049] p-3 sm:p-3.5 text-sm transition-all outline-none font-medium"
-                        required
-                      />
+                      <div className={`flex rounded-lg border bg-[#faf8f5] transition-all overflow-hidden focus-within:bg-white focus-within:ring-4 ${
+                        phoneError
+                          ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500/15"
+                          : "border-[#003049]/20 hover:border-[#003049]/40 focus-within:border-[#ff5500] focus-within:ring-[#ff5500]/15"
+                      }`}>
+                        {/* Country Code Dropdown */}
+                        <select
+                          value={selectedCountryCode}
+                          onChange={(e) => {
+                            setSelectedCountryCode(e.target.value);
+                            setPhone("");
+                            setPhoneError("");
+                          }}
+                          className="w-[82px] sm:w-[88px] bg-[#f0ece4] hover:bg-[#eae4da] text-[#003049] text-xs font-mono font-bold px-2 py-3 sm:py-3.5 border-r border-[#003049]/15 outline-none cursor-pointer shrink-0 transition-colors"
+                          aria-label="Country Dialing Code"
+                        >
+                          {COUNTRY_DIAL_CODES.map((c) => (
+                            <option key={c.code} value={c.code}>
+                              {c.flag} {c.dialCode}
+                            </option>
+                          ))}
+                        </select>
+
+                        {/* Phone Digits Input */}
+                        <input
+                          type="tel"
+                          placeholder={selectedCountry.placeholder}
+                          value={phone}
+                          onChange={handlePhoneChange}
+                          className="flex-1 min-w-0 w-full bg-transparent text-[#003049] p-3 sm:p-3.5 text-sm outline-none font-medium placeholder:text-[#003049]/40"
+                          required
+                        />
+                      </div>
+                      {phoneError && (
+                        <p className="text-[11px] font-mono text-red-500 mt-1.5 flex items-center gap-1">
+                          <span>⚠</span> {phoneError}
+                        </p>
+                      )}
                     </div>
                   </div>
 
                   <div className="pl-0 sm:pl-11 mt-4">
-                    <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
-                      Sample Delivery Street Address (For DHL / FedEx): *
-                    </label>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold">
+                        Sample Delivery Street Address (For DHL / FedEx): *
+                      </label>
+                      <span className={`text-[10px] font-mono ${courierAddress.length >= 250 ? "text-[#ff5500] font-bold" : "text-[#003049]/50"}`}>
+                        {courierAddress.length}/250 chars
+                      </span>
+                    </div>
                     <textarea
                       rows={2}
+                      maxLength={250}
                       placeholder="Suite 402, Level 4, 120 Collins Street, Melbourne VIC 3000, Australia"
                       value={courierAddress}
                       onChange={(e) => setCourierAddress(e.target.value)}
@@ -565,11 +809,17 @@ export default function SampleRequest() {
                   </div>
 
                   <div className="pl-0 sm:pl-11 mt-4">
-                    <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-2">
-                      Specific Architectural Requirements (Optional):
-                    </label>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="text-[10.5px] font-mono uppercase tracking-wider text-[#003049] font-bold">
+                        Specific Architectural Requirements (Optional):
+                      </label>
+                      <span className={`text-[10px] font-mono ${projectNotes.length >= 400 ? "text-[#ff5500] font-bold" : "text-[#003049]/50"}`}>
+                        {projectNotes.length}/400 chars
+                      </span>
+                    </div>
                     <textarea
                       rows={2}
+                      maxLength={400}
                       placeholder="e.g. Looking for pool coping pieces with bullnose edge profiles or specific slip resistance."
                       value={projectNotes}
                       onChange={(e) => setProjectNotes(e.target.value)}
@@ -588,7 +838,7 @@ export default function SampleRequest() {
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
                         <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Queuing Express Dispatch...
+                        Forwarding to WhatsApp & Queuing Express Dispatch...
                       </span>
                     ) : (
                       <>
@@ -599,7 +849,7 @@ export default function SampleRequest() {
                   </button>
                   <div className="text-[10.5px] font-mono text-[#003049]/70 text-center mt-4 flex items-center justify-center gap-2">
                     <Lock size={13} className="text-[#ff5500] flex-none" />
-                    <span>Compliant with ISO 9001:2015 & ASTM standards. Factory-dispatched within 48–72 hours.</span>
+                    <span>Dispatches all specifications to WhatsApp (+91 9063817054) & factory-dispatches kit within 48–72 hours.</span>
                   </div>
                 </div>
 
@@ -713,7 +963,7 @@ export default function SampleRequest() {
                   +91 9063817054
                 </span>
                 <span className="text-[11px] font-mono text-[#003049]/65">
-                  export@pavangroups.com
+                  Pavanimpex2007@gmail.com
                 </span>
               </div>
 

@@ -42,7 +42,7 @@ export default function CTA() {
 
         <div className="flex flex-col sm:flex-row gap-4 pt-4">
           <a
-            href="mailto:export@pavangroups.com"
+            href="mailto:Pavanimpex2007@gmail.com"
             className="inline-flex items-center justify-center gap-3 px-9 py-4 text-xs font-mono uppercase tracking-[0.2em] font-bold bg-[#0f172a] hover:bg-[#a0522d] text-[#ffffff] transition-all shadow-md hover:scale-[1.02] active:scale-[0.98] touch-manipulation"
           >
             <Mail className="w-4 h-4 text-[#94a3b8]" />

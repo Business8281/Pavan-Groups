@@ -89,7 +89,7 @@ export default function PrivacyPolicyPage() {
             <div className="pt-2 text-xs font-mono space-y-1 text-[#241919]">
               <p><strong>Pavan Stones Group — Legal &amp; Export Compliance</strong></p>
               <p>Markapur Quarry Belt, Prakasam District, Andhra Pradesh, India</p>
-              <p>Email: <a href="mailto:export@pavangroups.com" className="text-[#ff5500] underline">export@pavangroups.com</a></p>
+              <p>Email: <a href="mailto:Pavanimpex2007@gmail.com" className="text-[#ff5500] underline">Pavanimpex2007@gmail.com</a></p>
               <p>Phone: <a href="tel:+919246462600" className="text-[#ff5500] underline">+91 9246462600</a></p>
             </div>
           </section>

@@ -512,8 +512,8 @@ export default function Footer() {
 
               <div className="flex items-center gap-3">
                 <span className="text-[#888888] font-mono text-xs uppercase tracking-wider w-28 flex-none">Export Desk:</span>
-                <a href="mailto:export@pavangroups.com" className="text-[#252422] hover:text-[#ff5500] font-bold transition-colors">
-                  export@pavangroups.com
+                <a href="mailto:Pavanimpex2007@gmail.com" className="text-[#252422] hover:text-[#ff5500] font-bold transition-colors">
+                  Pavanimpex2007@gmail.com
                 </a>
               </div>
 
