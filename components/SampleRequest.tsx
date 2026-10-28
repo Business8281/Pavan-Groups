@@ -131,7 +131,7 @@ export default function SampleRequest() {
       <div className="absolute bottom-20 left-10 w-96 h-96 bg-[#003049]/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        
+
         {/* ── SECTION HEADER ── */}
         <div className="max-w-3xl mb-8 md:mb-12">
           <h2 className="font-display font-light text-[#003049] leading-[1.08] tracking-[-0.02em] text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4">
@@ -144,7 +144,7 @@ export default function SampleRequest() {
 
         {/* ── 2-COLUMN ATELIER LAYOUT ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          
+
           {/* ── LEFT COLUMN: BESPOKE SAMPLE REQUEST CONCIERGE FORM (7 Cols) ── */}
           <div className="lg:col-span-7 bg-white border border-[#003049]/12 rounded-xl p-5 sm:p-8 md:p-10 shadow-[0_8px_30px_rgba(0,48,73,0.06)] relative overflow-hidden">
             {isSubmitted ? (
@@ -153,13 +153,13 @@ export default function SampleRequest() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="py-10 text-center space-y-8"
               >
-                <motion.div 
+                <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", damping: 15 }}
                   className="w-20 h-20 rounded-full bg-gradient-to-br from-[#ff5500] to-[#e04300] flex items-center justify-center mx-auto shadow-xl shadow-[#ff5500]/30 text-3xl text-white ring-8 ring-[#ff5500]/15"
                 >
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
@@ -215,7 +215,7 @@ export default function SampleRequest() {
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-10">
-                
+
                 {/* ── STEP 1: STONE SPECIMEN SELECTION ── */}
                 <div className="space-y-5 pb-8 border-b border-[#003049]/10">
                   <div className="flex items-center gap-3.5">
@@ -243,11 +243,10 @@ export default function SampleRequest() {
                               setSelectedCategory(cat.id);
                               setVisibleCount(18);
                             }}
-                            className={`px-3 py-1.5 rounded-full text-xs font-mono whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                              isCatActive
-                                ? "bg-[#003049] text-white font-bold shadow-xs"
-                                : "bg-white border border-[#003049]/15 text-[#003049]/70 hover:text-[#003049] hover:border-[#ff5500]/50"
-                            }`}
+                            className={`px-3 py-1.5 rounded-full text-xs font-mono whitespace-nowrap transition-all duration-200 cursor-pointer ${isCatActive
+                              ? "bg-[#003049] text-white font-bold shadow-xs"
+                              : "bg-white border border-[#003049]/15 text-[#003049]/70 hover:text-[#003049] hover:border-[#ff5500]/50"
+                              }`}
                           >
                             {cat.label}
                           </button>
@@ -287,7 +286,7 @@ export default function SampleRequest() {
                     <label className="text-[10px] font-mono uppercase tracking-wider text-[#003049] font-bold block mb-3 pl-0 sm:pl-11">
                       Choose Your Stone Specimen ({filteredProducts.length} Available): *
                     </label>
-                    
+
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 pl-0 sm:pl-11">
                       {filteredProducts.slice(0, visibleCount).map((prod) => {
                         const isSelected = selectedProductId === prod.id;
@@ -296,11 +295,10 @@ export default function SampleRequest() {
                             key={prod.id}
                             type="button"
                             onClick={() => handleProductSelect(prod)}
-                            className={`p-2.5 sm:p-3 rounded-lg border text-left transition-all duration-200 cursor-pointer flex items-center gap-2.5 sm:gap-3 relative overflow-hidden group ${
-                              isSelected
-                                ? "bg-[#fff9f5] border-2 border-[#ff5500] shadow-[0_4px_16px_rgba(255,85,0,0.14)] ring-1 ring-[#ff5500]/40"
-                                : "bg-white hover:bg-[#fffbf8] border-[#003049]/15 hover:border-[#ff5500]/40 shadow-xs hover:shadow"
-                            }`}
+                            className={`p-2.5 sm:p-3 rounded-lg border text-left transition-all duration-200 cursor-pointer flex items-center gap-2.5 sm:gap-3 relative overflow-hidden group ${isSelected
+                              ? "bg-[#fff9f5] border-2 border-[#ff5500] shadow-[0_4px_16px_rgba(255,85,0,0.14)] ring-1 ring-[#ff5500]/40"
+                              : "bg-white hover:bg-[#fffbf8] border-[#003049]/15 hover:border-[#ff5500]/40 shadow-xs hover:shadow"
+                              }`}
                           >
                             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-md overflow-hidden bg-[#faf8f5] border border-black/10 flex-none relative shadow-2xs">
                               <img
@@ -313,9 +311,8 @@ export default function SampleRequest() {
                               />
                             </div>
                             <div className="min-w-0 relative z-10 flex-1">
-                              <span className={`text-[11.5px] sm:text-[12px] block leading-tight truncate transition-colors ${
-                                isSelected ? "text-[#003049] font-bold" : "text-[#003049] font-medium group-hover:text-[#ff5500]"
-                              }`}>
+                              <span className={`text-[11.5px] sm:text-[12px] block leading-tight truncate transition-colors ${isSelected ? "text-[#003049] font-bold" : "text-[#003049] font-medium group-hover:text-[#ff5500]"
+                                }`}>
                                 {prod.name}
                               </span>
                               <span className="text-[9.5px] font-mono text-[#747474] capitalize block truncate mt-0.5">
@@ -353,11 +350,10 @@ export default function SampleRequest() {
                             key={fin}
                             type="button"
                             onClick={() => setSelectedFinish(fin)}
-                            className={`px-3.5 sm:px-4 py-2 text-xs font-mono rounded-lg transition-all duration-200 cursor-pointer flex items-center ${
-                              isSelected
-                                ? "bg-[#003049] text-white border-2 border-[#003049] shadow-md shadow-[#003049]/20 font-bold"
-                                : "bg-white border border-[#003049]/20 text-[#003049]/80 hover:border-[#ff5500] hover:text-[#ff5500] hover:bg-[#fff9f5]"
-                            }`}
+                            className={`px-3.5 sm:px-4 py-2 text-xs font-mono rounded-lg transition-all duration-200 cursor-pointer flex items-center ${isSelected
+                              ? "bg-[#003049] text-white border-2 border-[#003049] shadow-md shadow-[#003049]/20 font-bold"
+                              : "bg-white border border-[#003049]/20 text-[#003049]/80 hover:border-[#ff5500] hover:text-[#ff5500] hover:bg-[#fff9f5]"
+                              }`}
                           >
                             <span>{fin}</span>
                           </button>
@@ -602,7 +598,7 @@ export default function SampleRequest() {
                     )}
                   </button>
                   <div className="text-[10.5px] font-mono text-[#003049]/70 text-center mt-4 flex items-center justify-center gap-2">
-                    <Lock size={13} className="text-[#ff5500] flex-none" /> 
+                    <Lock size={13} className="text-[#ff5500] flex-none" />
                     <span>Compliant with ISO 9001:2015 & ASTM standards. Factory-dispatched within 48–72 hours.</span>
                   </div>
                 </div>
@@ -614,7 +610,7 @@ export default function SampleRequest() {
 
           {/* ── RIGHT COLUMN: INTERACTIVE SAMPLE ATELIER BOX VISUALIZER (5 Cols) ── */}
           <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
-            
+
             {/* 3D-Feel Luxury Curated Sample Box Visualizer */}
             <div className="bg-white border border-[#003049]/12 rounded-xl p-5 sm:p-7 shadow-[0_4px_20px_rgba(0,48,73,0.06)] relative overflow-hidden">
               {/* Dynamic Live Specimen Image (Real Stone Photograph) */}
@@ -674,7 +670,7 @@ export default function SampleRequest() {
                     <span className="text-[13.5px] text-white/70 font-light leading-snug">150x150mm genuine quarry cut samples in your selected finish.</span>
                   </div>
                 </div>
-                
+
                 <div className="flex gap-3.5 items-start">
                   <div className="w-8 h-8 rounded-lg bg-[#ff5500]/20 border border-[#ff5500]/30 flex items-center justify-center flex-none text-[#ff7733] shadow-sm">
                     <Layers size={16} />
@@ -714,7 +710,7 @@ export default function SampleRequest() {
                   DIRECT EXPORT DESK:
                 </span>
                 <span className="text-xs sm:text-sm font-mono font-bold text-[#003049] block">
-                  +91 94402 71559
+                  +91 9063817054
                 </span>
                 <span className="text-[11px] font-mono text-[#003049]/65">
                   export@pavangroups.com
@@ -722,7 +718,7 @@ export default function SampleRequest() {
               </div>
 
               <a
-                href="https://wa.me/919440271559?text=Hello%2C%20I%20would%20like%20to%20request%20natural%20stone%20samples%20from%20Pavan%20Stones%20Group."
+                href="https://wa.me/919063817054?text=Hello%2C%20I%20would%20like%20to%20request%20natural%20stone%20samples%20from%20Pavan%20Stones%20Group."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-4 py-2.5 rounded-lg bg-[#25D366] hover:bg-[#20ba59] text-white text-[10.5px] font-mono uppercase tracking-wider font-bold shadow-md shadow-[#25D366]/20 transition-all duration-200 flex-none flex items-center gap-1.5"
